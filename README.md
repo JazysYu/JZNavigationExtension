@@ -23,14 +23,14 @@ ___
 
 # Usage
 
-[To gives you a fullscreen interactivePopGestureRecognizer](id:FPG)【打开全屏Pop手势】:
+<a id="FPG"></a>To gives you a fullscreen interactivePopGestureRecognizer【打开全屏Pop手势】:
 
 ``` objc
 navigationController.fullScreenInteractivePopGestureRecognizer = YES;
 ```
 ___
 
-[To hides navigation bar when the view controller is pushed on to a navigation controller](id:HNBP)【支持转场隐藏、显示导航栏】:
+<a id="HNBP"></a>To hides navigation bar when the view controller is pushed on to a navigation controller【支持转场隐藏、显示导航栏】:
 ``` objc
 UIViewController *viewController = [UIViewController new];
 viewController.hidesNavigationBarWhenPushed = YES;
@@ -38,7 +38,7 @@ viewController.hidesNavigationBarWhenPushed = YES;
 ```
 ___
 
-[To Push/Pop view controller With blocks](id:PWB)【导航控制器转场回调】:
+<a id="PWB"></a>To Push/Pop view controller With blocks【导航控制器转场回调】:
 ``` objc
 [self.navigationController pushViewController:viewController animated:YES completion:^(BOOL finished) {
 		///Do any thing
@@ -46,14 +46,14 @@ ___
 ```
 ___
 
-[To adjust navigation/tool bar background alpha](id:NBTA)【调节导航控制器的导航栏、工具条透明度】:
+<a id="NBTA"></a>To adjust navigation/tool bar background alpha【调节导航控制器的导航栏、工具条透明度】:
 
 ``` objc
 navigationController.navigationBarBackgroundAlpha = yourAlpha;
 ```
 ___
 
-[To change navigation/tool bar size](id:NBTS)【改变导航控制器的导航栏、工具条大小】:
+<a id="NBTS"></a>To change navigation/tool bar size【改变导航控制器的导航栏、工具条大小】:
 
 ``` objc
 [navigationController setNavigationBarSize:size];
