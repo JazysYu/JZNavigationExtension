@@ -2,7 +2,7 @@
 The "UINavigationController+JZExtension" category integrates some convenient features and open some hide functions for UINavigationController.
 ___
 "UINavigationController+JZExtension"分类为UINavigationController集成了许多方便的功能点，同时为它打开了一些隐藏功能。
-# Features【功能】
+# Features
 * [To gives you a fullscreen interactivePopGestureRecognizer](#FPG)
 * [To hides navigation bar when the view controller is pushed on to a navigation controller](#HNBP)
 * [To Push/PopViewController With Blocks](#PWB)
