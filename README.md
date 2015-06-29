@@ -79,5 +79,5 @@ pod 'JZNavigationExtension'
 Drag all source files under floder JZNavigationExtension to your project.
 
 ``` objc
-JZNavigationExtension.h			JZNavigationExtension.m
+UINavigationController+JZExtension.h	UINavigationController+JZExtension.m
 ```
