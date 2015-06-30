@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		405B537C1B42917900C9FC4F /* UINavigationController+JZExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 405B537B1B42917900C9FC4F /* UINavigationController+JZExtension.m */; };
+		405B537F1B4294E100C9FC4F /* UINavigationController+JZExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 405B537E1B4294E100C9FC4F /* UINavigationController+JZExtension.m */; };
 		40D3B0DA1B3C0859009F145F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3B0D91B3C0859009F145F /* main.m */; };
 		40D3B0DD1B3C0859009F145F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3B0DC1B3C0859009F145F /* AppDelegate.m */; };
 		40D3B0E01B3C0859009F145F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3B0DF1B3C0859009F145F /* ViewController.m */; };
@@ -29,8 +29,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		405B537A1B42917900C9FC4F /* UINavigationController+JZExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+JZExtension.h"; sourceTree = "<group>"; };
-		405B537B1B42917900C9FC4F /* UINavigationController+JZExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+JZExtension.m"; sourceTree = "<group>"; };
+		405B537D1B4294E100C9FC4F /* UINavigationController+JZExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UINavigationController+JZExtension.h"; path = "../../JZNavigationExtension/UINavigationController+JZExtension.h"; sourceTree = "<group>"; };
+		405B537E1B4294E100C9FC4F /* UINavigationController+JZExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UINavigationController+JZExtension.m"; path = "../../JZNavigationExtension/UINavigationController+JZExtension.m"; sourceTree = "<group>"; };
 		40D3B0D41B3C0859009F145F /* JZNavigationExtensionDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JZNavigationExtensionDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		40D3B0D81B3C0859009F145F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		40D3B0D91B3C0859009F145F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -122,8 +122,8 @@
 		40D3B1041B3D02AD009F145F /* JZNavigationExtension */ = {
 			isa = PBXGroup;
 			children = (
-				405B537A1B42917900C9FC4F /* UINavigationController+JZExtension.h */,
-				405B537B1B42917900C9FC4F /* UINavigationController+JZExtension.m */,
+				405B537D1B4294E100C9FC4F /* UINavigationController+JZExtension.h */,
+				405B537E1B4294E100C9FC4F /* UINavigationController+JZExtension.m */,
 			);
 			name = JZNavigationExtension;
 			sourceTree = "<group>";
@@ -242,7 +242,7 @@
 				40D3B1071B3D1B64009F145F /* DemoTableViewCell.m in Sources */,
 				40D3B0DD1B3C0859009F145F /* AppDelegate.m in Sources */,
 				40D3B0DA1B3C0859009F145F /* main.m in Sources */,
-				405B537C1B42917900C9FC4F /* UINavigationController+JZExtension.m in Sources */,
+				405B537F1B4294E100C9FC4F /* UINavigationController+JZExtension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
