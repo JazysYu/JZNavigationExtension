@@ -18,16 +18,6 @@
 		40D3B1071B3D1B64009F145F /* DemoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3B1061B3D1B64009F145F /* DemoTableViewCell.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		40D3B0EE1B3C0859009F145F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 40D3B0CC1B3C0859009F145F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 40D3B0D31B3C0859009F145F;
-			remoteInfo = JZNavigationExtensionDemo;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		405B537D1B4294E100C9FC4F /* UINavigationController+JZExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UINavigationController+JZExtension.h"; path = "../../JZNavigationExtension/UINavigationController+JZExtension.h"; sourceTree = "<group>"; };
 		405B537E1B4294E100C9FC4F /* UINavigationController+JZExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UINavigationController+JZExtension.m"; path = "../../JZNavigationExtension/UINavigationController+JZExtension.m"; sourceTree = "<group>"; };
@@ -41,7 +31,6 @@
 		40D3B0E21B3C0859009F145F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		40D3B0E41B3C0859009F145F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		40D3B0E71B3C0859009F145F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		40D3B0ED1B3C0859009F145F /* JZNavigationExtensionDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JZNavigationExtensionDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		40D3B0FD1B3C095C009F145F /* SecondViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
 		40D3B0FE1B3C095C009F145F /* SecondViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
 		40D3B1051B3D1B64009F145F /* DemoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoTableViewCell.h; sourceTree = "<group>"; };
@@ -50,13 +39,6 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		40D3B0D11B3C0859009F145F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		40D3B0EA1B3C0859009F145F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -78,7 +60,6 @@
 			isa = PBXGroup;
 			children = (
 				40D3B0D41B3C0859009F145F /* JZNavigationExtensionDemo.app */,
-				40D3B0ED1B3C0859009F145F /* JZNavigationExtensionDemoTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -157,24 +138,6 @@
 			productReference = 40D3B0D41B3C0859009F145F /* JZNavigationExtensionDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		40D3B0EC1B3C0859009F145F /* JZNavigationExtensionDemoTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 40D3B0FA1B3C0859009F145F /* Build configuration list for PBXNativeTarget "JZNavigationExtensionDemoTests" */;
-			buildPhases = (
-				40D3B0E91B3C0859009F145F /* Sources */,
-				40D3B0EA1B3C0859009F145F /* Frameworks */,
-				40D3B0EB1B3C0859009F145F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				40D3B0EF1B3C0859009F145F /* PBXTargetDependency */,
-			);
-			name = JZNavigationExtensionDemoTests;
-			productName = JZNavigationExtensionDemoTests;
-			productReference = 40D3B0ED1B3C0859009F145F /* JZNavigationExtensionDemoTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -186,10 +149,6 @@
 				TargetAttributes = {
 					40D3B0D31B3C0859009F145F = {
 						CreatedOnToolsVersion = 6.3.2;
-					};
-					40D3B0EC1B3C0859009F145F = {
-						CreatedOnToolsVersion = 6.3.2;
-						TestTargetID = 40D3B0D31B3C0859009F145F;
 					};
 				};
 			};
@@ -207,7 +166,6 @@
 			projectRoot = "";
 			targets = (
 				40D3B0D31B3C0859009F145F /* JZNavigationExtensionDemo */,
-				40D3B0EC1B3C0859009F145F /* JZNavigationExtensionDemoTests */,
 			);
 		};
 /* End PBXProject section */
@@ -220,13 +178,6 @@
 				40D3B0E31B3C0859009F145F /* Main.storyboard in Resources */,
 				40D3B0E81B3C0859009F145F /* LaunchScreen.xib in Resources */,
 				40D3B0E51B3C0859009F145F /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		40D3B0EB1B3C0859009F145F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,22 +197,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		40D3B0E91B3C0859009F145F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		40D3B0EF1B3C0859009F145F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 40D3B0D31B3C0859009F145F /* JZNavigationExtensionDemo */;
-			targetProxy = 40D3B0EE1B3C0859009F145F /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		40D3B0E11B3C0859009F145F /* Main.storyboard */ = {
@@ -389,40 +325,6 @@
 			};
 			name = Release;
 		};
-		40D3B0FB1B3C0859009F145F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = JZNavigationExtensionDemoTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JZNavigationExtensionDemo.app/JZNavigationExtensionDemo";
-			};
-			name = Debug;
-		};
-		40D3B0FC1B3C0859009F145F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = JZNavigationExtensionDemoTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JZNavigationExtensionDemo.app/JZNavigationExtensionDemo";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -440,15 +342,6 @@
 			buildConfigurations = (
 				40D3B0F81B3C0859009F145F /* Debug */,
 				40D3B0F91B3C0859009F145F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		40D3B0FA1B3C0859009F145F /* Build configuration list for PBXNativeTarget "JZNavigationExtensionDemoTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				40D3B0FB1B3C0859009F145F /* Debug */,
-				40D3B0FC1B3C0859009F145F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
