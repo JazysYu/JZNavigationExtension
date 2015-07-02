@@ -37,7 +37,8 @@
 /// navigationBar will be invisable, default is 1. Animatable
 @property (nonatomic, assign) CGFloat toolbarBackgroundAlpha NS_AVAILABLE_IOS(7_0); // Current navigationController's toolbar background alpha,
 /// make sure the toolbarHidden property is NO, default is 1. Animatable
-
+@property (nonatomic, readonly, strong) UIViewController *interactivePopedViewController NS_AVAILABLE_IOS(7_0); // The view controller that is being popped
+/// when the interactive pop gesture recognizer's UIGestureRecognizerState is UIGestureRecognizerStateChanged.
 /// This category helps to change navigationBar or toolBar to any size, you may also change its frame.size by yourself.
 - (void)setNavigationBarSize:(CGSize)navigationBarSize;
 - (void)setToolbarSize:(CGSize)toolbarSize;
@@ -56,5 +57,8 @@
 @interface UIViewController (JZExtension)
 
 @property(nonatomic, assign) BOOL hidesNavigationBarWhenPushed; // If YES, then when this view controller is pushed into a controller hierarchy with a navigation bar, the navigation bar will slide out. Default is NO.
+
+@property (nonatomic, assign, getter=isNavigationBarBackgroundHidden) BOOL navigationBarBackgroundHidden;
+- (void)setNavigationBarBackgroundHidden:(BOOL)navigationBarBackgroundHidden animated:(BOOL)animated NS_AVAILABLE_IOS(8_0); // Hide or show the navigation bar background. If animated, it will transition vertically using UINavigationControllerHideShowBarDuration.
 
 @end

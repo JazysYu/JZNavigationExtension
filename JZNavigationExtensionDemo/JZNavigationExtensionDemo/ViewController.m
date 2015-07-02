@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-
+#import "UINavigationController+JZExtension.h"
 @interface ViewController ()
 
 @end
@@ -17,6 +17,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    self.navigationBarBackgroundHidden = YES;
 }
 
 - (void)didReceiveMemoryWarning {

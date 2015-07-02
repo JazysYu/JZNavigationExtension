@@ -102,6 +102,7 @@
             break;
         case 4:
         {
+            viewController.navigationBarBackgroundHidden = YES;
             viewController.title = @"Pushing";
             [self.navigationController pushViewController:viewController animated:YES completion:^(BOOL finished) {
                 viewController.title = @"Pushed";
@@ -123,7 +124,7 @@
                         @"navigationBarBackgroundAlpha",
                         @"navigationBarHeight",
                         @"hidesNavigationBarWhenPushed",
-                        @"pushViewController:animated:completion:",
+                        @"pushViewController:animated:completion:"
                         ];
     }
     return _cellModels;
