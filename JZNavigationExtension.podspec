@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "JZNavigationExtension"
-  s.version      = "1.0"
+  s.version      = "1.1"
   s.summary      = "Integrates some convenient functions and open some hide property for UINavigationController."
   s.description  = "The 'UINavigationController+JZExtension' category integrates some convenient functions and open some hide property for your UINavigationController. Just pod in 2 files and no need for any setups."
   s.homepage     = "https://github.com/JazysYu/JZNavigationExtension"
