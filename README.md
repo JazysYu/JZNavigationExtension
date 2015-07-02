@@ -8,6 +8,7 @@ ___
 * [To Push/PopViewController With Blocks](#PWB)
 * [To change navigation/tool bar background alpha](#NBTA)
 * [To change navigation/tool bar size](#NBTS)
+* [To hide navigation bar background alpha during pop gesture is interactiving](#NBD)
 
 # Overview
 
@@ -68,6 +69,13 @@ self.navigationBar.frame = rect;
 ```
 ___
 
+<a id="NBD"></a>To hide navigation bar background alpha during pop gesture is interactiving
+
+``` objc
+UIViewController *viewController = [UIViewController new];
+viewController.navigationBarBackgroundHidden = YES;
+```
+___
 # Installation
 #### Use cocoapods
 
