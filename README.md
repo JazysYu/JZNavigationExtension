@@ -75,7 +75,11 @@ ___
 UIViewController *viewController = [UIViewController new];
 viewController.navigationBarBackgroundHidden = YES;
 ```
+
+
+![overview](https://raw.githubusercontent.com/JazysYu/JZNavigationExtension/master/Snapshots/JZNavigationExtensionDemo2.gif)
 ___
+
 # Installation
 #### Use cocoapods
 
