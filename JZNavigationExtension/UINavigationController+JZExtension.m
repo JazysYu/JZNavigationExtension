@@ -35,6 +35,7 @@
 
 @interface UINavigationController (_JZExtension)
 @property (nonatomic, copy) void (^_push_pop_Finished)(BOOL);
+@property (nonatomic, assign) BOOL _navigationBarHidden;
 @property (nonatomic, assign) CGFloat _navigationBarBackgroundReverseAlpha;
 - (void)setInteractivePopedViewController:(UIViewController *)interactivePopedViewController;
 @end
@@ -112,28 +113,49 @@
             {
                 __method_swizzling(self, NSSelectorFromString(@"navigationTransitionView:didEndTransition:fromView:toView:"),@selector(_navigationTransitionView:didEndTransition:fromView:toView:));
             }
+            
+            {
+                __method_swizzling(self, @selector(setNavigationBarHidden:animated:), @selector(_setNavigationBarHidden:animated:));
+            }
+            
         }
     });
 }
 
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    self._navigationBarHidden = self.navigationBarHidden;
+}
+
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL))completion {
     self._push_pop_Finished = completion;
+    UIViewController *visibleViewController = [self visibleViewController];
     [self _pushViewController:viewController animated:animated];
-    [self setNavigationBarHidden:viewController.hidesNavigationBarWhenPushed animated:animated];
-    [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
-        [self setNavigationBarBackgroundAlpha:viewController.navigationBarBackgroundHidden ? 0 : 1-self._navigationBarBackgroundReverseAlpha];
-    }];
+    if (!self._navigationBarHidden) {
+        [self setNavigationBarHidden:viewController.hidesNavigationBarWhenPushed animated:animated];
+        [self set_navigationBarHidden:NO];
+    }
+    if (visibleViewController.navigationBarBackgroundHidden != viewController.navigationBarBackgroundHidden) {
+        [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
+            [self setNavigationBarBackgroundAlpha:viewController.navigationBarBackgroundHidden ? 0 : 1-self._navigationBarBackgroundReverseAlpha];
+        }];
+    }
 }
 
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
     self._push_pop_Finished = completion;
     UIViewController *viewController = [self _popViewControllerAnimated:animated];
     UIViewController *visibleViewController = [self visibleViewController];
-    [self setNavigationBarHidden:visibleViewController.hidesNavigationBarWhenPushed animated:animated];
+    if (!self._navigationBarHidden) {
+        [self setNavigationBarHidden:visibleViewController.hidesNavigationBarWhenPushed animated:animated];
+        [self set_navigationBarHidden:NO];
+    }
     if (![[self valueForKey:@"_interactiveTransition"] boolValue]) {
-        [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
-            [self setNavigationBarBackgroundAlpha:visibleViewController.navigationBarBackgroundHidden ? 0 : 1-self._navigationBarBackgroundReverseAlpha];
-        }];
+        if (viewController.navigationBarBackgroundHidden != visibleViewController.navigationBarBackgroundHidden) {
+            [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
+                [self setNavigationBarBackgroundAlpha:visibleViewController.navigationBarBackgroundHidden ? 0 : 1-self._navigationBarBackgroundReverseAlpha];
+            }];
+        }
     } else self.interactivePopedViewController = viewController;
     
     return viewController;
@@ -142,22 +164,33 @@
 - (NSArray *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL finished))completion {
     self._push_pop_Finished = completion;
     NSArray *popedViewControllers = [self _popToViewController:viewController animated:animated];
-    UIViewController *visibleViewController = [self visibleViewController];
-    [self setNavigationBarHidden:visibleViewController.hidesNavigationBarWhenPushed animated:animated];
-    [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
-        [self setNavigationBarBackgroundAlpha:visibleViewController.navigationBarBackgroundHidden ? 0 : 1-self._navigationBarBackgroundReverseAlpha];
-    }];
+    UIViewController *topPopedViewController = [popedViewControllers lastObject];
+    if (!self._navigationBarHidden) {
+        [self setNavigationBarHidden:viewController.hidesNavigationBarWhenPushed animated:animated];
+        [self set_navigationBarHidden:NO];
+    }
+    if (viewController.navigationBarBackgroundHidden != topPopedViewController.navigationBarBackgroundHidden) {
+        [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
+            [self setNavigationBarBackgroundAlpha:viewController.navigationBarBackgroundHidden ? 0 : 1-self._navigationBarBackgroundReverseAlpha];
+        }];
+    }
     return popedViewControllers;
 }
 
 - (NSArray *)popToRootViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion {
     self._push_pop_Finished = completion;
     NSArray *popedViewControllers = [self _popToRootViewControllerAnimated:animated];
-    UIViewController *visibleViewController = [self visibleViewController];
-    [self setNavigationBarHidden:visibleViewController.hidesNavigationBarWhenPushed animated:animated];
-    [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
-        [self setNavigationBarBackgroundAlpha:visibleViewController.navigationBarBackgroundHidden ? 0 : 1-self._navigationBarBackgroundReverseAlpha];
-    }];
+    UIViewController *topPopedViewController = [popedViewControllers lastObject];
+    UIViewController *topViewController = self.viewControllers[0];
+    if (!self._navigationBarHidden) {
+        [self setNavigationBarHidden:topViewController.hidesNavigationBarWhenPushed animated:animated];
+        [self set_navigationBarHidden:NO];
+    }
+    if (topViewController.navigationBarBackgroundHidden != topPopedViewController.navigationBarBackgroundHidden) {
+        [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
+            [self setNavigationBarBackgroundAlpha:topViewController.navigationBarBackgroundHidden ? 0 : 1-self._navigationBarBackgroundReverseAlpha];
+        }];
+    }
     return popedViewControllers;
 }
 
@@ -182,6 +215,11 @@
 - (void)_navigationTransitionView:(id)arg1 didEndTransition:(int)arg2 fromView:(id)arg3 toView:(id)arg4 {
     [self _navigationTransitionView:arg1 didEndTransition:arg2 fromView:arg3 toView:arg4];
     !self._push_pop_Finished ?: self._push_pop_Finished(YES);
+}
+
+- (void)_setNavigationBarHidden:(BOOL)hidden animated:(BOOL)animated {
+    [self _setNavigationBarHidden:hidden animated:animated];
+    [self set_navigationBarHidden:hidden];
 }
 
 #pragma mark - setters
@@ -232,6 +270,10 @@
     objc_setAssociatedObject(self, @selector(_navigationBarBackgroundReverseAlpha), @(_navigationBarBackgroundReverseAlpha), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (void)set_navigationBarHidden:(BOOL)_navigationBarHidden {
+    objc_setAssociatedObject(self, @selector(_navigationBarHidden), @(_navigationBarHidden), OBJC_ASSOCIATION_ASSIGN);
+}
+
 #pragma mark - getters
 
 - (CGFloat)navigationBarBackgroundAlpha {
@@ -256,6 +298,10 @@
 
 - (CGFloat)_navigationBarBackgroundReverseAlpha {
     return [objc_getAssociatedObject(self, _cmd) CGFloatValue];
+}
+
+- (BOOL)_navigationBarHidden {
+    return [objc_getAssociatedObject(self, _cmd) boolValue];
 }
 
 - (UIViewController *)previousViewControllerForViewController:(UIViewController *)viewController {
