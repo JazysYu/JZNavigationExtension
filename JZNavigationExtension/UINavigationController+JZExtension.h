@@ -40,8 +40,8 @@
 @property (nonatomic, readonly, strong) UIViewController *interactivePopedViewController NS_AVAILABLE_IOS(7_0); // The view controller that is being popped
 /// when the interactive pop gesture recognizer's UIGestureRecognizerState is UIGestureRecognizerStateChanged.
 /// This category helps to change navigationBar or toolBar to any size, you may also change its frame.size by yourself.
-- (void)setNavigationBarSize:(CGSize)navigationBarSize;
-- (void)setToolbarSize:(CGSize)toolbarSize;
+@property (nonatomic, assign, readwrite) CGSize navigationBarSize;
+@property (nonatomic, assign, readwrite) CGSize toolbarSize;
 
 - (UIViewController *)previousViewControllerForViewController:(UIViewController *)viewController; // Return the gives
 /// view controller's previous view controller in the navigation stack.

@@ -75,7 +75,7 @@
                     weakSelf.navigationController.navigationBarBackgroundAlpha = accessoryStep.value;
                 }];
             } else {
-                [weakSelf.navigationController setNavigationBarSize:CGSizeMake(tableView.bounds.size.width, accessoryStep.value)];
+                [weakSelf.navigationController setNavigationBarSize:CGSizeMake(0, accessoryStep.value)];
             }
         }
     };

@@ -33,6 +33,8 @@
 }
 @end
 
+typedef void (*_VIMP)(id, SEL, ...);
+typedef id (*_IMP)(id, SEL, id);
 @interface UINavigationController (_JZExtension)
 @property (nonatomic, copy) void (^_push_pop_Finished)(BOOL);
 @property (nonatomic, assign) BOOL _navigationBarHidden;
@@ -89,6 +91,14 @@
             
             {
                 __method_swizzling([UIPercentDrivenInteractiveTransition class], @selector(finishInteractiveTransition), @selector(_finishInteractiveTransition));
+            }
+            
+            {
+                __method_swizzling([UINavigationBar class], @selector(sizeThatFits:), NSSelectorFromString(@"_sizeThatFits:"));
+            }
+            
+            {
+                __method_swizzling([UIToolbar class], @selector(sizeThatFits:), NSSelectorFromString(@"_sizeThatFits:"));
             }
         }
         
@@ -247,15 +257,11 @@
 }
 
 - (void)setNavigationBarSize:(CGSize)navigationBarSize {
-    CGRect rect = self.navigationBar.frame;
-    rect.size = navigationBarSize;
-    self.navigationBar.frame = rect;
+    [self.navigationBar setValue:[NSValue valueWithCGSize:navigationBarSize] forKey:@"size"];
 }
 
 - (void)setToolbarSize:(CGSize)toolbarSize {
-    CGRect rect = self.toolbar.frame;
-    rect.size = toolbarSize;
-    self.toolbar.frame = rect;
+    [self.toolbar setValue:[NSValue valueWithCGSize:toolbarSize] forKey:@"size"];
 }
 
 - (void)set_push_pop_Finished:(void (^)(BOOL))_push_pop_Finished {
@@ -304,6 +310,14 @@
     return [objc_getAssociatedObject(self, _cmd) boolValue];
 }
 
+- (CGSize)navigationBarSize {
+    return [[self.navigationBar valueForKey:@"size"] CGSizeValue];
+}
+
+- (CGSize)toolbarSize {
+    return [[self.toolbar valueForKey:@"size"] CGSizeValue];
+}
+
 - (UIViewController *)previousViewControllerForViewController:(UIViewController *)viewController {
     NSUInteger index = [self.viewControllers indexOfObject:viewController];
     
@@ -342,20 +356,37 @@
 
 @end
 
+@interface UIToolbar (JZExtension)
+@property (nonatomic, assign) CGSize size;
+@end
+
 @implementation UIToolbar (JZExtension)
 
-- (CGSize)sizeThatFits:(CGSize)size {
-    CGSize newSize = [super sizeThatFits:size];
-    return CGSizeMake(newSize.width == 320.f ? [UIScreen mainScreen].bounds.size.width : newSize.width, newSize.height);
+- (CGSize)_sizeThatFits:(CGSize)size {
+    CGSize newSize = [self _sizeThatFits:size];
+    return CGSizeMake(self.size.width == 0.f ? newSize.width : self.size.width, self.size.height == 0.f ? newSize.height : self.size.height);
+}
+
+- (void)setSize:(CGSize)size {
+    objc_setAssociatedObject(self, @selector(size), [NSValue valueWithCGSize:size], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [self sizeToFit];
+}
+
+- (CGSize)size {
+    return [objc_getAssociatedObject(self, _cmd) CGSizeValue];
 }
 
 @end
 
+@interface UINavigationBar (JZExtension)
+@property (nonatomic, assign) CGSize size;
+@end
+
 @implementation UINavigationBar (JZExtension)
 
-- (CGSize)sizeThatFits:(CGSize)size {
-    CGSize newSize = [super sizeThatFits:size];
-    return CGSizeMake(newSize.width == 320.f ? [UIScreen mainScreen].bounds.size.width : newSize.width, newSize.height);
+- (CGSize)_sizeThatFits:(CGSize)size {
+    CGSize newSize = [self _sizeThatFits:size];
+    return CGSizeMake(self.size.width == 0.f ? newSize.width : self.size.width, self.size.height == 0.f ? newSize.height : self.size.height);
 }
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
@@ -364,6 +395,15 @@
     } else {
         return [super pointInside:point withEvent:event];
     }
+}
+
+- (void)setSize:(CGSize)size {
+    objc_setAssociatedObject(self, @selector(size), [NSValue valueWithCGSize:size], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [self sizeToFit];
+}
+
+- (CGSize)size {
+    return [objc_getAssociatedObject(self, _cmd) CGSizeValue];
 }
 
 @end
