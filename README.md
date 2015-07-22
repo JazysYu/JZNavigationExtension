@@ -60,13 +60,6 @@ ___
 [navigationController setNavigationBarSize:size];
 ```
 
-or you can also change their frame.size manually 【你也可以手动改变它们的frame】
-
-``` objc
-CGRect rect = self.navigationBar.frame;
-rect.size = navigationBarSize;
-self.navigationBar.frame = rect;
-```
 ___
 
 <a id="NBD"></a>To hide navigation bar background alpha during pop gesture is interactiving
