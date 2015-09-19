@@ -10,7 +10,6 @@
 		405B537F1B4294E100C9FC4F /* UINavigationController+JZExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 405B537E1B4294E100C9FC4F /* UINavigationController+JZExtension.m */; };
 		40D3B0DA1B3C0859009F145F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3B0D91B3C0859009F145F /* main.m */; };
 		40D3B0DD1B3C0859009F145F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3B0DC1B3C0859009F145F /* AppDelegate.m */; };
-		40D3B0E01B3C0859009F145F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3B0DF1B3C0859009F145F /* ViewController.m */; };
 		40D3B0E31B3C0859009F145F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 40D3B0E11B3C0859009F145F /* Main.storyboard */; };
 		40D3B0E51B3C0859009F145F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 40D3B0E41B3C0859009F145F /* Images.xcassets */; };
 		40D3B0E81B3C0859009F145F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 40D3B0E61B3C0859009F145F /* LaunchScreen.xib */; };
@@ -19,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		401DDA611BAA62D400AA2776 /* JZNavigationExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JZNavigationExtension.h; sourceTree = "<group>"; };
 		405B537D1B4294E100C9FC4F /* UINavigationController+JZExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UINavigationController+JZExtension.h"; path = "../../JZNavigationExtension/UINavigationController+JZExtension.h"; sourceTree = "<group>"; };
 		405B537E1B4294E100C9FC4F /* UINavigationController+JZExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UINavigationController+JZExtension.m"; path = "../../JZNavigationExtension/UINavigationController+JZExtension.m"; sourceTree = "<group>"; };
 		40D3B0D41B3C0859009F145F /* JZNavigationExtensionDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JZNavigationExtensionDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -26,8 +26,6 @@
 		40D3B0D91B3C0859009F145F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		40D3B0DB1B3C0859009F145F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		40D3B0DC1B3C0859009F145F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		40D3B0DE1B3C0859009F145F /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		40D3B0DF1B3C0859009F145F /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		40D3B0E21B3C0859009F145F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		40D3B0E41B3C0859009F145F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		40D3B0E71B3C0859009F145F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -92,8 +90,6 @@
 		40D3B1031B3D0285009F145F /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				40D3B0DE1B3C0859009F145F /* ViewController.h */,
-				40D3B0DF1B3C0859009F145F /* ViewController.m */,
 				40D3B0FD1B3C095C009F145F /* SecondViewController.h */,
 				40D3B0FE1B3C095C009F145F /* SecondViewController.m */,
 			);
@@ -103,6 +99,7 @@
 		40D3B1041B3D02AD009F145F /* JZNavigationExtension */ = {
 			isa = PBXGroup;
 			children = (
+				401DDA611BAA62D400AA2776 /* JZNavigationExtension.h */,
 				405B537D1B4294E100C9FC4F /* UINavigationController+JZExtension.h */,
 				405B537E1B4294E100C9FC4F /* UINavigationController+JZExtension.m */,
 			);
@@ -189,7 +186,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				40D3B0FF1B3C095C009F145F /* SecondViewController.m in Sources */,
-				40D3B0E01B3C0859009F145F /* ViewController.m in Sources */,
 				40D3B1071B3D1B64009F145F /* DemoTableViewCell.m in Sources */,
 				40D3B0DD1B3C0859009F145F /* AppDelegate.m in Sources */,
 				40D3B0DA1B3C0859009F145F /* main.m in Sources */,

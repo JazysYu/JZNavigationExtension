@@ -7,7 +7,6 @@
 //
 
 #import "SecondViewController.h"
-#import "ViewController.h"
 #import "UINavigationController+JZExtension.h"
 #import "DemoTableViewCell.h"
 
@@ -29,6 +28,7 @@
     cell.textLabel.text = self.cellModels[indexPath.row];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     UITableViewCellAccessoryType accessoryType = UITableViewCellAccessoryNone;
+    cell.accessoryView = nil;
     switch (indexPath.row) {
         case 0:
             accessoryType = (UITableViewCellAccessoryType)UITableViewCellAccessorySwitch;
@@ -94,7 +94,8 @@
         case 3:
         {
             UIImageView *tipImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tip_pop_gesture"]];
-            viewController.hidesNavigationBarWhenPushed = YES;
+            viewController.wantsNavigationBarVisible = NO;
+            viewController.wantsToolbarVisible = YES;
             [self.navigationController pushViewController:viewController animated:YES];
             tipImageView.layer.position = CGPointMake(self.navigationController.fullScreenInteractivePopGestureRecognizer ? viewController.view.center.x : tipImageView.bounds.size.width*0.5, viewController.view.center.y);
             [viewController.view addSubview:tipImageView];
@@ -102,7 +103,6 @@
             break;
         case 4:
         {
-            viewController.navigationBarBackgroundHidden = YES;
             viewController.title = @"Pushing";
             [self.navigationController pushViewController:viewController animated:YES completion:^(BOOL finished) {
                 viewController.title = @"Pushed";
@@ -110,6 +110,11 @@
             }];
         }
             break;
+        case 5:
+        {
+            viewController.navigationBarBackgroundHidden = YES;
+            [self.navigationController pushViewController:viewController animated:YES];
+        }
         default:
             break;
     }
@@ -123,8 +128,9 @@
                         @"fullScreenInteractivePopGestureRecognizer",
                         @"navigationBarBackgroundAlpha",
                         @"navigationBarHeight",
-                        @"hidesNavigationBarWhenPushed",
-                        @"pushViewController:animated:completion:"
+                        @"wantsNavigationBarVisible:NO",
+                        @"pushViewController:animated:completion:",
+                        @"navigationBarBackgroundHidden"
                         ];
     }
     return _cellModels;
