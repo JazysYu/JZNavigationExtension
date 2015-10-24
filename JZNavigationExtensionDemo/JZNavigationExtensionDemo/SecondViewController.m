@@ -86,19 +86,31 @@
     return self.cellModels.count;
 }
 
+- (void)push {
+    UIViewController *vc = [UIViewController new];
+    vc.view.backgroundColor = [UIColor redColor];
+    [self.navigationController pushViewController:vc animated:true];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     UIViewController *viewController = [UIViewController new];
     viewController.view.backgroundColor = UIColorWithRGBA(34, 195, 98, 1.f);
+
+    UIImageView *tipImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tip_pop_gesture"]];
+    tipImageView.layer.position = CGPointMake(self.navigationController.fullScreenInteractivePopGestureRecognizer ? viewController.view.center.x : tipImageView.bounds.size.width*0.5, viewController.view.center.y);
+    [viewController.view addSubview:tipImageView];
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    button.frame = CGRectMake(0, 100, 100, 100);
+    [button addTarget:self action:@selector(push) forControlEvents:UIControlEventTouchUpInside];
+    [viewController.view addSubview:button];
+    
     switch (indexPath.row) {
         case 3:
         {
-            UIImageView *tipImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tip_pop_gesture"]];
             viewController.wantsNavigationBarVisible = NO;
-            viewController.wantsToolbarVisible = YES;
             [self.navigationController pushViewController:viewController animated:YES];
-            tipImageView.layer.position = CGPointMake(self.navigationController.fullScreenInteractivePopGestureRecognizer ? viewController.view.center.x : tipImageView.bounds.size.width*0.5, viewController.view.center.y);
-            [viewController.view addSubview:tipImageView];
         }
             break;
         case 4:

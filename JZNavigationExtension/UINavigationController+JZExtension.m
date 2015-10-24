@@ -22,6 +22,7 @@
 
 #import "UINavigationController+JZExtension.h"
 #import <objc/runtime.h>
+#import <objc/message.h>
 
 #define objc_getProperty(objc,key) [objc valueForKey:key]
 @implementation NSNumber (JZExtension)
@@ -44,7 +45,7 @@
 @end
 
 @interface UIPercentDrivenInteractiveTransition (JZExtension)
-- (id)_parent;
+- (id)__parent;
 - (void)_updateInteractiveTransition:(CGFloat)percentComplete;
 - (void)_cancelInteractiveTransition;
 - (void)_finishInteractiveTransition;
@@ -83,7 +84,7 @@
             {
                 Method gestureShouldReceiveTouch = class_getInstanceMethod(_UINavigationInteractiveTransition, @selector(gestureRecognizer:shouldReceiveTouch:));
                 method_setImplementation(gestureShouldReceiveTouch, imp_implementationWithBlock(^(UIPercentDrivenInteractiveTransition *navTransition,UIGestureRecognizer *gestureRecognizer, UITouch *touch){
-                    UINavigationController *navigationController = (UINavigationController *)[navTransition _parent];
+                    UINavigationController *navigationController = (UINavigationController *)[navTransition __parent];
                     return navigationController.viewControllers.count != 1 && ![navigationController _isTransitioning];
                 }));
             }
@@ -201,9 +202,6 @@
 
 - (void)_navigationWillTransitFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController animated:(BOOL)animated isInterActiveTransition:(BOOL)isInterActiveTransition {
     [self setNavigationBarHidden:!toViewController.wantsNavigationBarVisible animated:animated];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self setToolbarHidden:!toViewController.wantsToolbarVisible animated:animated];
-    });
     void (^_updateNavigationBarBackgroundAlpha)() = ^{
         if (fromViewController.navigationBarBackgroundHidden != toViewController.navigationBarBackgroundHidden) {
             [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
@@ -311,6 +309,10 @@
 
 @implementation UIViewController (JZExtension)
 
+- (UIViewController *)previousViewController {
+    return self.navigationController ? [self.navigationController previousViewControllerForViewController:self] : nil;
+}
+
 - (void)setNavigationBarBackgroundHidden:(BOOL)navigationBarBackgroundHidden {
     CGFloat alpha = navigationBarBackgroundHidden ? 0 : 1-self.navigationController._navigationBarBackgroundReverseAlpha;
     [[self.navigationController.navigationBar __backgroundView] setAlpha:alpha];
@@ -327,10 +329,6 @@
     objc_setAssociatedObject(self, @selector(wantsNavigationBarVisible), @(wantsNavigationBarVisible), OBJC_ASSOCIATION_ASSIGN);
 }
 
-- (void)setWantsToolbarVisible:(BOOL)wantsToolbarVisible {
-    objc_setAssociatedObject(self, @selector(wantsToolbarVisible), @(wantsToolbarVisible), OBJC_ASSOCIATION_ASSIGN);
-}
-
 - (BOOL)isNavigationBarBackgroundHidden {
     return [objc_getAssociatedObject(self, _cmd) boolValue];
 }
@@ -338,10 +336,6 @@
 - (BOOL)wantsNavigationBarVisible {
     id _wantsNavigationBarVisible = objc_getAssociatedObject(self, _cmd);
     return _wantsNavigationBarVisible != nil ? [_wantsNavigationBarVisible boolValue] : YES;
-}
-
-- (BOOL)wantsToolbarVisible {
-    return [objc_getAssociatedObject(self, _cmd) boolValue];
 }
 
 @end
@@ -389,7 +383,7 @@ JZExtensionBarImplementation
 @implementation UIPercentDrivenInteractiveTransition (JZExtension)
 
 - (void)_handleInteractiveTransition:(BOOL)isCancel {
-    UINavigationController *navigationController = (UINavigationController *)[self _parent];
+    UINavigationController *navigationController = (UINavigationController *)[self __parent];
     UIViewController *adjustViewController = isCancel ? navigationController.interactivePopedViewController : navigationController.visibleViewController;
     navigationController.navigationBarBackgroundAlpha = adjustViewController.navigationBarBackgroundHidden ? 0 : (1-navigationController._navigationBarBackgroundReverseAlpha);
     navigationController.interactivePopedViewController = nil;
@@ -397,7 +391,8 @@ JZExtensionBarImplementation
 
 - (void)_updateInteractiveTransition:(CGFloat)percentComplete {
     [self _updateInteractiveTransition:percentComplete];
-    UINavigationController *navigationController = (UINavigationController *)[self _parent];
+    UINavigationController *navigationController = (UINavigationController *)[self __parent];
+
     BOOL popedViewControllerNaviBarBgHidden = navigationController.interactivePopedViewController.navigationBarBackgroundHidden;
     if (popedViewControllerNaviBarBgHidden == navigationController.visibleViewController.navigationBarBackgroundHidden) return;
     else {
@@ -416,7 +411,7 @@ JZExtensionBarImplementation
     [self _handleInteractiveTransition:NO];
 }
 
-- (id)_parent {
+- (id)__parent {
     return objc_getProperty(self, @"_parent");
 }
 
