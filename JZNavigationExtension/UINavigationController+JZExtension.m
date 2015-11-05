@@ -40,8 +40,8 @@
 @property (nonatomic, assign) CGFloat _navigationBarBackgroundReverseAlpha;
 - (void)setInteractivePopedViewController:(UIViewController *)interactivePopedViewController;
 - (void)navigationTransitionView:(id)arg1 didEndTransition:(int)arg2 fromView:(id)arg3 toView:(id)arg4;
-- (BOOL)_isTransitioning;
-- (BOOL)isInteractiveTransition;
+- (BOOL)___isTransitioning;
+- (BOOL)___isInteractiveTransition;
 @end
 
 @interface UIPercentDrivenInteractiveTransition (JZExtension)
@@ -85,7 +85,7 @@
                 Method gestureShouldReceiveTouch = class_getInstanceMethod(_UINavigationInteractiveTransition, @selector(gestureRecognizer:shouldReceiveTouch:));
                 method_setImplementation(gestureShouldReceiveTouch, imp_implementationWithBlock(^(UIPercentDrivenInteractiveTransition *navTransition,UIGestureRecognizer *gestureRecognizer, UITouch *touch){
                     UINavigationController *navigationController = (UINavigationController *)[navTransition __parent];
-                    return navigationController.viewControllers.count != 1 && ![navigationController _isTransitioning];
+                    return navigationController.viewControllers.count != 1 && ![navigationController ___isTransitioning];
                 }));
             }
             
@@ -138,7 +138,7 @@
             }
             
             {
-                __method_swizzling(self, @selector(navigationTransitionView:didEndTransition:fromView:toView:),@selector(_navigationTransitionView:didEndTransition:fromView:toView:));
+                __method_swizzling(self, NSSelectorFromString(@"navigationTransitionView:didEndTransition:fromView:toView:"),@selector(_navigationTransitionView:didEndTransition:fromView:toView:));
             }
             
         }
@@ -212,7 +212,7 @@
     if (!isInterActiveTransition) {
         _updateNavigationBarBackgroundAlpha();
     } else {
-        if (![self isInteractiveTransition]) {
+        if (![self ___isInteractiveTransition]) {
             _updateNavigationBarBackgroundAlpha();
         } else
             self.interactivePopedViewController = fromViewController;
@@ -295,6 +295,14 @@
 
 - (CGSize)toolbarSize {
     return [self.toolbar size];
+}
+
+- (BOOL)___isInteractiveTransition {
+    return [objc_getProperty(self, @"isInteractiveTransition") boolValue];
+}
+
+- (BOOL)___isTransitioning {
+    return [objc_getProperty(self, @"_isTransitioning") boolValue];
 }
 
 - (UIViewController *)previousViewControllerForViewController:(UIViewController *)viewController {
