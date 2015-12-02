@@ -39,9 +39,8 @@
 @property (nonatomic, copy) void (^_push_pop_Finished)(BOOL);
 @property (nonatomic, assign) CGFloat _navigationBarBackgroundReverseAlpha;
 - (void)setInteractivePopedViewController:(UIViewController *)interactivePopedViewController;
-- (void)navigationTransitionView:(id)arg1 didEndTransition:(int)arg2 fromView:(id)arg3 toView:(id)arg4;
-- (BOOL)___isTransitioning;
-- (BOOL)___isInteractiveTransition;
+- (BOOL)jz_isTransitioning;
+- (BOOL)jz_isInteractiveTransition;
 @end
 
 @interface UIPercentDrivenInteractiveTransition (JZExtension)
@@ -85,7 +84,7 @@
                 Method gestureShouldReceiveTouch = class_getInstanceMethod(_UINavigationInteractiveTransition, @selector(gestureRecognizer:shouldReceiveTouch:));
                 method_setImplementation(gestureShouldReceiveTouch, imp_implementationWithBlock(^(UIPercentDrivenInteractiveTransition *navTransition,UIGestureRecognizer *gestureRecognizer, UITouch *touch){
                     UINavigationController *navigationController = (UINavigationController *)[navTransition __parent];
-                    return navigationController.viewControllers.count != 1 && ![navigationController ___isTransitioning];
+                    return navigationController.viewControllers.count != 1 && ![navigationController jz_isTransitioning];
                 }));
             }
             
@@ -138,7 +137,7 @@
             }
             
             {
-                __method_swizzling(self, NSSelectorFromString(@"navigationTransitionView:didEndTransition:fromView:toView:"),@selector(_navigationTransitionView:didEndTransition:fromView:toView:));
+                __method_swizzling(self, NSSelectorFromString(@"navigationTransitionView:didEndTransition:fromView:toView:"),@selector(jz_navigationTransitionView:didEndTransition:fromView:toView:));
             }
             
         }
@@ -195,8 +194,8 @@
     return [self popToRootViewControllerAnimated:animated completion:NULL];
 }
 
-- (void)_navigationTransitionView:(id)arg1 didEndTransition:(int)arg2 fromView:(id)arg3 toView:(id)arg4 {
-    [self _navigationTransitionView:arg1 didEndTransition:arg2 fromView:arg3 toView:arg4];
+- (void)jz_navigationTransitionView:(id)arg1 didEndTransition:(int)arg2 fromView:(id)arg3 toView:(id)arg4 {
+    [self jz_navigationTransitionView:arg1 didEndTransition:arg2 fromView:arg3 toView:arg4];
     !self._push_pop_Finished ?: self._push_pop_Finished(YES);
 }
 
@@ -212,7 +211,7 @@
     if (!isInterActiveTransition) {
         _updateNavigationBarBackgroundAlpha();
     } else {
-        if (![self ___isInteractiveTransition]) {
+        if (![self jz_isInteractiveTransition]) {
             _updateNavigationBarBackgroundAlpha();
         } else
             self.interactivePopedViewController = fromViewController;
@@ -297,11 +296,11 @@
     return [self.toolbar size];
 }
 
-- (BOOL)___isInteractiveTransition {
+- (BOOL)jz_isInteractiveTransition {
     return [objc_getProperty(self, @"isInteractiveTransition") boolValue];
 }
 
-- (BOOL)___isTransitioning {
+- (BOOL)jz_isTransitioning {
     return [objc_getProperty(self, @"_isTransitioning") boolValue];
 }
 
