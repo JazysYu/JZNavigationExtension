@@ -51,7 +51,7 @@
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 - (NSArray *)popToRootViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 - (NSArray *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
-
+- (void)setInteractivePopGestureRecognizerCompletion:(void (^)(BOOL finished))completion;
 @end
 
 @interface UIViewController (JZExtension)

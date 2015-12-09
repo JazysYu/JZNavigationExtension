@@ -36,6 +36,7 @@
 @end
 
 @interface UINavigationController (_JZExtension)
+@property (nonatomic, copy) void (^_interactivePopFinished)(BOOL);
 @property (nonatomic, copy) void (^_push_pop_Finished)(BOOL);
 @property (nonatomic, assign) CGFloat _navigationBarBackgroundReverseAlpha;
 - (void)setInteractivePopedViewController:(UIViewController *)interactivePopedViewController;
@@ -220,6 +221,10 @@
 
 #pragma mark - setters
 
+- (void)setInteractivePopGestureRecognizerCompletion:(void (^)(BOOL))completion {
+    self._interactivePopFinished = completion;
+}
+
 - (void)setFullScreenInteractivePopGestureRecognizer:(BOOL)fullScreenInteractivePopGestureRecognizer {
     if (fullScreenInteractivePopGestureRecognizer) {
         if ([self.interactivePopGestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]]) return;
@@ -263,6 +268,10 @@
     objc_setAssociatedObject(self, @selector(_navigationBarBackgroundReverseAlpha), @(_navigationBarBackgroundReverseAlpha), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (void)set_interactivePopFinished:(void (^)(BOOL))_interactivePopFinished {
+    objc_setAssociatedObject(self, @selector(_interactivePopFinished), _interactivePopFinished, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
 #pragma mark - getters
 
 - (CGFloat)navigationBarBackgroundAlpha {
@@ -278,6 +287,10 @@
 }
 
 - (void (^)(BOOL))_push_pop_Finished {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void (^)(BOOL))_interactivePopFinished {
     return objc_getAssociatedObject(self, _cmd);
 }
 
@@ -395,6 +408,7 @@ JZExtensionBarImplementation
     UIViewController *adjustViewController = isCancel ? navigationController.interactivePopedViewController : navigationController.visibleViewController;
     navigationController.navigationBarBackgroundAlpha = adjustViewController.navigationBarBackgroundHidden ? 0 : (1-navigationController._navigationBarBackgroundReverseAlpha);
     navigationController.interactivePopedViewController = nil;
+    !navigationController._interactivePopFinished ?: navigationController._interactivePopFinished(!isCancel);
 }
 
 - (void)_updateInteractiveTransition:(CGFloat)percentComplete {
