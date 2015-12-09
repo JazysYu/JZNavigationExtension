@@ -404,6 +404,10 @@ JZExtensionBarImplementation
 @implementation UIPercentDrivenInteractiveTransition (JZExtension)
 
 - (void)_handleInteractiveTransition:(BOOL)isCancel {
+    if (![self isMemberOfClass:NSClassFromString(@"_UINavigationInteractiveTransition")]) {
+        return;
+    }
+
     UINavigationController *navigationController = (UINavigationController *)[self __parent];
     UIViewController *adjustViewController = isCancel ? navigationController.interactivePopedViewController : navigationController.visibleViewController;
     navigationController.navigationBarBackgroundAlpha = adjustViewController.navigationBarBackgroundHidden ? 0 : (1-navigationController._navigationBarBackgroundReverseAlpha);
@@ -413,6 +417,10 @@ JZExtensionBarImplementation
 
 - (void)_updateInteractiveTransition:(CGFloat)percentComplete {
     [self _updateInteractiveTransition:percentComplete];
+    if (![self isMemberOfClass:NSClassFromString(@"_UINavigationInteractiveTransition")]) {
+        return;
+    }
+
     UINavigationController *navigationController = (UINavigationController *)[self __parent];
 
     BOOL popedViewControllerNaviBarBgHidden = navigationController.interactivePopedViewController.navigationBarBackgroundHidden;

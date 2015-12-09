@@ -11,9 +11,10 @@
 #import "DemoTableViewCell.h"
 
 #define UIColorWithRGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
-@interface SecondViewController ()
+@interface SecondViewController () <UIViewControllerPreviewingDelegate>
 @property (weak,   nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSArray *cellModels;
+@property (nonatomic, strong) id <UIViewControllerPreviewing> previewingContext;
 @end
 
 @implementation SecondViewController
@@ -28,6 +29,21 @@
             NSLog(@"Interactive Pop Canceled");
         }
     }];
+    
+    self.previewingContext = [self registerForPreviewingWithDelegate:self sourceView:self.tableView];
+}
+
+- (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location NS_AVAILABLE_IOS(9_0) {
+    UIViewController *previewingViewController = [UIViewController new];
+    previewingViewController.view.backgroundColor = [UIColor redColor];
+    return previewingViewController;
+}
+- (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit NS_AVAILABLE_IOS(9_0) {
+    
+}
+
+- (void)dealloc {
+    [self unregisterForPreviewingWithContext:self.previewingContext];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
