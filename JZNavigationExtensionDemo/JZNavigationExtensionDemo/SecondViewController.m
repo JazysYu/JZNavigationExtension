@@ -21,6 +21,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
+    [self.navigationController setInteractivePopGestureRecognizerCompletion:^(BOOL finished) {
+        if (finished) {
+            NSLog(@"Interactive Pop Finished");
+        } else {
+            NSLog(@"Interactive Pop Canceled");
+        }
+    }];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

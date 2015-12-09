@@ -31,6 +31,17 @@ navigationController.fullScreenInteractivePopGestureRecognizer = YES;
 ```
 ___
 
+<a id="FPG"></a>Set a completion for fullscreen interactivePopGestureRecognizer【全屏Pop手势回调】:
+
+``` objc
+[self.navigationController setInteractivePopGestureRecognizerCompletion:^(BOOL finished) {
+        if (finished) {
+            // Codes
+        }
+    }];
+```
+___
+
 <a id="HNBP"></a>To hides navigation bar when the view controller is pushed on to a navigation controller【支持转场隐藏、显示导航栏】:
 ``` objc
 UIViewController *viewController = [UIViewController new];
