@@ -12,6 +12,9 @@
 
 #define UIColorWithRGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
 @interface SecondViewController () <UIViewControllerPreviewingDelegate>
+{
+    BOOL _didRegisterForPreviewing;
+}
 @property (weak,   nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSArray *cellModels;
 @property (nonatomic, strong) id <UIViewControllerPreviewing> previewingContext;
@@ -30,7 +33,13 @@
         }
     }];
     
-    self.previewingContext = [self registerForPreviewingWithDelegate:self sourceView:self.tableView];
+    if ([[[UIDevice currentDevice] systemVersion] compare:@"9.0" options:NSNumericSearch] != NSOrderedAscending) {
+        if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable)
+        {
+            self.previewingContext = [self registerForPreviewingWithDelegate:self sourceView:self.tableView];
+            _didRegisterForPreviewing = true;
+        }
+    }
 }
 
 - (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location NS_AVAILABLE_IOS(9_0) {
@@ -38,12 +47,15 @@
     previewingViewController.view.backgroundColor = [UIColor redColor];
     return previewingViewController;
 }
+
 - (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit NS_AVAILABLE_IOS(9_0) {
     
 }
 
 - (void)dealloc {
-    [self unregisterForPreviewingWithContext:self.previewingContext];
+    if (_didRegisterForPreviewing) {
+        [self unregisterForPreviewingWithContext:self.previewingContext];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

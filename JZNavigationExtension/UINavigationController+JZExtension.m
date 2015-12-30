@@ -85,10 +85,10 @@
                 Method gestureShouldReceiveTouch = class_getInstanceMethod(_UINavigationInteractiveTransition, @selector(gestureRecognizer:shouldReceiveTouch:));
                 method_setImplementation(gestureShouldReceiveTouch, imp_implementationWithBlock(^(UIPercentDrivenInteractiveTransition *navTransition,UIGestureRecognizer *gestureRecognizer, UITouch *touch){
                     UINavigationController *navigationController = (UINavigationController *)[navTransition __parent];
-                    return navigationController.viewControllers.count != 1 && ![navigationController jz_isTransitioning];
+                    return navigationController.viewControllers.count != 1 && ![navigationController jz_isTransitioning] && !CGRectContainsPoint(navigationController.navigationBar.frame, [touch locationInView:gestureRecognizer.view]);
                 }));
             }
-            
+
             {
                 NSString *selectorString = [NSString stringWithFormat:@"_%@",NSStringFromSelector(@selector(gestureRecognizer:shouldBeRequiredToFailByGestureRecognizer:))];
                 Method gestureShouldSimultaneouslyGesture = class_getInstanceMethod(_UINavigationInteractiveTransition, NSSelectorFromString(selectorString));
@@ -96,6 +96,14 @@
                     return NO;
                 }));
             
+            }
+            
+            {
+                Method gestureRecognizerShouldBegin = class_getInstanceMethod(_UINavigationInteractiveTransition, @selector(gestureRecognizerShouldBegin:));
+                method_setImplementation(gestureRecognizerShouldBegin, imp_implementationWithBlock(^(UIPercentDrivenInteractiveTransition *navTransition, UIPanGestureRecognizer *gestureRecognizer){
+                    CGPoint velocityInview = [gestureRecognizer velocityInView:gestureRecognizer.view];
+                    return velocityInview.x >= 0.0f;
+                }));
             }
             
             {
