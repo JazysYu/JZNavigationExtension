@@ -92,8 +92,13 @@
             {
                 NSString *selectorString = [NSString stringWithFormat:@"_%@",NSStringFromSelector(@selector(gestureRecognizer:shouldBeRequiredToFailByGestureRecognizer:))];
                 Method gestureShouldSimultaneouslyGesture = class_getInstanceMethod(_UINavigationInteractiveTransition, NSSelectorFromString(selectorString));
-                method_setImplementation(gestureShouldSimultaneouslyGesture, imp_implementationWithBlock(^{
-                    return NO;
+                method_setImplementation(gestureShouldSimultaneouslyGesture, imp_implementationWithBlock(^(UIPercentDrivenInteractiveTransition *navTransition, UIPanGestureRecognizer *gestureRecognizer){
+                    UINavigationController *navigationController = (UINavigationController *)[navTransition __parent];
+                    if (!navigationController.fullScreenInteractivePopGestureRecognizer) {
+                        return true;
+                    }
+                    CGPoint locationInView = [gestureRecognizer locationInView:gestureRecognizer.view];
+                    return locationInView.x < 30.0f;
                 }));
             
             }
