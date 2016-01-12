@@ -69,7 +69,7 @@
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-
+        
         void (^__method_swizzling)(Class, SEL, SEL) = ^(Class cls, SEL sel, SEL _sel) {
             Method  method = class_getInstanceMethod(cls, sel);
             Method _method = class_getInstanceMethod(cls, _sel);
@@ -80,7 +80,7 @@
          */
         {
             Class _UINavigationInteractiveTransition = NSClassFromString(@"_UINavigationInteractiveTransition");
-
+            
             {
                 Method gestureShouldReceiveTouch = class_getInstanceMethod(_UINavigationInteractiveTransition, @selector(gestureRecognizer:shouldReceiveTouch:));
                 method_setImplementation(gestureShouldReceiveTouch, imp_implementationWithBlock(^(UIPercentDrivenInteractiveTransition *navTransition,UIGestureRecognizer *gestureRecognizer, UITouch *touch){
@@ -88,7 +88,7 @@
                     return navigationController.viewControllers.count != 1 && ![navigationController jz_isTransitioning] && !CGRectContainsPoint(navigationController.navigationBar.frame, [touch locationInView:gestureRecognizer.view]);
                 }));
             }
-
+            
             {
                 NSString *selectorString = [NSString stringWithFormat:@"_%@",NSStringFromSelector(@selector(gestureRecognizer:shouldBeRequiredToFailByGestureRecognizer:))];
                 Method gestureShouldSimultaneouslyGesture = class_getInstanceMethod(_UINavigationInteractiveTransition, NSSelectorFromString(selectorString));
@@ -100,7 +100,7 @@
                     CGPoint locationInView = [gestureRecognizer locationInView:gestureRecognizer.view];
                     return locationInView.x < 30.0f;
                 }));
-            
+                
             }
             
             {
@@ -133,7 +133,7 @@
         }
         
         {
-
+            
             {
                 __method_swizzling(self, @selector(pushViewController:animated:),@selector(_pushViewController:animated:));
             }
@@ -219,6 +219,17 @@
         if (fromViewController.navigationBarBackgroundHidden != toViewController.navigationBarBackgroundHidden) {
             [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
                 [self setNavigationBarBackgroundAlpha:toViewController.navigationBarBackgroundHidden ? 0 : 1-self._navigationBarBackgroundReverseAlpha];
+            }];
+        }else if (fromViewController.navigationBarBackgroundAlpha != toViewController.navigationBarBackgroundAlpha) {
+            [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
+                [self setNavigationBarBackgroundAlpha:toViewController.navigationBarBackgroundAlpha];
+            }];
+        }
+        if (!CGColorEqualToColor(fromViewController.navigationBarTintColor.CGColor, toViewController.navigationBarTintColor.CGColor)) {
+            CGFloat red, green, blue, alpha;
+            [toViewController.navigationBarTintColor getRed:&red green:&green blue:&blue alpha:&alpha];
+            [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration: 0.f animations:^{
+                self.navigationBar.barTintColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
             }];
         }
     };
@@ -353,10 +364,20 @@
     objc_setAssociatedObject(self, @selector(isNavigationBarBackgroundHidden), @(navigationBarBackgroundHidden), OBJC_ASSOCIATION_ASSIGN);
 }
 
+- (void)setNavigationBarBackgroundAlpha:(CGFloat)navigationBarBackgroundAlpha {
+    [[self.navigationController.navigationBar __backgroundView] setAlpha:navigationBarBackgroundAlpha];
+    objc_setAssociatedObject(self, @selector(navigationBarBackgroundAlpha), @(navigationBarBackgroundAlpha), OBJC_ASSOCIATION_COPY);
+}
+
 - (void)setNavigationBarBackgroundHidden:(BOOL)navigationBarBackgroundHidden animated:(BOOL)animated {
     [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
         [self setNavigationBarBackgroundHidden:navigationBarBackgroundHidden];
     }];
+}
+
+- (void)setNavigationBarTintColor:(UIColor *)navigationBarTintColor {
+    self.navigationController.navigationBar.barTintColor = navigationBarTintColor;
+    objc_setAssociatedObject(self, @selector(navigationBarTintColor), navigationBarTintColor, OBJC_ASSOCIATION_RETAIN);
 }
 
 - (void)setWantsNavigationBarVisible:(BOOL)wantsNavigationBarVisible {
@@ -367,27 +388,46 @@
     return [objc_getAssociatedObject(self, _cmd) boolValue];
 }
 
+- (CGFloat)navigationBarBackgroundAlpha {
+    id _navigationBarBackgroundAlpha = objc_getAssociatedObject(self, _cmd);
+    return _navigationBarBackgroundAlpha != nil ? [_navigationBarBackgroundAlpha CGFloatValue] : 1.;
+}
+
 - (BOOL)wantsNavigationBarVisible {
     id _wantsNavigationBarVisible = objc_getAssociatedObject(self, _cmd);
     return _wantsNavigationBarVisible != nil ? [_wantsNavigationBarVisible boolValue] : YES;
+}
+
+- (UIColor *)navigationBarTintColor {
+    id _navigationBarTintColor = objc_getAssociatedObject(self, _cmd);
+    if (!_navigationBarTintColor) {
+        if (self.navigationController.navigationBar.barTintColor) {
+            //default set the property 'navigationBarTintColor' = 'navigationController.navigationBar.barTintColor'
+            [self setNavigationBarTintColor:self.navigationController.navigationBar.barTintColor];
+        }else {
+            //handle the problem when 'navigationController.navigationBar.barTintColor' == nil
+            [self setNavigationBarTintColor:self.navigationController.navigationBar.barStyle == UIBarStyleDefault? [UIColor whiteColor]: [UIColor blackColor]];
+        }
+    }
+    return _navigationBarTintColor != nil? _navigationBarTintColor: self.navigationController.navigationBar.barTintColor;
 }
 
 @end
 
 #define JZExtensionBarImplementation \
 - (CGSize)_sizeThatFits:(CGSize)size { \
-    CGSize newSize = [self _sizeThatFits:size]; \
-    return CGSizeMake(self.size.width == 0.f ? newSize.width : self.size.width, self.size.height == 0.f ? newSize.height : self.size.height); \
+CGSize newSize = [self _sizeThatFits:size]; \
+return CGSizeMake(self.size.width == 0.f ? newSize.width : self.size.width, self.size.height == 0.f ? newSize.height : self.size.height); \
 } \
 - (void)setSize:(CGSize)size { \
-    objc_setAssociatedObject(self, @selector(size), [NSValue valueWithCGSize:size], OBJC_ASSOCIATION_RETAIN_NONATOMIC); \
-    [self sizeToFit]; \
+objc_setAssociatedObject(self, @selector(size), [NSValue valueWithCGSize:size], OBJC_ASSOCIATION_RETAIN_NONATOMIC); \
+[self sizeToFit]; \
 } \
 - (CGSize)size { \
-    return [objc_getAssociatedObject(self, _cmd) CGSizeValue]; \
+return [objc_getAssociatedObject(self, _cmd) CGSizeValue]; \
 } \
 - (UIView *)__backgroundView { \
-    return objc_getProperty(self, @"_backgroundView"); \
+return objc_getProperty(self, @"_backgroundView"); \
 }
 
 @implementation UIToolbar (JZExtension)
@@ -420,10 +460,15 @@ JZExtensionBarImplementation
     if (![self isMemberOfClass:NSClassFromString(@"_UINavigationInteractiveTransition")]) {
         return;
     }
-
+    
     UINavigationController *navigationController = (UINavigationController *)[self __parent];
     UIViewController *adjustViewController = isCancel ? navigationController.interactivePopedViewController : navigationController.visibleViewController;
-    navigationController.navigationBarBackgroundAlpha = adjustViewController.navigationBarBackgroundHidden ? 0 : (1-navigationController._navigationBarBackgroundReverseAlpha);
+    if (!adjustViewController.navigationBarBackgroundHidden) {
+        navigationController.navigationBarBackgroundAlpha = adjustViewController.navigationBarBackgroundAlpha;
+    }else {
+        navigationController.navigationBarBackgroundAlpha = adjustViewController.navigationBarBackgroundHidden ? 0 : (1-navigationController._navigationBarBackgroundReverseAlpha);
+    }
+    navigationController.navigationBar.barTintColor = adjustViewController.navigationBarTintColor;
     navigationController.interactivePopedViewController = nil;
     !navigationController._interactivePopFinished ?: navigationController._interactivePopFinished(!isCancel);
 }
@@ -433,14 +478,29 @@ JZExtensionBarImplementation
     if (![self isMemberOfClass:NSClassFromString(@"_UINavigationInteractiveTransition")]) {
         return;
     }
-
+    
     UINavigationController *navigationController = (UINavigationController *)[self __parent];
-
+    
     BOOL popedViewControllerNaviBarBgHidden = navigationController.interactivePopedViewController.navigationBarBackgroundHidden;
-    if (popedViewControllerNaviBarBgHidden == navigationController.visibleViewController.navigationBarBackgroundHidden) return;
-    else {
+    if (popedViewControllerNaviBarBgHidden == navigationController.visibleViewController.navigationBarBackgroundHidden) {
+        if (navigationController.interactivePopedViewController.navigationBarBackgroundAlpha != navigationController.visibleViewController.navigationBarBackgroundAlpha) {
+            CGFloat _percentComplete = percentComplete * (navigationController.visibleViewController.navigationBarBackgroundAlpha - navigationController.interactivePopedViewController.navigationBarBackgroundAlpha) + navigationController.interactivePopedViewController.navigationBarBackgroundAlpha;
+            [[navigationController.navigationBar __backgroundView] setAlpha:_percentComplete];
+        }
+    }else {
         CGFloat _percentComplete = popedViewControllerNaviBarBgHidden ? percentComplete : 1- percentComplete;
         [[navigationController.navigationBar __backgroundView] setAlpha:(1-navigationController._navigationBarBackgroundReverseAlpha) * _percentComplete];
+    }
+    if (!CGColorEqualToColor(navigationController.interactivePopedViewController.navigationBarTintColor.CGColor, navigationController.visibleViewController.navigationBarTintColor.CGColor)) {
+        CGFloat red1, green1, blue1, alpha1;
+        CGFloat red2, green2, blue2, alpha2;
+        [navigationController.interactivePopedViewController.navigationBarTintColor getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
+        [navigationController.visibleViewController.navigationBarTintColor getRed:&red2 green:&green2 blue:&blue2 alpha:&alpha2];
+        red1 += percentComplete * (red2 - red1);
+        green1 += percentComplete * (green2 - green1);
+        blue1 += percentComplete * (blue2 - blue1);
+        alpha1 += percentComplete * (alpha2 - alpha1);
+        navigationController.navigationBar.barTintColor = [UIColor colorWithRed:red1 green:green1 blue:blue1 alpha:alpha1];
     }
 }
 
