@@ -220,7 +220,8 @@
             [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
                 [self setNavigationBarBackgroundAlpha:toViewController.navigationBarBackgroundHidden ? 0 : 1-self._navigationBarBackgroundReverseAlpha];
             }];
-        }else if (fromViewController.navigationBarBackgroundAlpha != toViewController.navigationBarBackgroundAlpha) {
+        }
+        if (fromViewController.navigationBarBackgroundAlpha != toViewController.navigationBarBackgroundAlpha) {
             [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
                 [self setNavigationBarBackgroundAlpha:toViewController.navigationBarBackgroundAlpha];
             }];
@@ -482,14 +483,13 @@ JZExtensionBarImplementation
     UINavigationController *navigationController = (UINavigationController *)[self __parent];
     
     BOOL popedViewControllerNaviBarBgHidden = navigationController.interactivePopedViewController.navigationBarBackgroundHidden;
-    if (popedViewControllerNaviBarBgHidden == navigationController.visibleViewController.navigationBarBackgroundHidden) {
-        if (navigationController.interactivePopedViewController.navigationBarBackgroundAlpha != navigationController.visibleViewController.navigationBarBackgroundAlpha) {
-            CGFloat _percentComplete = percentComplete * (navigationController.visibleViewController.navigationBarBackgroundAlpha - navigationController.interactivePopedViewController.navigationBarBackgroundAlpha) + navigationController.interactivePopedViewController.navigationBarBackgroundAlpha;
-            [[navigationController.navigationBar __backgroundView] setAlpha:_percentComplete];
-        }
-    }else {
+    if (popedViewControllerNaviBarBgHidden != navigationController.visibleViewController.navigationBarBackgroundHidden) {
         CGFloat _percentComplete = popedViewControllerNaviBarBgHidden ? percentComplete : 1- percentComplete;
         [[navigationController.navigationBar __backgroundView] setAlpha:(1-navigationController._navigationBarBackgroundReverseAlpha) * _percentComplete];
+    }
+    if (navigationController.interactivePopedViewController.navigationBarBackgroundAlpha != navigationController.visibleViewController.navigationBarBackgroundAlpha) {
+        CGFloat _percentComplete = percentComplete * (navigationController.visibleViewController.navigationBarBackgroundAlpha - navigationController.interactivePopedViewController.navigationBarBackgroundAlpha) + navigationController.interactivePopedViewController.navigationBarBackgroundAlpha;
+        [[navigationController.navigationBar __backgroundView] setAlpha:_percentComplete];
     }
     if (!CGColorEqualToColor(navigationController.interactivePopedViewController.navigationBarTintColor.CGColor, navigationController.visibleViewController.navigationBarTintColor.CGColor)) {
         CGFloat red1, green1, blue1, alpha1;
