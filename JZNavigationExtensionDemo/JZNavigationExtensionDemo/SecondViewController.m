@@ -162,6 +162,19 @@
             viewController.navigationBarBackgroundHidden = YES;
             [self.navigationController pushViewController:viewController animated:YES];
         }
+            break;
+        case 6:
+        {
+            viewController.navigationBarBackgroundAlpha = 0.3;
+            [self.navigationController pushViewController:viewController animated:YES];
+        }
+            break;
+        case 7:
+        {
+            viewController.navigationBarTintColor = [UIColor redColor];;
+            [self.navigationController pushViewController:viewController animated:YES];
+        }
+            break;
         default:
             break;
     }
@@ -177,7 +190,9 @@
                         @"navigationBarHeight",
                         @"wantsNavigationBarVisible:NO",
                         @"pushViewController:animated:completion:",
-                        @"navigationBarBackgroundHidden"
+                        @"navigationBarBackgroundHidden",
+                        @"navigationBarBackgroundAlpha",
+                        @"navigationBarTintColor"
                         ];
     }
     return _cellModels;
