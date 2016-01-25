@@ -66,7 +66,7 @@
 
 @implementation UINavigationController (JZExtension)
 
-+ (void)load {
+__attribute__((constructor)) static void JZ_Inject(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
@@ -135,23 +135,23 @@
         {
             
             {
-                __method_swizzling(self, @selector(pushViewController:animated:),@selector(_pushViewController:animated:));
+                __method_swizzling([UINavigationController class], @selector(pushViewController:animated:),@selector(_pushViewController:animated:));
             }
             
             {
-                __method_swizzling(self, @selector(popViewControllerAnimated:), @selector(_popViewControllerAnimated:));
+                __method_swizzling([UINavigationController class], @selector(popViewControllerAnimated:), @selector(_popViewControllerAnimated:));
             }
             
             {
-                __method_swizzling(self, @selector(popToViewController:animated:), @selector(_popToViewController:animated:));
+                __method_swizzling([UINavigationController class], @selector(popToViewController:animated:), @selector(_popToViewController:animated:));
             }
             
             {
-                __method_swizzling(self, @selector(popToRootViewControllerAnimated:), @selector(_popToRootViewControllerAnimated:));
+                __method_swizzling([UINavigationController class], @selector(popToRootViewControllerAnimated:), @selector(_popToRootViewControllerAnimated:));
             }
             
             {
-                __method_swizzling(self, NSSelectorFromString(@"navigationTransitionView:didEndTransition:fromView:toView:"),@selector(jz_navigationTransitionView:didEndTransition:fromView:toView:));
+                __method_swizzling([UINavigationController class], NSSelectorFromString(@"navigationTransitionView:didEndTransition:fromView:toView:"),@selector(jz_navigationTransitionView:didEndTransition:fromView:toView:));
             }
             
         }
@@ -378,6 +378,7 @@
 
 - (void)setNavigationBarTintColor:(UIColor *)navigationBarTintColor {
     self.navigationController.navigationBar.barTintColor = navigationBarTintColor;
+    self.navigationController.navigationBar.alpha = 0.9;
     objc_setAssociatedObject(self, @selector(navigationBarTintColor), navigationBarTintColor, OBJC_ASSOCIATION_RETAIN);
 }
 
@@ -400,17 +401,12 @@
 }
 
 - (UIColor *)navigationBarTintColor {
-    id _navigationBarTintColor = objc_getAssociatedObject(self, _cmd);
+    UIColor *_navigationBarTintColor = objc_getAssociatedObject(self, _cmd);
     if (!_navigationBarTintColor) {
-        if (self.navigationController.navigationBar.barTintColor) {
-            //default set the property 'navigationBarTintColor' = 'navigationController.navigationBar.barTintColor'
-            [self setNavigationBarTintColor:self.navigationController.navigationBar.barTintColor];
-        }else {
-            //handle the problem when 'navigationController.navigationBar.barTintColor' == nil
-            [self setNavigationBarTintColor:self.navigationController.navigationBar.barStyle == UIBarStyleDefault? [UIColor whiteColor]: [UIColor blackColor]];
-        }
+        _navigationBarTintColor = [UIColor colorWithWhite:self.navigationController.navigationBar.barStyle == UIBarStyleDefault alpha:1.0];
+        self.navigationBarTintColor = _navigationBarTintColor;
     }
-    return _navigationBarTintColor != nil? _navigationBarTintColor: self.navigationController.navigationBar.barTintColor;
+    return _navigationBarTintColor;
 }
 
 @end

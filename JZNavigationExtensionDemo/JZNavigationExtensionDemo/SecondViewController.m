@@ -124,6 +124,7 @@
 - (void)push {
     UIViewController *vc = [UIViewController new];
     vc.view.backgroundColor = [UIColor redColor];
+    vc.navigationBarTintColor = [UIColor blueColor];
     [self.navigationController pushViewController:vc animated:true];
 }
 
