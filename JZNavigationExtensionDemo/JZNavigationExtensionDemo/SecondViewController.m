@@ -11,7 +11,7 @@
 #import "DemoTableViewCell.h"
 
 #define UIColorWithRGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
-@interface SecondViewController () <UIViewControllerPreviewingDelegate>
+@interface SecondViewController () <UIViewControllerPreviewingDelegate, UITableViewDelegate, UITableViewDataSource>
 {
     BOOL _didRegisterForPreviewing;
 }
@@ -122,7 +122,8 @@
 }
 
 - (void)push {
-    UIViewController *vc = [UIViewController new];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    SecondViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"SecondViewController"];
     vc.view.backgroundColor = [UIColor redColor];
     vc.navigationBarTintColor = [UIColor blueColor];
     [self.navigationController pushViewController:vc animated:true];
@@ -136,11 +137,6 @@
     UIImageView *tipImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tip_pop_gesture"]];
     tipImageView.layer.position = CGPointMake(self.navigationController.fullScreenInteractivePopGestureRecognizer ? viewController.view.center.x : tipImageView.bounds.size.width*0.5, viewController.view.center.y);
     [viewController.view addSubview:tipImageView];
-    
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeContactAdd];
-    button.frame = CGRectMake(0, 100, 100, 100);
-    [button addTarget:self action:@selector(push) forControlEvents:UIControlEventTouchUpInside];
-    [viewController.view addSubview:button];
     
     switch (indexPath.row) {
         case 3:
@@ -172,7 +168,7 @@
             break;
         case 7:
         {
-            viewController.navigationBarTintColor = [UIColor redColor];;
+            viewController.navigationBarTintColor = [UIColor redColor];
             [self.navigationController pushViewController:viewController animated:YES];
         }
             break;
@@ -180,6 +176,18 @@
             break;
     }
     
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+
+}
+
+- (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewRowAction *rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Test" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+        [tableView setEditing:false animated:true];
+        [self push];
+    }];
+    return @[rowAction];
 }
 
 #pragma mark - getters

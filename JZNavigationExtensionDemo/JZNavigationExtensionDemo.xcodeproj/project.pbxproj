@@ -20,6 +20,7 @@
 /* Begin PBXFileReference section */
 		405B537D1B4294E100C9FC4F /* UINavigationController+JZExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UINavigationController+JZExtension.h"; path = "../../JZNavigationExtension/UINavigationController+JZExtension.h"; sourceTree = "<group>"; };
 		405B537E1B4294E100C9FC4F /* UINavigationController+JZExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UINavigationController+JZExtension.m"; path = "../../JZNavigationExtension/UINavigationController+JZExtension.m"; sourceTree = "<group>"; };
+		40BB6FBA1C55FE22007F3305 /* JZNavigationExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JZNavigationExtension.h; path = ../../JZNavigationExtension/JZNavigationExtension.h; sourceTree = "<group>"; };
 		40D3B0D41B3C0859009F145F /* JZNavigationExtensionDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JZNavigationExtensionDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		40D3B0D81B3C0859009F145F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		40D3B0D91B3C0859009F145F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -32,7 +33,6 @@
 		40D3B0FE1B3C095C009F145F /* SecondViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
 		40D3B1051B3D1B64009F145F /* DemoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoTableViewCell.h; sourceTree = "<group>"; };
 		40D3B1061B3D1B64009F145F /* DemoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoTableViewCell.m; sourceTree = "<group>"; };
-		40E03FBE1BDB436B0091BF7E /* JZNavigationExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JZNavigationExtension.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,7 +99,7 @@
 		40D3B1041B3D02AD009F145F /* JZNavigationExtension */ = {
 			isa = PBXGroup;
 			children = (
-				40E03FBE1BDB436B0091BF7E /* JZNavigationExtension.h */,
+				40BB6FBA1C55FE22007F3305 /* JZNavigationExtension.h */,
 				405B537D1B4294E100C9FC4F /* UINavigationController+JZExtension.h */,
 				405B537E1B4294E100C9FC4F /* UINavigationController+JZExtension.m */,
 			);
