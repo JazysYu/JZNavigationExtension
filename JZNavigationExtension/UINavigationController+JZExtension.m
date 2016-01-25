@@ -38,7 +38,6 @@
 @interface UINavigationController (_JZExtension)
 @property (nonatomic, copy) void (^_interactivePopFinished)(BOOL);
 @property (nonatomic, copy) void (^_push_pop_Finished)(BOOL);
-@property (nonatomic, assign) CGFloat _navigationBarBackgroundReverseAlpha;
 - (void)setInteractivePopedViewController:(UIViewController *)interactivePopedViewController;
 - (BOOL)jz_isTransitioning;
 - (BOOL)jz_isInteractiveTransition;
@@ -216,11 +215,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 - (void)_navigationWillTransitFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController animated:(BOOL)animated isInterActiveTransition:(BOOL)isInterActiveTransition {
     [self setNavigationBarHidden:!toViewController.wantsNavigationBarVisible animated:animated];
     void (^_updateNavigationBarBackgroundAlpha)() = ^{
-        if (fromViewController.navigationBarBackgroundHidden != toViewController.navigationBarBackgroundHidden) {
-            [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
-                [self setNavigationBarBackgroundAlpha:toViewController.navigationBarBackgroundHidden ? 0 : 1-self._navigationBarBackgroundReverseAlpha];
-            }];
-        }
         if (fromViewController.navigationBarBackgroundAlpha != toViewController.navigationBarBackgroundAlpha) {
             [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
                 [self setNavigationBarBackgroundAlpha:toViewController.navigationBarBackgroundAlpha];
@@ -268,9 +262,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (void)setNavigationBarBackgroundAlpha:(CGFloat)navigationBarBackgroundAlpha {
     [[self.navigationBar __backgroundView] setAlpha:navigationBarBackgroundAlpha];
-    // navigationBarBackgroundAlpha == 0 means hidden so do not set.
-    if (!navigationBarBackgroundAlpha) return;
-    self._navigationBarBackgroundReverseAlpha = 1-navigationBarBackgroundAlpha;
 }
 
 - (void)setNavigationBarSize:(CGSize)navigationBarSize {
@@ -287,10 +278,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (void)setInteractivePopedViewController:(UIViewController *)interactivePopedViewController {
     objc_setAssociatedObject(self, @selector(interactivePopedViewController), interactivePopedViewController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (void)set_navigationBarBackgroundReverseAlpha:(CGFloat)_navigationBarBackgroundReverseAlpha {
-    objc_setAssociatedObject(self, @selector(_navigationBarBackgroundReverseAlpha), @(_navigationBarBackgroundReverseAlpha), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)set_interactivePopFinished:(void (^)(BOOL))_interactivePopFinished {
@@ -321,10 +308,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (UIViewController *)interactivePopedViewController {
     return objc_getAssociatedObject(self, _cmd);
-}
-
-- (CGFloat)_navigationBarBackgroundReverseAlpha {
-    return [objc_getAssociatedObject(self, _cmd) CGFloatValue];
 }
 
 - (CGSize)navigationBarSize {
@@ -360,13 +343,11 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (void)setNavigationBarBackgroundHidden:(BOOL)navigationBarBackgroundHidden {
-    CGFloat alpha = navigationBarBackgroundHidden ? 0 : 1-self.navigationController._navigationBarBackgroundReverseAlpha;
-    [[self.navigationController.navigationBar __backgroundView] setAlpha:alpha];
-    objc_setAssociatedObject(self, @selector(isNavigationBarBackgroundHidden), @(navigationBarBackgroundHidden), OBJC_ASSOCIATION_ASSIGN);
+    [self setNavigationBarBackgroundAlpha:0.0f];
 }
 
 - (void)setNavigationBarBackgroundAlpha:(CGFloat)navigationBarBackgroundAlpha {
-    [[self.navigationController.navigationBar __backgroundView] setAlpha:navigationBarBackgroundAlpha];
+    [self.navigationController setNavigationBarBackgroundAlpha:navigationBarBackgroundAlpha];
     objc_setAssociatedObject(self, @selector(navigationBarBackgroundAlpha), @(navigationBarBackgroundAlpha), OBJC_ASSOCIATION_COPY);
 }
 
@@ -387,12 +368,12 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (BOOL)isNavigationBarBackgroundHidden {
-    return [objc_getAssociatedObject(self, _cmd) boolValue];
+    return self.navigationBarBackgroundAlpha - 0.0f <= 0.0001;
 }
 
 - (CGFloat)navigationBarBackgroundAlpha {
     id _navigationBarBackgroundAlpha = objc_getAssociatedObject(self, _cmd);
-    return _navigationBarBackgroundAlpha != nil ? [_navigationBarBackgroundAlpha CGFloatValue] : 1.;
+    return _navigationBarBackgroundAlpha != nil ? [_navigationBarBackgroundAlpha CGFloatValue] : 1.f;
 }
 
 - (BOOL)wantsNavigationBarVisible {
@@ -460,11 +441,7 @@ JZExtensionBarImplementation
     
     UINavigationController *navigationController = (UINavigationController *)[self __parent];
     UIViewController *adjustViewController = isCancel ? navigationController.interactivePopedViewController : navigationController.visibleViewController;
-    if (!adjustViewController.navigationBarBackgroundHidden) {
-        navigationController.navigationBarBackgroundAlpha = adjustViewController.navigationBarBackgroundAlpha;
-    }else {
-        navigationController.navigationBarBackgroundAlpha = adjustViewController.navigationBarBackgroundHidden ? 0 : (1-navigationController._navigationBarBackgroundReverseAlpha);
-    }
+    navigationController.navigationBarBackgroundAlpha = adjustViewController.navigationBarBackgroundAlpha;
     navigationController.navigationBar.barTintColor = adjustViewController.navigationBarTintColor;
     navigationController.interactivePopedViewController = nil;
     !navigationController._interactivePopFinished ?: navigationController._interactivePopFinished(!isCancel);
@@ -478,15 +455,11 @@ JZExtensionBarImplementation
     
     UINavigationController *navigationController = (UINavigationController *)[self __parent];
     
-    BOOL popedViewControllerNaviBarBgHidden = navigationController.interactivePopedViewController.navigationBarBackgroundHidden;
-    if (popedViewControllerNaviBarBgHidden != navigationController.visibleViewController.navigationBarBackgroundHidden) {
-        CGFloat _percentComplete = popedViewControllerNaviBarBgHidden ? percentComplete : 1- percentComplete;
-        [[navigationController.navigationBar __backgroundView] setAlpha:(1-navigationController._navigationBarBackgroundReverseAlpha) * _percentComplete];
-    }
     if (navigationController.interactivePopedViewController.navigationBarBackgroundAlpha != navigationController.visibleViewController.navigationBarBackgroundAlpha) {
         CGFloat _percentComplete = percentComplete * (navigationController.visibleViewController.navigationBarBackgroundAlpha - navigationController.interactivePopedViewController.navigationBarBackgroundAlpha) + navigationController.interactivePopedViewController.navigationBarBackgroundAlpha;
         [[navigationController.navigationBar __backgroundView] setAlpha:_percentComplete];
     }
+    
     if (!CGColorEqualToColor(navigationController.interactivePopedViewController.navigationBarTintColor.CGColor, navigationController.visibleViewController.navigationBarTintColor.CGColor)) {
         CGFloat red1, green1, blue1, alpha1;
         CGFloat red2, green2, blue2, alpha2;

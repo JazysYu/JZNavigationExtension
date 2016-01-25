@@ -1,4 +1,9 @@
 # JZNavigationExtension
+
+[![Version](https://img.shields.io/badge/pod-v1.3.2-5193DB.svg)](https://cocoapods.org/pods/JZNavigationExtension)
+[![Platform](https://img.shields.io/badge/platform-ios-lightgrey.svg)]()
+[![License](https://img.shields.io/badge/license-MIT-2F2F2F.svg)](https://github.com/JazysYu/JZNavigationExtension/blob/master/LICENSE)
+
 The "UINavigationController+JZExtension" category integrates some convenient features and open some hide functions for UINavigationController.
 ___
 "UINavigationController+JZExtension"分类为UINavigationController集成了许多方便的功能点，同时为它打开了一些隐藏功能。
@@ -9,6 +14,7 @@ ___
 * [To change navigation/tool bar background alpha](#NBTA)
 * [To change navigation/tool bar size](#NBTS)
 * [To hide navigation bar background alpha during pop gesture is interactiving](#NBD)
+* [Change navigation bar tint color by different view controller](#CCVC)
 
 # Overview
 
@@ -73,15 +79,24 @@ ___
 
 ___
 
-<a id="NBD"></a>To hide navigation bar background alpha during pop gesture is interactiving
+<a id="NBD"></a>To hide navigation bar background alpha during pop gesture is interactiving【导航栏手势交互时改变导航栏透明度】
 
 ``` objc
 UIViewController *viewController = [UIViewController new];
 viewController.navigationBarBackgroundHidden = YES;
 ```
 
-
 ![overview](https://raw.githubusercontent.com/JazysYu/JZNavigationExtension/master/Snapshots/JZNavigationExtensionDemo2.gif)
+___
+
+<a id="CCVC"></a>Change navigation bar tint color by different view controller【导航栏手势交互时改变导航栏颜色】
+
+``` objc
+UIViewController *viewController = [UIViewController new];
+viewController.navigationBarTintColor = [UIColor redColor];
+```
+
+![overview](https://raw.githubusercontent.com/JazysYu/JZNavigationExtension/master/Snapshots/JZNavigationExtensionDemo3.gif)
 ___
 
 # Installation

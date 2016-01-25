@@ -107,7 +107,7 @@
             UIStepper *accessoryStep = (UIStepper *)accessoryView;
             if (indexPath.row == 1) {
                 [UIView animateWithDuration:0.2 animations:^{
-                    weakSelf.navigationController.navigationBarBackgroundAlpha = accessoryStep.value;
+                    weakSelf.navigationBarBackgroundAlpha = accessoryStep.value;
                 }];
             } else {
                 [weakSelf.navigationController setNavigationBarSize:CGSizeMake(0, accessoryStep.value)];
@@ -200,8 +200,8 @@
                         @"wantsNavigationBarVisible:NO",
                         @"pushViewController:animated:completion:",
                         @"navigationBarBackgroundHidden",
-                        @"navigationBarBackgroundAlpha",
-                        @"navigationBarTintColor"
+                        @"navigationBarBackgroundAlpha:0.3",
+                        @"navigationBarTintColor:"
                         ];
     }
     return _cellModels;
