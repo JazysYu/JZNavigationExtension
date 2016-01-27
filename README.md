@@ -51,7 +51,7 @@ ___
 <a id="HNBP"></a>To hides navigation bar when the view controller is pushed on to a navigation controller【支持转场隐藏、显示导航栏】:
 ``` objc
 UIViewController *viewController = [UIViewController new];
-viewController.hidesNavigationBarWhenPushed = YES;
+viewController.wantsNavigationBarVisible = NO;
 [self.navigationController pushToViewController:viewController animated:YES];
 ```
 ___
