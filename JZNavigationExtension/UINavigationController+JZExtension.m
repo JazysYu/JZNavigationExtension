@@ -384,7 +384,10 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 - (UIColor *)navigationBarTintColor {
     UIColor *_navigationBarTintColor = objc_getAssociatedObject(self, _cmd);
     if (!_navigationBarTintColor) {
-        _navigationBarTintColor = [UIColor colorWithWhite:self.navigationController.navigationBar.barStyle == UIBarStyleDefault alpha:1.0];
+        _navigationBarTintColor = self.navigationController.navigationBar.barTintColor;
+        if (!_navigationBarTintColor) {
+            _navigationBarTintColor = [UIColor colorWithWhite:self.navigationController.navigationBar.barStyle == UIBarStyleDefault alpha:1.0];
+        }
         self.navigationBarTintColor = _navigationBarTintColor;
     }
     return _navigationBarTintColor;
