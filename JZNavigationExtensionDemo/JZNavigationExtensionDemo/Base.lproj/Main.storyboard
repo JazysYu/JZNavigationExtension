@@ -10,7 +10,7 @@
         <scene sceneID="sEE-EJ-Npr">
             <objects>
                 <tabBarController id="Ojq-rd-4ad" sceneMemberID="viewController">
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="Pcj-Nk-P58">
+                    <tabBar key="tabBar" contentMode="scaleToFill" barStyle="black" id="Pcj-Nk-P58">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -24,7 +24,7 @@
             </objects>
             <point key="canvasLocation" x="-1534" y="39"/>
         </scene>
-        <!--Item-->
+        <!--Tab2-->
         <scene sceneID="ErQ-m9-LHU">
             <objects>
                 <viewController id="Nik-9l-iQD" sceneMemberID="viewController">
@@ -37,17 +37,17 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="DBB-l3-4Aj"/>
+                    <tabBarItem key="tabBarItem" title="Tab2" id="DBB-l3-4Aj"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="diZ-mE-9Ve" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-790" y="-317"/>
         </scene>
-        <!--Item-->
+        <!--Tab1-->
         <scene sceneID="saU-Gz-yJ7">
             <objects>
                 <navigationController id="4Ww-yd-cch" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="WzN-BE-hyX"/>
+                    <tabBarItem key="tabBarItem" title="Tab1" id="WzN-BE-hyX"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="Xmk-Dk-9Pt">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
