@@ -36,7 +36,7 @@
 @end
 
 @interface UINavigationController (_JZExtension)
-@property (nonatomic, copy) void (^_interactivePopFinished)(BOOL);
+@property (nonatomic, copy) void (^interactivePopGestureRecognizerCompletion)(UINavigationController *, UIViewController *, BOOL);
 @property (nonatomic, copy) void (^_push_pop_Finished)(BOOL);
 - (void)setInteractivePopedViewController:(UIViewController *)interactivePopedViewController;
 - (BOOL)jz_isTransitioning;
@@ -240,10 +240,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 #pragma mark - setters
 
-- (void)setInteractivePopGestureRecognizerCompletion:(void (^)(BOOL))completion {
-    self._interactivePopFinished = completion;
-}
-
 - (void)setFullScreenInteractivePopGestureRecognizer:(BOOL)fullScreenInteractivePopGestureRecognizer {
     if (fullScreenInteractivePopGestureRecognizer) {
         if ([self.interactivePopGestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]]) return;
@@ -280,8 +276,8 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     objc_setAssociatedObject(self, @selector(interactivePopedViewController), interactivePopedViewController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)set_interactivePopFinished:(void (^)(BOOL))_interactivePopFinished {
-    objc_setAssociatedObject(self, @selector(_interactivePopFinished), _interactivePopFinished, OBJC_ASSOCIATION_COPY_NONATOMIC);
+- (void)setInteractivePopGestureRecognizerCompletion:(void (^)(UINavigationController *, UIViewController *, BOOL))completion {
+    objc_setAssociatedObject(self, @selector(interactivePopGestureRecognizerCompletion), completion, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 #pragma mark - getters
@@ -302,7 +298,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void (^)(BOOL))_interactivePopFinished {
+- (void (^)(UINavigationController *, UIViewController *, BOOL))interactivePopGestureRecognizerCompletion {
     return objc_getAssociatedObject(self, _cmd);
 }
 
@@ -446,8 +442,8 @@ JZExtensionBarImplementation
     UIViewController *adjustViewController = isCancel ? navigationController.interactivePopedViewController : navigationController.visibleViewController;
     navigationController.navigationBarBackgroundAlpha = adjustViewController.navigationBarBackgroundAlpha;
     navigationController.navigationBar.barTintColor = adjustViewController.navigationBarTintColor;
+    !navigationController.interactivePopGestureRecognizerCompletion ?: navigationController.interactivePopGestureRecognizerCompletion(navigationController,isCancel ? nil : navigationController.interactivePopedViewController, !isCancel);
     navigationController.interactivePopedViewController = nil;
-    !navigationController._interactivePopFinished ?: navigationController._interactivePopFinished(!isCancel);
 }
 
 - (void)_updateInteractiveTransition:(CGFloat)percentComplete {

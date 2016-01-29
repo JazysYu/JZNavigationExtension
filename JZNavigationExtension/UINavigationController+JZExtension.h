@@ -115,11 +115,10 @@
 /**
  *  @author JazysYu, 16-01-25 14:01:20
  *
- *  Called at end of interactive pop gesture immediately.
+ *  Called at end of interactive pop gesture immediately. You could use poppedViewController/visibleViewController/interactivePopedViewController properties to decide what to do.
  *
  */
-- (void)setInteractivePopGestureRecognizerCompletion:(void (^)(BOOL finished))completion;
-
+- (void)setInteractivePopGestureRecognizerCompletion:(void (^)(UINavigationController *navigationController, UIViewController *poppedViewController, BOOL finished))completion;
 
 @end
 

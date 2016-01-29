@@ -25,7 +25,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
-    [self.navigationController setInteractivePopGestureRecognizerCompletion:^(BOOL finished) {
+    [self.navigationController setInteractivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, UIViewController *poppedViewController, BOOL finished) {
         if (finished) {
             NSLog(@"Interactive Pop Finished");
         } else {
