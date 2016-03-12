@@ -123,6 +123,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (void)jz_pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL))completion {
     self._jz_navigationTransitionFinished = completion;
+    self.jz_operation = UINavigationControllerOperationPush;
     UIViewController *visibleViewController = [self visibleViewController];
     [self jz_pushViewController:viewController animated:animated];
     [self jz_navigationWillTransitFromViewController:visibleViewController toViewController:viewController animated:animated isInterActiveTransition:NO];
@@ -130,6 +131,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (UIViewController *)jz_popViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
     self._jz_navigationTransitionFinished = completion;
+    self.jz_operation = UINavigationControllerOperationPop;
     UIViewController *viewController = [self jz_popViewControllerAnimated:animated];
     UIViewController *visibleViewController = [self visibleViewController];
     [self jz_navigationWillTransitFromViewController:viewController toViewController:visibleViewController animated:animated isInterActiveTransition:YES];
@@ -138,6 +140,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (NSArray *)jz_popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL finished))completion {
     self._jz_navigationTransitionFinished = completion;
+    self.jz_operation = UINavigationControllerOperationPop;
     NSArray *popedViewControllers = [self jz_popToViewController:viewController animated:animated];
     UIViewController *topPopedViewController = [popedViewControllers lastObject];
     [self jz_navigationWillTransitFromViewController:topPopedViewController toViewController:viewController animated:animated isInterActiveTransition:NO];
@@ -146,6 +149,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (NSArray *)jz_popToRootViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion {
     self._jz_navigationTransitionFinished = completion;
+    self.jz_operation = UINavigationControllerOperationPop;
     NSArray *popedViewControllers = [self jz_popToRootViewControllerAnimated:animated];
     UIViewController *topPopedViewController = [popedViewControllers lastObject];
     UIViewController *topViewController = [self.viewControllers firstObject];
@@ -174,6 +178,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 - (void)jz_navigationTransitionView:(id)arg1 didEndTransition:(int)arg2 fromView:(id)arg3 toView:(id)arg4 {
     [self jz_navigationTransitionView:arg1 didEndTransition:arg2 fromView:arg3 toView:arg4];
     !self._jz_navigationTransitionFinished ?: self._jz_navigationTransitionFinished(YES);
+    self.jz_operation = UINavigationControllerOperationNone;
 }
 
 - (void)jz_navigationWillTransitFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController animated:(BOOL)animated isInterActiveTransition:(BOOL)isInterActiveTransition {
@@ -244,7 +249,15 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     objc_setAssociatedObject(self, @selector(jz_interactivePopGestureRecognizerCompletion), jz_interactivePopGestureRecognizerCompletion, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
+- (void)setJz_operation:(UINavigationControllerOperation)jz_operation {
+    objc_setAssociatedObject(self, @selector(jz_operation), @(jz_operation), OBJC_ASSOCIATION_ASSIGN);
+}
+
 #pragma mark - getters
+
+- (UINavigationControllerOperation)jz_operation {
+    return [objc_getAssociatedObject(self, _cmd) integerValue];
+}
 
 - (CGFloat)jz_navigationBarBackgroundAlpha {
     return [[self.navigationBar jz_backgroundView] alpha];

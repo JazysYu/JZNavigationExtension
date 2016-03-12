@@ -59,6 +59,14 @@
 @property (nonatomic, readonly, strong) UIViewController *jz_interactivePopedViewController NS_AVAILABLE_IOS(7_0);
 
 /**
+ *  @author JazysYu, 16-03-12 16:03:12
+ *
+ *  Could use this propery to adjust navigation controller's operation, then do some logic.
+ *
+ */
+@property (nonatomic, assign, readonly) UINavigationControllerOperation jz_operation;
+
+/**
  *  @author JazysYu, 16-01-25 14:01:04
  *
  *  Change navigationBar to any size, if you want default value, then set to 0.f.
