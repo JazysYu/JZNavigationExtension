@@ -20,7 +20,7 @@
 /**
  *  @author JazysYu, 16-01-25 14:01:57
  *
- *  Worked on each view controller's push or pop, set the alpha value if you want to apply specific bar alpha to the view controller. Default is 1.0.
+ *  Worked on each view controller's push or pop, set the alpha value if you want to apply specific bar alpha to the view controller. If you have not set this property then the value will be as same as the property of navigation controller.
  */
 @property (nonatomic, assign) IBInspectable CGFloat jz_navigationBarBackgroundAlpha;
 

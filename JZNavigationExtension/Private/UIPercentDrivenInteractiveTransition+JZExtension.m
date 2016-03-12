@@ -16,7 +16,7 @@
 
 - (void)jz_handleInteractiveTransition:(BOOL)isCancel {
     
-    if (![self isMemberOfClass:NSClassFromString(@"_UINavigationInteractiveTransition")]) {
+    if (![self isMemberOfClass:JZ_UINavigationInteractiveTransition]) {
         return;
     }
     
@@ -32,7 +32,7 @@
     
     [self jz_updateInteractiveTransition:percentComplete];
     
-    if (![self isMemberOfClass:NSClassFromString(@"_UINavigationInteractiveTransition")]) {
+    if (![self isMemberOfClass:JZ_UINavigationInteractiveTransition]) {
         return;
     }
     

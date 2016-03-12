@@ -46,4 +46,6 @@ return [objc_getAssociatedObject(self, _cmd) CGSizeValue]; \
 return objc_getProperty(self, @"_backgroundView"); \
 }
 
+#define JZ_UINavigationInteractiveTransition NSClassFromString(@"_UINavigationInteractiveTransition")
+
 #endif /* _JZ_objc_internal_h */

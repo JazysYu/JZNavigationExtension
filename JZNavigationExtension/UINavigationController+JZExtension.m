@@ -42,7 +42,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
          *  rewrite the implementation of interactivePopGestureRecognizer's delegate.
          */
         {
-            Class _UINavigationInteractiveTransition = NSClassFromString(@"_UINavigationInteractiveTransition");
+            Class _UINavigationInteractiveTransition = JZ_UINavigationInteractiveTransition;
             
             {
                 Method gestureShouldReceiveTouch = class_getInstanceMethod(_UINavigationInteractiveTransition, @selector(gestureRecognizer:shouldReceiveTouch:));
