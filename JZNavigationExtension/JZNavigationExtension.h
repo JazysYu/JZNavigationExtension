@@ -10,5 +10,6 @@
 #define JZNavigationExtension_h
 
 #import "UINavigationController+JZExtension.h"
+#import "UIViewController+JZExtension.h"
 
 #endif /* JZNavigationExtension_h */

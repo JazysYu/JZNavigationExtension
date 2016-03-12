@@ -7,7 +7,7 @@
 //
 
 #import "SecondViewController.h"
-#import "UINavigationController+JZExtension.h"
+#import "JZNavigationExtension.h"
 #import "DemoTableViewCell.h"
 
 #define UIColorWithRGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
@@ -25,7 +25,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
-    [self.navigationController setInteractivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, UIViewController *poppedViewController, BOOL finished) {
+    [self.navigationController setJz_interactivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, UIViewController *poppedViewController, BOOL finished) {
         if (finished) {
             NSLog(@"Interactive Pop Finished");
         } else {
@@ -67,7 +67,7 @@
     switch (indexPath.row) {
         case 0:
             accessoryType = (UITableViewCellAccessoryType)UITableViewCellAccessorySwitch;
-            cell.accessoryModel = @{@"on" : @(self.navigationController.fullScreenInteractivePopGestureRecognizer)};
+            cell.accessoryModel = @{@"on" : @(self.navigationController.jz_fullScreenInteractivePopGestureRecognizer)};
             break;
             
         case 1:
@@ -76,7 +76,7 @@
                                     @"minimumValue" : @(0),
                                     @"maximumValue" : @(1),
                                     @"stepValue"    : @(0.1),
-                                    @"value"        : @(self.navigationController.navigationBarBackgroundAlpha),
+                                    @"value"        : @(self.navigationController.jz_navigationBarBackgroundAlpha),
                                     @"tintColor"    : UIColorWithRGBA(87, 91, 94, 1)
                                     };
             break;
@@ -102,15 +102,15 @@
     cell.accessoryViewAction = ^(UIView *accessoryView){
         if ([accessoryView isKindOfClass:[UISwitch class]]) {
             UISwitch *accessorySwitch = (UISwitch *)accessoryView;
-            weakSelf.navigationController.fullScreenInteractivePopGestureRecognizer = accessorySwitch.isOn;
+            weakSelf.navigationController.jz_fullScreenInteractivePopGestureRecognizer = accessorySwitch.isOn;
         } else if ([accessoryView isKindOfClass:[UIStepper class]]) {
             UIStepper *accessoryStep = (UIStepper *)accessoryView;
             if (indexPath.row == 1) {
                 [UIView animateWithDuration:0.2 animations:^{
-                    weakSelf.navigationBarBackgroundAlpha = accessoryStep.value;
+                    weakSelf.jz_navigationBarBackgroundAlpha = accessoryStep.value;
                 }];
             } else {
-                [weakSelf.navigationController setNavigationBarSize:CGSizeMake(0, accessoryStep.value)];
+                [weakSelf.navigationController setJz_navigationBarSize:CGSizeMake(0, accessoryStep.value)];
             }
         }
     };
@@ -125,7 +125,7 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     SecondViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"SecondViewController"];
     vc.view.backgroundColor = [UIColor redColor];
-    vc.navigationBarTintColor = [UIColor blueColor];
+    vc.jz_navigationBarTintColor = [UIColor blueColor];
     [self.navigationController pushViewController:vc animated:true];
 }
 
@@ -135,20 +135,20 @@
     viewController.view.backgroundColor = UIColorWithRGBA(34, 195, 98, 1.f);
 
     UIImageView *tipImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tip_pop_gesture"]];
-    tipImageView.layer.position = CGPointMake(self.navigationController.fullScreenInteractivePopGestureRecognizer ? viewController.view.center.x : tipImageView.bounds.size.width*0.5, viewController.view.center.y);
+    tipImageView.layer.position = CGPointMake(self.navigationController.jz_fullScreenInteractivePopGestureRecognizer ? viewController.view.center.x : tipImageView.bounds.size.width*0.5, viewController.view.center.y);
     [viewController.view addSubview:tipImageView];
     
     switch (indexPath.row) {
         case 3:
         {
-            viewController.wantsNavigationBarVisible = NO;
+            viewController.jz_wantsNavigationBarVisible = NO;
             [self.navigationController pushViewController:viewController animated:YES];
         }
             break;
         case 4:
         {
             viewController.title = @"Pushing";
-            [self.navigationController pushViewController:viewController animated:YES completion:^(BOOL finished) {
+            [self.navigationController jz_pushViewController:viewController animated:YES completion:^(BOOL finished) {
                 viewController.title = @"Pushed";
                 viewController.view.backgroundColor = UIColorWithRGBA(253, 69, 67, 1.f);
             }];
@@ -156,19 +156,19 @@
             break;
         case 5:
         {
-            viewController.navigationBarBackgroundHidden = YES;
+            viewController.jz_navigationBarBackgroundHidden = YES;
             [self.navigationController pushViewController:viewController animated:YES];
         }
             break;
         case 6:
         {
-            viewController.navigationBarBackgroundAlpha = 0.3;
+            viewController.jz_navigationBarBackgroundAlpha = 0.3;
             [self.navigationController pushViewController:viewController animated:YES];
         }
             break;
         case 7:
         {
-            viewController.navigationBarTintColor = [UIColor redColor];
+            viewController.jz_navigationBarTintColor = [UIColor redColor];
             [self.navigationController pushViewController:viewController animated:YES];
         }
             break;
