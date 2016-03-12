@@ -22,6 +22,13 @@
 
 @implementation SecondViewController
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if ([self.navigationController.jz_previousVisibleViewController isKindOfClass:NSClassFromString(@"ViewController")]) {
+        NSLog(@"Came from ViewController Class.");
+    }
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     if (self.navigationController.jz_operation == UINavigationControllerOperationPop) {

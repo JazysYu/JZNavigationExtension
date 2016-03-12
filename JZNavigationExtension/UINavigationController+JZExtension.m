@@ -22,6 +22,7 @@
 
 #import "UINavigationController+JZExtension.h"
 #import "_JZ-objc-internal.h"
+#import "_JZValue.h"
 #import "UIToolbar+JZExtension.h"
 #import "UINavigationBar+JZExtension.h"
 #import "UIViewController+JZExtension.h"
@@ -179,16 +180,23 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     [self jz_navigationTransitionView:arg1 didEndTransition:arg2 fromView:arg3 toView:arg4];
     !self._jz_navigationTransitionFinished ?: self._jz_navigationTransitionFinished(YES);
     self.jz_operation = UINavigationControllerOperationNone;
+    [self jz_previousVisibleViewController];
 }
 
 - (void)jz_navigationWillTransitFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController animated:(BOOL)animated isInterActiveTransition:(BOOL)isInterActiveTransition {
+    
+    self.jz_previousVisibleViewController = fromViewController;
+    
     [self setNavigationBarHidden:!toViewController.jz_wantsNavigationBarVisible animated:animated];
+    
     void (^_updateNavigationBarBackgroundAlpha)() = ^{
+        
         if (fromViewController.jz_navigationBarBackgroundAlpha != toViewController.jz_navigationBarBackgroundAlpha) {
             [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
                 [self setJz_navigationBarBackgroundAlpha:toViewController.jz_navigationBarBackgroundAlpha];
             }];
         }
+        
         if (!CGColorEqualToColor(fromViewController.jz_navigationBarTintColor.CGColor, toViewController.jz_navigationBarTintColor.CGColor)) {
             CGFloat red, green, blue, alpha;
             [toViewController.jz_navigationBarTintColor getRed:&red green:&green blue:&blue alpha:&alpha];
@@ -196,14 +204,24 @@ __attribute__((constructor)) static void JZ_Inject(void) {
                 self.navigationBar.barTintColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
             }];
         }
+        
     };
+    
     if (!isInterActiveTransition) {
+        
         _updateNavigationBarBackgroundAlpha();
+        
     } else {
+        
         if (![self jz_isInteractiveTransition]) {
+            
             _updateNavigationBarBackgroundAlpha();
-        } else
+            
+        } else {
+            
             self.jz_interactivePopedViewController = fromViewController;
+            
+        }
     }
 }
 
@@ -253,7 +271,19 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     objc_setAssociatedObject(self, @selector(jz_operation), @(jz_operation), OBJC_ASSOCIATION_ASSIGN);
 }
 
+- (void)setJz_previousVisibleViewController:(UIViewController * _Nullable)jz_previousVisibleViewController {
+    objc_setAssociatedObject(self, @selector(jz_previousVisibleViewController), jz_previousVisibleViewController ? [_JZValue valueWithWeakObject:jz_previousVisibleViewController] : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 #pragma mark - getters
+
+- (UIViewController *)jz_previousVisibleViewController {
+    id _previousVisibleViewController = [objc_getAssociatedObject(self, _cmd) weakObjectValue];
+    if (!_previousVisibleViewController) {
+        self.jz_previousVisibleViewController = nil;
+    }
+    return _previousVisibleViewController;
+}
 
 - (UINavigationControllerOperation)jz_operation {
     return [objc_getAssociatedObject(self, _cmd) integerValue];

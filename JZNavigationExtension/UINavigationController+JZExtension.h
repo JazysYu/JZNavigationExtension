@@ -67,6 +67,13 @@
 @property (nonatomic, assign, readonly) UINavigationControllerOperation jz_operation;
 
 /**
+ *  @author JazysYu, 16-03-12 16:03:39
+ *
+ *  Return the previous visible view controller in navigation controller. Could use this to do any logic during navigation transition in any method you want, like "viewWillAppear:".
+ */
+@property (nonatomic, weak, readonly) UIViewController *jz_previousVisibleViewController;
+
+/**
  *  @author JazysYu, 16-01-25 14:01:04
  *
  *  Change navigationBar to any size, if you want default value, then set to 0.f.
