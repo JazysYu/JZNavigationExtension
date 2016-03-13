@@ -15,12 +15,12 @@
 
 #define JZNavigationBarHeight 44.f
 
-@interface UINavigationController (_JZExtension)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wnullability-completeness"
-@property (nonatomic, copy) void (^jz_interactivePopGestureRecognizerCompletion)(UINavigationController *, BOOL);
-@property (nonatomic, copy) void (^_jz_navigationTransitionFinished)(BOOL);
-- (void)setJz_interactivePopedViewController:(UIViewController *)jz_interactivePopedViewController;
+typedef void(^_jz_navigation_block_t)(UINavigationController *navigationController, BOOL finished);
+@interface UINavigationController (_JZExtension)
+@property (nonatomic, copy, setter=jz_setInteractivePopGestureRecognizerCompletion:) void (^jz_interactivePopGestureRecognizerCompletion)(UINavigationController *, BOOL);
+@property (nonatomic, copy) _jz_navigation_block_t _jz_navigationTransitionFinished;
 #pragma clang diagnostic pop
 - (BOOL)jz_isTransitioning;
 - (BOOL)jz_isInteractiveTransition;

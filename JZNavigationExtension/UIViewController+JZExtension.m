@@ -17,7 +17,7 @@
     objc_setAssociatedObject(self, @selector(jz_hasNavigationBarTintColorSetterBeenCalled), @(jz_navigationBarTintColorSetterBeenCalled), OBJC_ASSOCIATION_ASSIGN);
 }
 
-- (void)setJz_navigationBarBackgroundHidden:(BOOL)jz_navigationBarBackgroundHidden {
+- (void)jz_setNavigationBarBackgroundHidden:(BOOL)jz_navigationBarBackgroundHidden {
     [self setJz_navigationBarBackgroundAlpha:!jz_navigationBarBackgroundHidden];
 }
 
@@ -26,9 +26,9 @@
     objc_setAssociatedObject(self, @selector(jz_navigationBarBackgroundAlpha), @(jz_navigationBarBackgroundAlpha), OBJC_ASSOCIATION_RETAIN);
 }
 
-- (void)setJz_navigationBarBackgroundHidden:(BOOL)jz_navigationBarBackgroundHidden animated:(BOOL)animated {
+- (void)jz_setNavigationBarBackgroundHidden:(BOOL)jz_navigationBarBackgroundHidden animated:(BOOL)animated {
     [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
-        [self setJz_navigationBarBackgroundHidden:jz_navigationBarBackgroundHidden];
+        [self jz_setNavigationBarBackgroundHidden:jz_navigationBarBackgroundHidden];
     }];
 }
 
@@ -42,7 +42,7 @@
     objc_setAssociatedObject(self, @selector(jz_wantsNavigationBarVisible), @(jz_wantsNavigationBarVisible), OBJC_ASSOCIATION_ASSIGN);
 }
 
-- (BOOL)isJz_navigationBarBackgroundHidden {
+- (BOOL)jz_isNavigationBarBackgroundHidden {
     return self.jz_navigationBarBackgroundAlpha - 0.0f <= 0.0001;
 }
 

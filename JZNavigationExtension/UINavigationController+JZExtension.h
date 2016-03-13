@@ -91,41 +91,48 @@
 /**
  *  @author JazysYu, 16-01-25 14:01:20
  *
- *  Called at end of animation of push/pop or immediately if not animated.
+ *  Called at end of animation of push/pop or immediately if not animated. The completion block will be set to nil while transition finish.
  *
  */
-- (void)jz_pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
+- (void)jz_pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(UINavigationController *navigationController, BOOL finished))completion;
 
 /**
  *  @author JazysYu, 16-01-25 14:01:20
  *
- *  Called at end of animation of push/pop or immediately if not animated.
+ *  Called at end of animation of push/pop or immediately if not animated. The completion block will be set to nil while transition finish.
  *
  */
-- (UIViewController *)jz_popViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
+- (UIViewController *)jz_popViewControllerAnimated:(BOOL)animated completion:(void (^)(UINavigationController *navigationController, BOOL finished))completion;
 
 /**
  *  @author JazysYu, 16-01-25 14:01:20
  *
- *  Called at end of animation of push/pop or immediately if not animated.
+ *  Called at end of animation of push/pop or immediately if not animated. The completion block will be set to nil while transition finish.
  *
  */
-- (NSArray *)jz_popToRootViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
+- (NSArray *)jz_popToRootViewControllerAnimated:(BOOL)animated completion:(void (^)(UINavigationController *navigationController, BOOL finished))completion;
 
 /**
  *  @author JazysYu, 16-01-25 14:01:20
  *
- *  Called at end of animation of push/pop or immediately if not animated.
+ *  Called at end of animation of push/pop or immediately if not animated. The completion block will be set to nil while transition finish.
  *
  */
-- (NSArray *)jz_popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
+- (NSArray *)jz_popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(UINavigationController *navigationController, BOOL finished))completion;
 
+/**
+ *  @author JazysYu, 16-03-13 19:03:05
+ *
+ *  Called at end of animation of push/pop or immediately if not animated. The completion block will be set to nil while transition finish.
+ *
+ */
+- (void)jz_setViewControllers:(NSArray<UIViewController *> *)viewControllers animated:(BOOL)animated completion:(void (^)(UINavigationController *navigationController, BOOL finished))completion;
 /**
  *  @author JazysYu, 16-01-25 14:01:20
  *
  *  Called at end of interactive pop gesture immediately. You could use poppedViewController/visibleViewController/jz_previousVisibleViewController properties to decide what to do.
  *
  */
-- (void)setJz_interactivePopGestureRecognizerCompletion:(void (^)(UINavigationController *navigationController, BOOL finished))jz_interactivePopGestureRecognizerCompletion;
+- (void)jz_setInteractivePopGestureRecognizerCompletion:(void (^)(UINavigationController *navigationController, BOOL finished))jz_interactivePopGestureRecognizerCompletion;
 
 @end

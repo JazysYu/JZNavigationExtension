@@ -36,7 +36,7 @@
  *
  *  Hide or show the navigation bar background.
  */
-@property (nonatomic, assign, getter=isJz_navigationBarBackgroundHidden) IBInspectable BOOL jz_navigationBarBackgroundHidden;
+@property (nonatomic, assign, getter=jz_isNavigationBarBackgroundHidden, setter=jz_setNavigationBarBackgroundHidden:) IBInspectable BOOL jz_navigationBarBackgroundHidden;
 
 /**
  *  @author dongxinb, 16-01-25 14:01:32
@@ -44,7 +44,7 @@
  *  Hide or show the navigation bar background. If animated, it will transition vertically using UINavigationControllerHideShowBarDuration.
  *
  */
-- (void)setJz_navigationBarBackgroundHidden:(BOOL)jz_navigationBarBackgroundHidden animated:(BOOL)animated NS_AVAILABLE_IOS(8_0);
+- (void)jz_setNavigationBarBackgroundHidden:(BOOL)jz_navigationBarBackgroundHidden animated:(BOOL)animated NS_AVAILABLE_IOS(8_0);
 
 /**
  *  @author JazysYu, 16-01-25 14:01:31

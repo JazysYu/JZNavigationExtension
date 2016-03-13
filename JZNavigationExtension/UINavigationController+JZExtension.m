@@ -115,6 +115,10 @@ __attribute__((constructor)) static void JZ_Inject(void) {
             }
             
             {
+                __method_swizzling([UINavigationController class], @selector(setViewControllers:animated:), @selector(jz_setViewControllers:animated:));
+            }
+            
+            {
                 __method_swizzling([UINavigationController class], NSSelectorFromString(@"navigationTransitionView:didEndTransition:fromView:toView:"),@selector(jz_navigationTransitionView:didEndTransition:fromView:toView:));
             }
             
@@ -122,7 +126,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     });
 }
 
-- (void)jz_pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL))completion {
+- (void)jz_pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
     self.jz_operation = UINavigationControllerOperationPush;
     self._jz_navigationTransitionFinished = completion;
     UIViewController *visibleViewController = [self visibleViewController];
@@ -130,7 +134,15 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     [self jz_navigationWillTransitFromViewController:visibleViewController toViewController:viewController animated:animated isInterActiveTransition:NO];
 }
 
-- (UIViewController *)jz_popViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
+- (void)jz_setViewControllers:(NSArray<UIViewController *> *)viewControllers animated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
+    self.jz_operation = UINavigationControllerOperationPush;
+    self._jz_navigationTransitionFinished = completion;
+    NSArray *oldViewControllers = self.viewControllers;
+    [self jz_setViewControllers:viewControllers animated:animated];
+    [self jz_navigationWillTransitFromViewController:oldViewControllers.lastObject toViewController:viewControllers.lastObject animated:animated isInterActiveTransition:NO];
+}
+
+- (UIViewController *)jz_popViewControllerAnimated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
     self.jz_operation = UINavigationControllerOperationPop;
     self._jz_navigationTransitionFinished = completion;
     UIViewController *viewController = [self jz_popViewControllerAnimated:animated];
@@ -139,7 +151,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     return viewController;
 }
 
-- (NSArray *)jz_popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL finished))completion {
+- (NSArray *)jz_popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
     self.jz_operation = UINavigationControllerOperationPop;
     self._jz_navigationTransitionFinished = completion;
     NSArray *popedViewControllers = [self jz_popToViewController:viewController animated:animated];
@@ -148,7 +160,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     return popedViewControllers;
 }
 
-- (NSArray *)jz_popToRootViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion {
+- (NSArray *)jz_popToRootViewControllerAnimated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
     self.jz_operation = UINavigationControllerOperationPop;
     self._jz_navigationTransitionFinished = completion;
     NSArray *popedViewControllers = [self jz_popToRootViewControllerAnimated:animated];
@@ -162,6 +174,10 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (void)jz_pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
     [self jz_pushViewController:viewController animated:animated completion:NULL];
+}
+
+- (void)jz_setViewControllers:(NSArray<UIViewController *> *)viewControllers animated:(BOOL)animated {
+    [self jz_setViewControllers:viewControllers animated:animated completion:NULL];
 }
 
 - (UIViewController *)jz_popViewControllerAnimated:(BOOL)animated {
@@ -178,7 +194,8 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (void)jz_navigationTransitionView:(id)arg1 didEndTransition:(int)arg2 fromView:(id)arg3 toView:(id)arg4 {
     [self jz_navigationTransitionView:arg1 didEndTransition:arg2 fromView:arg3 toView:arg4];
-    !self._jz_navigationTransitionFinished ?: self._jz_navigationTransitionFinished(YES);
+    !self._jz_navigationTransitionFinished ?: self._jz_navigationTransitionFinished(self, YES);
+    self._jz_navigationTransitionFinished = NULL;
     self.jz_operation = UINavigationControllerOperationNone;
     [self jz_previousVisibleViewController];
 }
@@ -215,6 +232,8 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
 
 - (void)jz_navigationWillTransitFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController animated:(BOOL)animated isInterActiveTransition:(BOOL)isInterActiveTransition {
     
+    self.interactivePopGestureRecognizer.enabled = true;
+
     self.jz_previousVisibleViewController = fromViewController;
     
     [self setNavigationBarHidden:!toViewController.jz_wantsNavigationBarVisible animated:animated];
@@ -269,11 +288,11 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
     [self.toolbar setJz_size:jz_toolbarSize];
 }
 
-- (void)set_jz_navigationTransitionFinished:(void (^)(BOOL))_jz_navigationTransitionFinished {
+- (void)set_jz_navigationTransitionFinished:(_jz_navigation_block_t)_jz_navigationTransitionFinished {
     objc_setAssociatedObject(self, @selector(_jz_navigationTransitionFinished), _jz_navigationTransitionFinished, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (void)setJz_interactivePopGestureRecognizerCompletion:(void (^)(UINavigationController *, BOOL))jz_interactivePopGestureRecognizerCompletion {
+- (void)jz_setInteractivePopGestureRecognizerCompletion:(_jz_navigation_block_t)jz_interactivePopGestureRecognizerCompletion {
     objc_setAssociatedObject(self, @selector(jz_interactivePopGestureRecognizerCompletion), jz_interactivePopGestureRecognizerCompletion, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
@@ -315,11 +334,11 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
     return [self.interactivePopGestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]];
 }
 
-- (void (^)(BOOL))_jz_navigationTransitionFinished {
+- (_jz_navigation_block_t)_jz_navigationTransitionFinished {
     return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void (^)(UINavigationController *, BOOL))jz_interactivePopGestureRecognizerCompletion {
+- (_jz_navigation_block_t)jz_interactivePopGestureRecognizerCompletion {
     return objc_getAssociatedObject(self, _cmd);
 }
 

@@ -41,7 +41,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
-    [self.navigationController setJz_interactivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, BOOL finished) {
+    [self.navigationController jz_setInteractivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, BOOL finished) {
         if (finished) {
             NSLog(@"Interactive pop transition has been finished");
         } else {
@@ -165,7 +165,7 @@
         case 4:
         {
             viewController.title = @"Pushing";
-            [self.navigationController jz_pushViewController:viewController animated:YES completion:^(BOOL finished) {
+            [self.navigationController jz_pushViewController:viewController animated:YES completion:^(UINavigationController *navigationController, BOOL finished) {
                 viewController.title = @"Pushed";
                 viewController.view.backgroundColor = UIColorWithRGBA(253, 69, 67, 1.f);
             }];
@@ -189,6 +189,18 @@
             self.jz_navigationBarTintColor = nil;
             viewController.jz_navigationBarTintColor = [UIColor redColor];
             [self.navigationController pushViewController:viewController animated:YES];
+        }
+        case 8:
+        {
+            NSMutableArray *viewControllers = [[self.navigationController viewControllers] mutableCopy];
+            [viewControllers addObject:viewController];
+            viewController.title = @"Pushing";
+            viewController.jz_navigationBarTintColor = [UIColor purpleColor];
+            [self.navigationController jz_setViewControllers:viewControllers animated:YES completion:^(UINavigationController *navigationController, BOOL finished) {
+                viewController.title = @"Pushed";
+                viewController.view.backgroundColor = UIColorWithRGBA(253, 69, 67, 1.f);
+            }];
+            return;
         }
             break;
         default:
@@ -220,7 +232,8 @@
                         @"pushViewController:animated:completion:",
                         @"navigationBarBackgroundHidden",
                         @"navigationBarBackgroundAlpha:0.3",
-                        @"navigationBarTintColor:"
+                        @"navigationBarTintColor:",
+                        @"setViewControllers:Animated:"
                         ];
     }
     return _cellModels;
