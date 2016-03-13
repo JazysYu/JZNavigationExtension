@@ -55,8 +55,8 @@ __attribute__((constructor)) static void JZ_Inject(void) {
             
             {
                 NSString *selectorString = [NSString stringWithFormat:@"_%@",NSStringFromSelector(@selector(gestureRecognizer:shouldBeRequiredToFailByGestureRecognizer:))];
-                Method gestureShouldSimultaneouslyGesture = class_getInstanceMethod(_UINavigationInteractiveTransition, NSSelectorFromString(selectorString));
-                method_setImplementation(gestureShouldSimultaneouslyGesture, imp_implementationWithBlock(^(UIPercentDrivenInteractiveTransition *navTransition, UIPanGestureRecognizer *gestureRecognizer){
+                Method shouldBeRequiredToFailByGestureRecognizer = class_getInstanceMethod(_UINavigationInteractiveTransition, NSSelectorFromString(selectorString));
+                method_setImplementation(shouldBeRequiredToFailByGestureRecognizer, imp_implementationWithBlock(^(UIPercentDrivenInteractiveTransition *navTransition, UIPanGestureRecognizer *gestureRecognizer, UIGestureRecognizer *a){
                     UINavigationController *navigationController = (UINavigationController *)[navTransition jz_parent];
                     if (!navigationController.jz_fullScreenInteractivePopGestureRecognizer) {
                         return true;
@@ -178,11 +178,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (void)jz_navigationTransitionView:(id)arg1 didEndTransition:(int)arg2 fromView:(id)arg3 toView:(id)arg4 {
     [self jz_navigationTransitionView:arg1 didEndTransition:arg2 fromView:arg3 toView:arg4];
-    UIColor *_navigationBarTintColor = objc_getAssociatedObject(self.visibleViewController, @selector(jz_navigationBarTintColor));
-    if (!_navigationBarTintColor) {
-        self.jz_navigationBarTintColor = nil;
-        self.navigationBar.alpha = 1.0f;
-    }
     !self._jz_navigationTransitionFinished ?: self._jz_navigationTransitionFinished(YES);
     self.jz_operation = UINavigationControllerOperationNone;
     [self jz_previousVisibleViewController];
@@ -196,18 +191,25 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
         }];
     }
     
-    if (!CGColorEqualToColor(fromViewController.jz_navigationBarTintColor.CGColor, toViewController.jz_navigationBarTintColor.CGColor)) {
-        CGFloat red, green, blue, alpha;
+    if (fromViewController.jz_navigationBarTintColor != toViewController.jz_navigationBarTintColor) {
         
         if (!navigationController.jz_navigationBarTintColor) {
             navigationController.jz_navigationBarTintColor = [UIColor colorWithWhite:navigationController.navigationBar.barStyle == UIBarStyleDefault alpha:1.0];
         }
-
-        [toViewController.jz_navigationBarTintColor getRed:&red green:&green blue:&blue alpha:&alpha];
         
+        UIColor *_toColor = toViewController.jz_navigationBarTintColor;
+        if (!_toColor) {
+            _toColor = [UIColor colorWithWhite:navigationController.navigationBar.barStyle == UIBarStyleDefault alpha:1.0];
+        }
+  
         [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration: 0.f animations:^{
-            [navigationController setJz_navigationBarTintColor:[UIColor colorWithRed:red green:green blue:blue alpha:alpha]];
+            [navigationController setJz_navigationBarTintColor:_toColor];
+        } completion:^(BOOL finished) {
+            if (!toViewController.jz_navigationBarTintColor) {
+                [navigationController setJz_navigationBarTintColor:toViewController.jz_navigationBarTintColor];
+            }
         }];
+        
     }
 }
 
@@ -242,9 +244,11 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
         if ([self.interactivePopGestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]]) return;
         object_setClass(self.interactivePopGestureRecognizer, [UIPanGestureRecognizer class]);
         [self.interactivePopGestureRecognizer setValue:@NO forKey:@"canPanVertically"];
+        self.interactivePopGestureRecognizer.delaysTouchesBegan = false;
     } else {
         if ([self.interactivePopGestureRecognizer isMemberOfClass:[UIScreenEdgePanGestureRecognizer class]]) return;
         object_setClass(self.interactivePopGestureRecognizer, [UIScreenEdgePanGestureRecognizer class]);
+        self.interactivePopGestureRecognizer.delaysTouchesBegan = true;
     }
 }
 

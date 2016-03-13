@@ -31,11 +31,6 @@ CG_INLINE UIColor *_getNavigationBarTintColor(UINavigationController *navigation
             _navigationBarTintColorAssociatedObject = navigationController.jz_navigationBarTintColor;
         }
     }
-    
-    if (!_navigationBarTintColorAssociatedObject) { // Will be clear when transition animation finished.
-        _navigationBarTintColorAssociatedObject = [UIColor colorWithWhite:navigationController.navigationBar.barStyle == UIBarStyleDefault alpha:1.0];
-        navigationController.navigationBar.alpha = navigationController.navigationBar.isTranslucent ? 0.9 : 1.0;
-    }
 
     return _navigationBarTintColorAssociatedObject;
 }
@@ -70,7 +65,7 @@ CG_INLINE UIColor *_getNavigationBarTintColor(UINavigationController *navigation
     }
     
     UIColor *_interactivePopedViewController_navigationBarTintColor = _getNavigationBarTintColor(navigationController, navigationController.jz_previousVisibleViewController);
-    if (!CGColorEqualToColor(_interactivePopedViewController_navigationBarTintColor.CGColor, navigationController.visibleViewController.jz_navigationBarTintColor.CGColor)) {
+    if (_interactivePopedViewController_navigationBarTintColor != navigationController.visibleViewController.jz_navigationBarTintColor) {
         CGFloat red1, green1, blue1, alpha1;
         CGFloat red2, green2, blue2, alpha2;
         [_interactivePopedViewController_navigationBarTintColor getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
