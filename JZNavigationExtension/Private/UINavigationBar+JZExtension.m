@@ -14,7 +14,7 @@ JZExtensionBarImplementation
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
     if ([[self jz_backgroundView] alpha] < 1.0f) {
-        return CGRectContainsPoint(CGRectMake(0, self.bounds.size.height - 44, self.bounds.size.width, 44), point);
+        return CGRectContainsPoint(CGRectMake(0, self.bounds.size.height - JZNavigationBarHeight, self.bounds.size.width, JZNavigationBarHeight), point);
     } else {
         return [super pointInside:point withEvent:event];
     }

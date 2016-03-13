@@ -123,16 +123,16 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (void)jz_pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL))completion {
-    self._jz_navigationTransitionFinished = completion;
     self.jz_operation = UINavigationControllerOperationPush;
+    self._jz_navigationTransitionFinished = completion;
     UIViewController *visibleViewController = [self visibleViewController];
     [self jz_pushViewController:viewController animated:animated];
     [self jz_navigationWillTransitFromViewController:visibleViewController toViewController:viewController animated:animated isInterActiveTransition:NO];
 }
 
 - (UIViewController *)jz_popViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
-    self._jz_navigationTransitionFinished = completion;
     self.jz_operation = UINavigationControllerOperationPop;
+    self._jz_navigationTransitionFinished = completion;
     UIViewController *viewController = [self jz_popViewControllerAnimated:animated];
     UIViewController *visibleViewController = [self visibleViewController];
     [self jz_navigationWillTransitFromViewController:viewController toViewController:visibleViewController animated:animated isInterActiveTransition:YES];
@@ -140,8 +140,8 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (NSArray *)jz_popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL finished))completion {
-    self._jz_navigationTransitionFinished = completion;
     self.jz_operation = UINavigationControllerOperationPop;
+    self._jz_navigationTransitionFinished = completion;
     NSArray *popedViewControllers = [self jz_popToViewController:viewController animated:animated];
     UIViewController *topPopedViewController = [popedViewControllers lastObject];
     [self jz_navigationWillTransitFromViewController:topPopedViewController toViewController:viewController animated:animated isInterActiveTransition:NO];
@@ -149,8 +149,8 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (NSArray *)jz_popToRootViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion {
-    self._jz_navigationTransitionFinished = completion;
     self.jz_operation = UINavigationControllerOperationPop;
+    self._jz_navigationTransitionFinished = completion;
     NSArray *popedViewControllers = [self jz_popToRootViewControllerAnimated:animated];
     UIViewController *topPopedViewController = [popedViewControllers lastObject];
     UIViewController *topViewController = [self.viewControllers firstObject];
@@ -178,9 +178,37 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (void)jz_navigationTransitionView:(id)arg1 didEndTransition:(int)arg2 fromView:(id)arg3 toView:(id)arg4 {
     [self jz_navigationTransitionView:arg1 didEndTransition:arg2 fromView:arg3 toView:arg4];
+    UIColor *_navigationBarTintColor = objc_getAssociatedObject(self.visibleViewController, @selector(jz_navigationBarTintColor));
+    if (!_navigationBarTintColor) {
+        self.jz_navigationBarTintColor = nil;
+        self.navigationBar.alpha = 1.0f;
+    }
     !self._jz_navigationTransitionFinished ?: self._jz_navigationTransitionFinished(YES);
     self.jz_operation = UINavigationControllerOperationNone;
     [self jz_previousVisibleViewController];
+}
+
+CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINavigationController *navigationController, UIViewController *fromViewController, UIViewController *toViewController) {
+
+    if (fromViewController.jz_navigationBarBackgroundAlpha != toViewController.jz_navigationBarBackgroundAlpha) {
+        [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
+            [navigationController setJz_navigationBarBackgroundAlpha:toViewController.jz_navigationBarBackgroundAlpha];
+        }];
+    }
+    
+    if (!CGColorEqualToColor(fromViewController.jz_navigationBarTintColor.CGColor, toViewController.jz_navigationBarTintColor.CGColor)) {
+        CGFloat red, green, blue, alpha;
+        
+        if (!navigationController.jz_navigationBarTintColor) {
+            navigationController.jz_navigationBarTintColor = [UIColor colorWithWhite:navigationController.navigationBar.barStyle == UIBarStyleDefault alpha:1.0];
+        }
+
+        [toViewController.jz_navigationBarTintColor getRed:&red green:&green blue:&blue alpha:&alpha];
+        
+        [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration: 0.f animations:^{
+            [navigationController setJz_navigationBarTintColor:[UIColor colorWithRed:red green:green blue:blue alpha:alpha]];
+        }];
+    }
 }
 
 - (void)jz_navigationWillTransitFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController animated:(BOOL)animated isInterActiveTransition:(BOOL)isInterActiveTransition {
@@ -189,43 +217,25 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     
     [self setNavigationBarHidden:!toViewController.jz_wantsNavigationBarVisible animated:animated];
     
-    void (^_updateNavigationBarBackgroundAlpha)() = ^{
-        
-        if (fromViewController.jz_navigationBarBackgroundAlpha != toViewController.jz_navigationBarBackgroundAlpha) {
-            [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
-                [self setJz_navigationBarBackgroundAlpha:toViewController.jz_navigationBarBackgroundAlpha];
-            }];
-        }
-        
-        if (!CGColorEqualToColor(fromViewController.jz_navigationBarTintColor.CGColor, toViewController.jz_navigationBarTintColor.CGColor)) {
-            CGFloat red, green, blue, alpha;
-            [toViewController.jz_navigationBarTintColor getRed:&red green:&green blue:&blue alpha:&alpha];
-            [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration: 0.f animations:^{
-                self.navigationBar.barTintColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
-            }];
-        }
-        
-    };
-    
     if (!isInterActiveTransition) {
         
-        _updateNavigationBarBackgroundAlpha();
-        
+        _updateNavigationBarDuringTransitionAnimated(animated, self, fromViewController, toViewController);
+
     } else {
         
         if (![self jz_isInteractiveTransition]) {
             
-            _updateNavigationBarBackgroundAlpha();
-            
-        } else {
-            
-            self.jz_interactivePopedViewController = fromViewController;
+            _updateNavigationBarDuringTransitionAnimated(animated, self, fromViewController, toViewController);
             
         }
     }
 }
 
 #pragma mark - setters
+
+- (void)setJz_navigationBarTintColor:(UIColor *)jz_navigationBarTintColor {
+    self.navigationBar.barTintColor = jz_navigationBarTintColor;
+}
 
 - (void)setJz_fullScreenInteractivePopGestureRecognizer:(BOOL)jz_fullScreenInteractivePopGestureRecognizer {
     if (jz_fullScreenInteractivePopGestureRecognizer) {
@@ -259,11 +269,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     objc_setAssociatedObject(self, @selector(_jz_navigationTransitionFinished), _jz_navigationTransitionFinished, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (void)setJz_interactivePopedViewController:(UIViewController *)jz_interactivePopedViewController {
-    objc_setAssociatedObject(self, @selector(jz_interactivePopedViewController), jz_interactivePopedViewController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (void)setJz_interactivePopGestureRecognizerCompletion:(void (^)(UINavigationController *, UIViewController *, BOOL))jz_interactivePopGestureRecognizerCompletion {
+- (void)setJz_interactivePopGestureRecognizerCompletion:(void (^)(UINavigationController *, BOOL))jz_interactivePopGestureRecognizerCompletion {
     objc_setAssociatedObject(self, @selector(jz_interactivePopGestureRecognizerCompletion), jz_interactivePopGestureRecognizerCompletion, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
@@ -283,6 +289,10 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         self.jz_previousVisibleViewController = nil;
     }
     return _previousVisibleViewController;
+}
+
+- (UIColor *)jz_navigationBarTintColor {
+    return self.navigationBar.barTintColor;
 }
 
 - (UINavigationControllerOperation)jz_operation {
@@ -305,11 +315,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void (^)(UINavigationController *, UIViewController *, BOOL))jz_interactivePopGestureRecognizerCompletion {
-    return objc_getAssociatedObject(self, _cmd);
-}
-
-- (UIViewController *)jz_interactivePopedViewController {
+- (void (^)(UINavigationController *, BOOL))jz_interactivePopGestureRecognizerCompletion {
     return objc_getAssociatedObject(self, _cmd);
 }
 

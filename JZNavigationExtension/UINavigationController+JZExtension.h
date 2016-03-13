@@ -52,13 +52,6 @@
 @property (nonatomic, assign) CGFloat jz_toolbarBackgroundAlpha NS_AVAILABLE_IOS(7_0);
 
 /**
- *  @author JazysYu, 16-01-25 14:01:38
- *
- *  The view controller that is being popped when the interactive pop gesture recognizer's UIGestureRecognizerState is UIGestureRecognizerStateChanged.
- */
-@property (nonatomic, readonly, strong) UIViewController *jz_interactivePopedViewController NS_AVAILABLE_IOS(7_0);
-
-/**
  *  @author JazysYu, 16-03-12 16:03:12
  *
  *  Could use this propery to adjust navigation controller's operation, then do some logic.
@@ -69,7 +62,7 @@
 /**
  *  @author JazysYu, 16-03-12 16:03:39
  *
- *  Return the previous visible view controller in navigation controller. Could use this to do any logic during navigation transition in any method you want, like "viewWillAppear:".
+ *  Return the previous visible view controller in navigation controller. Could use this to do any logic during navigation transition in any method you want, like "viewWillAppear:". This can is a replacement of property "interactivePopedViewController".
  */
 @property (nonatomic, weak, readonly) UIViewController *jz_previousVisibleViewController;
 
@@ -130,9 +123,9 @@
 /**
  *  @author JazysYu, 16-01-25 14:01:20
  *
- *  Called at end of interactive pop gesture immediately. You could use poppedViewController/visibleViewController/interactivePopedViewController properties to decide what to do.
+ *  Called at end of interactive pop gesture immediately. You could use poppedViewController/visibleViewController/jz_previousVisibleViewController properties to decide what to do.
  *
  */
-- (void)setJz_interactivePopGestureRecognizerCompletion:(void (^)(UINavigationController *, UIViewController *, BOOL))jz_interactivePopGestureRecognizerCompletion;
+- (void)setJz_interactivePopGestureRecognizerCompletion:(void (^)(UINavigationController *navigationController, BOOL finished))jz_interactivePopGestureRecognizerCompletion;
 
 @end

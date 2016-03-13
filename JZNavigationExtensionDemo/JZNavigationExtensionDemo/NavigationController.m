@@ -12,7 +12,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [[UINavigationBar appearance] setBarTintColor:[UIColor purpleColor]];
+//    [[UINavigationBar appearance] setBarTintColor:[UIColor purpleColor]];
 }
 
 @end

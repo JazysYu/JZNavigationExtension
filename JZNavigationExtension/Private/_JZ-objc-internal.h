@@ -13,15 +13,21 @@
 
 #define objc_getProperty(objc,key) [objc valueForKey:key]
 
+#define JZNavigationBarHeight 44.f
+
 @interface UINavigationController (_JZExtension)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wnullability-completeness"
-@property (nonatomic, copy) void (^jz_interactivePopGestureRecognizerCompletion)(UINavigationController *, UIViewController *, BOOL);
+@property (nonatomic, copy) void (^jz_interactivePopGestureRecognizerCompletion)(UINavigationController *, BOOL);
 @property (nonatomic, copy) void (^_jz_navigationTransitionFinished)(BOOL);
 - (void)setJz_interactivePopedViewController:(UIViewController *)jz_interactivePopedViewController;
 #pragma clang diagnostic pop
 - (BOOL)jz_isTransitioning;
 - (BOOL)jz_isInteractiveTransition;
+@end
+
+@interface UIViewController (_JZExtension)
+@property (nonatomic, assign, getter=jz_hasNavigationBarTintColorSetterBeenCalled) BOOL jz_navigationBarTintColorSetterBeenCalled;
 @end
 
 @protocol JZExtensionBarProtocol <NSObject>

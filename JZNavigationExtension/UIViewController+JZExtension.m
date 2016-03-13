@@ -7,23 +7,23 @@
 //
 
 #import "UIViewController+JZExtension.h"
-#import "UINavigationController+JZExtension.h"
+#import "_JZ-objc-internal.h"
 #import "NSNumber+JZExtension.h"
-#import <objc/runtime.h>
+#import "UINavigationController+JZExtension.h"
 
 @implementation UIViewController (JZExtension)
 
-- (UIViewController *)jz_previousViewController {
-    return self.navigationController ? [self.navigationController jz_previousViewControllerForViewController:self] : nil;
+- (void)setJz_navigationBarTintColorSetterBeenCalled:(BOOL)jz_navigationBarTintColorSetterBeenCalled {
+    objc_setAssociatedObject(self, @selector(jz_hasNavigationBarTintColorSetterBeenCalled), @(jz_navigationBarTintColorSetterBeenCalled), OBJC_ASSOCIATION_ASSIGN);
 }
 
 - (void)setJz_navigationBarBackgroundHidden:(BOOL)jz_navigationBarBackgroundHidden {
-    [self setJz_navigationBarBackgroundAlpha:0.0f];
+    [self setJz_navigationBarBackgroundAlpha:!jz_navigationBarBackgroundHidden];
 }
 
 - (void)setJz_navigationBarBackgroundAlpha:(CGFloat)jz_navigationBarBackgroundAlpha {
     [self.navigationController setJz_navigationBarBackgroundAlpha:jz_navigationBarBackgroundAlpha];
-    objc_setAssociatedObject(self, @selector(jz_navigationBarBackgroundAlpha), @(jz_navigationBarBackgroundAlpha), OBJC_ASSOCIATION_COPY);
+    objc_setAssociatedObject(self, @selector(jz_navigationBarBackgroundAlpha), @(jz_navigationBarBackgroundAlpha), OBJC_ASSOCIATION_RETAIN);
 }
 
 - (void)setJz_navigationBarBackgroundHidden:(BOOL)jz_navigationBarBackgroundHidden animated:(BOOL)animated {
@@ -33,8 +33,8 @@
 }
 
 - (void)setJz_navigationBarTintColor:(UIColor *)jz_navigationBarTintColor {
-    self.navigationController.navigationBar.barTintColor = jz_navigationBarTintColor;
-    self.navigationController.navigationBar.alpha = 0.9;
+    self.jz_navigationBarTintColorSetterBeenCalled = true;
+    [self.navigationController setJz_navigationBarTintColor:jz_navigationBarTintColor];
     objc_setAssociatedObject(self, @selector(jz_navigationBarTintColor), jz_navigationBarTintColor, OBJC_ASSOCIATION_RETAIN);
 }
 
@@ -46,26 +46,31 @@
     return self.jz_navigationBarBackgroundAlpha - 0.0f <= 0.0001;
 }
 
-- (CGFloat)jz_navigationBarBackgroundAlpha {
-    id _navigationBarBackgroundAlpha = objc_getAssociatedObject(self, _cmd);
-    return _navigationBarBackgroundAlpha != nil ? [_navigationBarBackgroundAlpha jz_CGFloatValue] : self.navigationController.jz_navigationBarBackgroundAlpha;
-}
-
 - (BOOL)jz_wantsNavigationBarVisible {
     id _wantsNavigationBarVisible = objc_getAssociatedObject(self, _cmd);
     return _wantsNavigationBarVisible != nil ? [_wantsNavigationBarVisible boolValue] : YES;
 }
 
+- (BOOL)jz_hasNavigationBarTintColorSetterBeenCalled {
+    return [objc_getAssociatedObject(self, _cmd) boolValue];
+}
+
+- (CGFloat)jz_navigationBarBackgroundAlpha {
+    id _navigationBarBackgroundAlpha = objc_getAssociatedObject(self, _cmd);
+    return _navigationBarBackgroundAlpha ? [_navigationBarBackgroundAlpha jz_CGFloatValue] : self.navigationController.jz_navigationBarBackgroundAlpha;
+}
+
 - (UIColor *)jz_navigationBarTintColor {
     UIColor *_navigationBarTintColor = objc_getAssociatedObject(self, _cmd);
-    if (!_navigationBarTintColor) {
-        _navigationBarTintColor = self.navigationController.navigationBar.barTintColor;
-        if (!_navigationBarTintColor) {
-            _navigationBarTintColor = [UIColor colorWithWhite:self.navigationController.navigationBar.barStyle == UIBarStyleDefault alpha:1.0];
-        }
-        self.jz_navigationBarTintColor = _navigationBarTintColor;
+    if (!self.jz_hasNavigationBarTintColorSetterBeenCalled) {
+        return _navigationBarTintColor ? _navigationBarTintColor : self.navigationController.jz_navigationBarTintColor;
+    } else {
+        return _navigationBarTintColor;
     }
-    return _navigationBarTintColor;
+}
+
+- (UIViewController *)jz_previousViewController {
+    return self.navigationController ? [self.navigationController jz_previousViewControllerForViewController:self] : nil;
 }
 
 @end

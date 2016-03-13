@@ -8,24 +8,49 @@
 
 #import "UIPercentDrivenInteractiveTransition+JZExtension.h"
 #import "_JZ-objc-internal.h"
+#import "NSNumber+JZExtension.h"
 #import "UINavigationBar+JZExtension.h"
 #import "UIViewController+JZExtension.h"
 #import "UINavigationController+JZExtension.h"
 
 @implementation UIPercentDrivenInteractiveTransition (JZExtension)
 
+CG_INLINE CGFloat _getNavigationBarBackgroundAlpha(UINavigationController *navigationController, UIViewController *viewController) {
+    id _navigationBarBackgroundAlphaAssociatedObject = objc_getAssociatedObject(viewController, @selector(jz_navigationBarBackgroundAlpha));
+    CGFloat _navigationBarBackgroundAlpha = [_navigationBarBackgroundAlphaAssociatedObject jz_CGFloatValue];
+    if (!_navigationBarBackgroundAlphaAssociatedObject) {
+        _navigationBarBackgroundAlpha = navigationController.jz_navigationBarBackgroundAlpha;
+    }
+    return _navigationBarBackgroundAlpha;
+}
+
+CG_INLINE UIColor *_getNavigationBarTintColor(UINavigationController *navigationController, UIViewController *viewController) {
+    id _navigationBarTintColorAssociatedObject = objc_getAssociatedObject(viewController, @selector(jz_navigationBarTintColor));
+    if (!viewController.jz_hasNavigationBarTintColorSetterBeenCalled) {
+        if (!_navigationBarTintColorAssociatedObject) {
+            _navigationBarTintColorAssociatedObject = navigationController.jz_navigationBarTintColor;
+        }
+    }
+    
+    if (!_navigationBarTintColorAssociatedObject) { // Will be clear when transition animation finished.
+        _navigationBarTintColorAssociatedObject = [UIColor colorWithWhite:navigationController.navigationBar.barStyle == UIBarStyleDefault alpha:1.0];
+        navigationController.navigationBar.alpha = navigationController.navigationBar.isTranslucent ? 0.9 : 1.0;
+    }
+
+    return _navigationBarTintColorAssociatedObject;
+}
+
 - (void)jz_handleInteractiveTransition:(BOOL)isCancel {
     
     if (![self isMemberOfClass:JZ_UINavigationInteractiveTransition]) {
         return;
     }
-    
+
     UINavigationController *navigationController = (UINavigationController *)[self jz_parent];
-    UIViewController *adjustViewController = isCancel ? navigationController.jz_interactivePopedViewController : navigationController.visibleViewController;
-    navigationController.jz_navigationBarBackgroundAlpha = adjustViewController.jz_navigationBarBackgroundAlpha;
-    navigationController.navigationBar.barTintColor = adjustViewController.jz_navigationBarTintColor;
-    !navigationController.jz_interactivePopGestureRecognizerCompletion ?: navigationController.jz_interactivePopGestureRecognizerCompletion(navigationController,isCancel ? nil : navigationController.jz_interactivePopedViewController, !isCancel);
-    navigationController.jz_interactivePopedViewController = nil;
+    UIViewController *adjustViewController = isCancel ? navigationController.jz_previousVisibleViewController : navigationController.visibleViewController;
+    navigationController.jz_navigationBarBackgroundAlpha = _getNavigationBarBackgroundAlpha(navigationController, adjustViewController);
+    navigationController.jz_navigationBarTintColor = _getNavigationBarTintColor(navigationController, adjustViewController);
+    !navigationController.jz_interactivePopGestureRecognizerCompletion ?: navigationController.jz_interactivePopGestureRecognizerCompletion(navigationController, !isCancel);
 }
 
 - (void)jz_updateInteractiveTransition:(CGFloat)percentComplete {
@@ -37,22 +62,24 @@
     }
     
     UINavigationController *navigationController = (UINavigationController *)[self jz_parent];
-    
-    if (navigationController.jz_interactivePopedViewController.jz_navigationBarBackgroundAlpha != navigationController.visibleViewController.jz_navigationBarBackgroundAlpha) {
-        CGFloat _percentComplete = percentComplete * (navigationController.visibleViewController.jz_navigationBarBackgroundAlpha - navigationController.jz_interactivePopedViewController.jz_navigationBarBackgroundAlpha) + navigationController.jz_interactivePopedViewController.jz_navigationBarBackgroundAlpha;
-        [[navigationController.navigationBar jz_backgroundView] setAlpha:_percentComplete];
+
+    CGFloat _interactivePopedViewController_navigationBarBackgroundAlpha = _getNavigationBarBackgroundAlpha(navigationController, navigationController.jz_previousVisibleViewController);
+    if (_interactivePopedViewController_navigationBarBackgroundAlpha != navigationController.visibleViewController.jz_navigationBarBackgroundAlpha) {
+        CGFloat _percentComplete = percentComplete * (navigationController.visibleViewController.jz_navigationBarBackgroundAlpha - _interactivePopedViewController_navigationBarBackgroundAlpha) + _interactivePopedViewController_navigationBarBackgroundAlpha;
+        navigationController.jz_navigationBarBackgroundAlpha = _percentComplete;
     }
     
-    if (!CGColorEqualToColor(navigationController.jz_interactivePopedViewController.jz_navigationBarTintColor.CGColor, navigationController.visibleViewController.jz_navigationBarTintColor.CGColor)) {
+    UIColor *_interactivePopedViewController_navigationBarTintColor = _getNavigationBarTintColor(navigationController, navigationController.jz_previousVisibleViewController);
+    if (!CGColorEqualToColor(_interactivePopedViewController_navigationBarTintColor.CGColor, navigationController.visibleViewController.jz_navigationBarTintColor.CGColor)) {
         CGFloat red1, green1, blue1, alpha1;
         CGFloat red2, green2, blue2, alpha2;
-        [navigationController.jz_interactivePopedViewController.jz_navigationBarTintColor getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
+        [_interactivePopedViewController_navigationBarTintColor getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
         [navigationController.visibleViewController.jz_navigationBarTintColor getRed:&red2 green:&green2 blue:&blue2 alpha:&alpha2];
         red1 += percentComplete * (red2 - red1);
         green1 += percentComplete * (green2 - green1);
         blue1 += percentComplete * (blue2 - blue1);
         alpha1 += percentComplete * (alpha2 - alpha1);
-        navigationController.navigationBar.barTintColor = [UIColor colorWithRed:red1 green:green1 blue:blue1 alpha:alpha1];
+        navigationController.jz_navigationBarTintColor = [UIColor colorWithRed:red1 green:green1 blue:blue1 alpha:alpha1];
     }
 }
 

@@ -41,12 +41,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
-    [self.navigationController setJz_interactivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, UIViewController *poppedViewController, BOOL finished) {
+    [self.navigationController setJz_interactivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, BOOL finished) {
         if (finished) {
-            NSLog(@"Interactive Pop Finished");
+            NSLog(@"Interactive pop transition has been finished");
         } else {
-            NSLog(@"Interactive Pop Canceled");
+            NSLog(@"Interactive pop transition has been canceled");
         }
+        NSLog(@"%@",navigationController.jz_previousVisibleViewController);
     }];
     
     if ([[[UIDevice currentDevice] systemVersion] compare:@"9.0" options:NSNumericSearch] != NSOrderedAscending) {
@@ -178,12 +179,14 @@
             break;
         case 6:
         {
+            self.jz_navigationBarBackgroundAlpha = 1.f;
             viewController.jz_navigationBarBackgroundAlpha = 0.3;
             [self.navigationController pushViewController:viewController animated:YES];
         }
             break;
         case 7:
         {
+            self.jz_navigationBarTintColor = nil;
             viewController.jz_navigationBarTintColor = [UIColor redColor];
             [self.navigationController pushViewController:viewController animated:YES];
         }

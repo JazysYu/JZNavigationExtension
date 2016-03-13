@@ -152,6 +152,8 @@
 			isa = PBXGroup;
 			children = (
 				40DBE6091C92894D00CA9502 /* _JZ-objc-internal.h */,
+				40570E4C1C942AE6001751FC /* _JZValue.h */,
+				40570E4D1C942AE6001751FC /* _JZValue.m */,
 				40DBE60A1C92894D00CA9502 /* NSNumber+JZExtension.h */,
 				40DBE60B1C92894D00CA9502 /* NSNumber+JZExtension.m */,
 				40DBE60C1C92894D00CA9502 /* UINavigationBar+JZExtension.h */,
@@ -160,8 +162,6 @@
 				40DBE60F1C92894D00CA9502 /* UIToolbar+JZExtension.m */,
 				40DBE61C1C928A6900CA9502 /* UIPercentDrivenInteractiveTransition+JZExtension.h */,
 				40DBE61D1C928A6900CA9502 /* UIPercentDrivenInteractiveTransition+JZExtension.m */,
-				40570E4C1C942AE6001751FC /* _JZValue.h */,
-				40570E4D1C942AE6001751FC /* _JZValue.m */,
 			);
 			path = Private;
 			sourceTree = "<group>";

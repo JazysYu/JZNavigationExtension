@@ -20,14 +20,14 @@
 /**
  *  @author JazysYu, 16-01-25 14:01:57
  *
- *  Worked on each view controller's push or pop, set the alpha value if you want to apply specific bar alpha to the view controller. If you have not set this property then the value will be as same as the property of navigation controller.
+ *  Worked on each view controller's push or pop, set the alpha value if you want to apply specific bar alpha to the view controller. If you have not set this property then the value will be the current navigation bar background alpha dynamically.
  */
 @property (nonatomic, assign) IBInspectable CGFloat jz_navigationBarBackgroundAlpha;
 
 /**
  *  @author dongxinb, 16-01-25 14:01:35
  *
- *  Worked on each view controller's push or pop, set the color value if you want to apply specific bar tint color to the view controller. If your 'navigationBar.barTintColor' is nil, it will automatically set 'navigationBarTintColor' based on your barStyle. Default is navigationBar.barTintColor
+ *  Worked on each view controller's push or pop, set the color value if you want to apply specific bar tint color to the view controller. If you have not set this property then the value will be the current navigation bar barTintColor dynamically. Set it to "nil", when you expect a system default color.
  */
 @property (nonatomic, strong) IBInspectable UIColor *jz_navigationBarTintColor;
 
