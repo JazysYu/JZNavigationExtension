@@ -5,21 +5,20 @@ Pod::Spec.new do |s|
   s.description  = "The 'UINavigationController+JZExtension' category integrates some convenient functions for your UINavigationController. Just pod in 3 files and no need for any setups."
   s.homepage     = "https://github.com/JazysYu/JZNavigationExtension"
   s.social_media_url   = "http://weibo.com/JazysYu"
-  # ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.license = { :type => "MIT", :file => "LICENSE" }
-  # ――― Author Metadata  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.author = { "JazysYu" => "https://github.com/JazysYu" }
-  # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.platform = :ios, "7.0"
-  # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.source = { :git => "https://github.com/JazysYu/JZNavigationExtension.git", :tag => s.version }
-  # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source_files  = "JZNavigationExtension/*.{h,m}"
-  # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.requires_arc = true
 
-  s.default_subspec = 'Private'
-  
-  s.default_subspec.source_files = "JZNavigationExtension/Private/*.{h,m}"
+  s.subspec 'Public' do |ss|
+    ss.dependecy 'JZNavigationExtension/Private'
+    ss.source_files = "JZNavigationExtension/Public/*.{h,m}"
+  end
+
+  s.subspec 'Private' do |ss|
+    ss.dependency 'JZNavigationExtension/Public'
+    ss.source_files = 'JZNavigationExtension/Private/*.{h,m}'
+  end
 
 end
