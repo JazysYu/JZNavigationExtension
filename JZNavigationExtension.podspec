@@ -14,7 +14,11 @@ Pod::Spec.new do |s|
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.source = { :git => "https://github.com/JazysYu/JZNavigationExtension.git", :tag => s.version }
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source_files  = "JZNavigationExtension/**/*.{h,m}"
+  s.source_files  = "JZNavigationExtension/*.{h,m}"
   # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.requires_arc = true
+
+  s.default_subspec = 'Private'
+  s.default_subspec.source_files = "JZNavigationExtension/Private/*.{h,m}"
+
 end
