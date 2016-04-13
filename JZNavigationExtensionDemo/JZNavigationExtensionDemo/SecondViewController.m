@@ -190,6 +190,7 @@
             viewController.jz_navigationBarTintColor = [UIColor redColor];
             [self.navigationController pushViewController:viewController animated:YES];
         }
+            break;
         case 8:
         {
             NSMutableArray *viewControllers = [[self.navigationController viewControllers] mutableCopy];
