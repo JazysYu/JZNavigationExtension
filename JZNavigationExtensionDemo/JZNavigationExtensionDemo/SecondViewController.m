@@ -204,6 +204,15 @@
             return;
         }
             break;
+        case 9:
+        {
+            UIImagePickerController *viewController = [[UIImagePickerController alloc] init];
+            viewController.modalPresentationStyle= UIModalPresentationOverFullScreen;
+            viewController.sourceType = UIImagePickerControllerSourceTypeCamera;
+            viewController.allowsEditing = YES;
+            [self presentViewController:viewController animated:YES completion:NULL];
+        }
+            break;
         default:
             break;
     }
@@ -225,17 +234,21 @@
 #pragma mark - getters
 - (NSArray *)cellModels {
     if (!_cellModels) {
-        _cellModels = @[
-                        @"fullScreenInteractivePopGestureRecognizer",
-                        @"navigationBarBackgroundAlpha",
-                        @"navigationBarHeight",
-                        @"wantsNavigationBarVisible:NO",
-                        @"pushViewController:animated:completion:",
-                        @"navigationBarBackgroundHidden",
-                        @"navigationBarBackgroundAlpha:0.3",
-                        @"navigationBarTintColor:",
-                        @"setViewControllers:Animated:"
-                        ];
+        NSMutableArray *mutableCellModels = [@[
+                                              @"fullScreenInteractivePopGestureRecognizer",
+                                              @"navigationBarBackgroundAlpha",
+                                              @"navigationBarHeight",
+                                              @"wantsNavigationBarVisible:NO",
+                                              @"pushViewController:animated:completion:",
+                                              @"navigationBarBackgroundHidden",
+                                              @"navigationBarBackgroundAlpha:0.3",
+                                              @"navigationBarTintColor:",
+                                              @"setViewControllers:Animated:"
+                                              ] mutableCopy];
+        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+            [mutableCellModels addObject:@"show a view controller which is subclass of UINavigationController."];
+        }
+        _cellModels = mutableCellModels;
     }
     return _cellModels;
 }

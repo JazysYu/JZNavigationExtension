@@ -31,6 +31,7 @@
 @implementation UINavigationController (JZExtension)
 
 __attribute__((constructor)) static void JZ_Inject(void) {
+
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
@@ -74,7 +75,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
                     return velocityInview.x >= 0.0f;
                 }));
             }
-            
             {
                 __method_swizzling([UIPercentDrivenInteractiveTransition class], @selector(updateInteractiveTransition:), @selector(jz_updateInteractiveTransition:));
             }
@@ -113,7 +113,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
             {
                 __method_swizzling([UINavigationController class], @selector(popToRootViewControllerAnimated:), @selector(jz_popToRootViewControllerAnimated:));
             }
-            
+
             {
                 __method_swizzling([UINavigationController class], @selector(setViewControllers:animated:), @selector(jz_setViewControllers:animated:));
             }
@@ -236,7 +236,9 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
 
     self.jz_previousVisibleViewController = fromViewController;
     
-    [self setNavigationBarHidden:!toViewController.jz_wantsNavigationBarVisible animated:animated];
+    if( objc_getAssociatedObject(toViewController, [toViewController jz_wantsNavigationBarVisibleAssociatedObjectKey]) ) {
+        [self setNavigationBarHidden:!toViewController.jz_wantsNavigationBarVisible animated:animated];
+    }
     
     if (!isInterActiveTransition) {
         

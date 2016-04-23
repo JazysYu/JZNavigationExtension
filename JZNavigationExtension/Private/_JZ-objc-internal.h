@@ -17,17 +17,18 @@
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wnullability-completeness"
+
 typedef void(^_jz_navigation_block_t)(UINavigationController *navigationController, BOOL finished);
 @interface UINavigationController (_JZExtension)
 @property (nonatomic, copy, setter=jz_setInteractivePopGestureRecognizerCompletion:) void (^jz_interactivePopGestureRecognizerCompletion)(UINavigationController *, BOOL);
 @property (nonatomic, copy) _jz_navigation_block_t _jz_navigationTransitionFinished;
-#pragma clang diagnostic pop
 - (BOOL)jz_isTransitioning;
 - (BOOL)jz_isInteractiveTransition;
 @end
 
 @interface UIViewController (_JZExtension)
 @property (nonatomic, assign, getter=jz_hasNavigationBarTintColorSetterBeenCalled) BOOL jz_navigationBarTintColorSetterBeenCalled;
+- (const void *)jz_wantsNavigationBarVisibleAssociatedObjectKey;
 @end
 
 @protocol JZExtensionBarProtocol <NSObject>
@@ -53,5 +54,7 @@ return objc_getProperty(self, @"_backgroundView"); \
 }
 
 #define JZ_UINavigationInteractiveTransition NSClassFromString(@"_UINavigationInteractiveTransition")
+
+#pragma clang diagnostic pop
 
 #endif /* _JZ_objc_internal_h */

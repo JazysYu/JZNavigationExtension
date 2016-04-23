@@ -73,4 +73,9 @@
     return self.navigationController ? [self.navigationController jz_previousViewControllerForViewController:self] : nil;
 }
 
+#pragma mark - Private
+- (const void *)jz_wantsNavigationBarVisibleAssociatedObjectKey {
+    return @selector(jz_wantsNavigationBarVisible);
+}
+
 @end
