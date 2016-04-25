@@ -41,9 +41,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
             Method _method = class_getInstanceMethod(cls, _sel);
             method_exchangeImplementations(method, _method);
         };
-        /**
-         *  rewrite the implementation of interactivePopGestureRecognizer's delegate.
-         */
+        
         {
             {
                 __method_swizzling([UIPercentDrivenInteractiveTransition class], @selector(updateInteractiveTransition:), @selector(jz_updateInteractiveTransition:));
@@ -93,6 +91,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
             }
             
         }
+        
     });
 }
 
