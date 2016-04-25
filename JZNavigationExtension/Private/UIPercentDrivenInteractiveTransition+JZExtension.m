@@ -89,7 +89,7 @@ CG_INLINE UIColor *_getNavigationBarTintColor(UINavigationController *navigation
 }
 
 - (id)jz_parent {
-    return objc_getProperty(self, @"_parent");
+    return jz_getProperty(self, @"_parent");
 }
 
 @end

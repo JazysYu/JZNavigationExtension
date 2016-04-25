@@ -11,17 +11,20 @@
 
 #import <objc/runtime.h>
 
-#define objc_getProperty(objc,key) [objc valueForKey:key]
+#define jz_getProperty(objc,key) [objc valueForKey:key]
 
 #define JZNavigationBarHeight 44.f
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wnullability-completeness"
 
+@class _JZNavigationFullScreenInteractiveTransition;
 typedef void(^_jz_navigation_block_t)(UINavigationController *navigationController, BOOL finished);
 @interface UINavigationController (_JZExtension)
 @property (nonatomic, copy, setter=jz_setInteractivePopGestureRecognizerCompletion:) void (^jz_interactivePopGestureRecognizerCompletion)(UINavigationController *, BOOL);
 @property (nonatomic, copy) _jz_navigation_block_t _jz_navigationTransitionFinished;
+@property (nonatomic, strong) _JZNavigationFullScreenInteractiveTransition *_jz_fullScreenInteractiveTransition;
+@property (nonatomic, weak, readonly) UIPanGestureRecognizer *jz_fullScreenInteractivePopGestureRecognizer;
 - (BOOL)jz_isTransitioning;
 - (BOOL)jz_isInteractiveTransition;
 @end
@@ -50,9 +53,10 @@ objc_setAssociatedObject(self, @selector(jz_size), [NSValue valueWithCGSize:size
 return [objc_getAssociatedObject(self, _cmd) CGSizeValue]; \
 } \
 - (UIView *)jz_backgroundView { \
-return objc_getProperty(self, @"_backgroundView"); \
+return jz_getProperty(self, @"_backgroundView"); \
 }
 
+#define JZ_sel_handleNavigationTransition NSSelectorFromString(@"handleNavigationTransition:")
 #define JZ_UINavigationInteractiveTransition NSClassFromString(@"_UINavigationInteractiveTransition")
 
 #pragma clang diagnostic pop

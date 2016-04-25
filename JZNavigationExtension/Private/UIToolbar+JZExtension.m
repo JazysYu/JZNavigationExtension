@@ -13,7 +13,7 @@
 JZExtensionBarImplementation
 
 - (UIView *)jz_shadowView {
-    return objc_getProperty(self, @"_shadowView");
+    return jz_getProperty(self, @"_shadowView");
 }
 
 @end

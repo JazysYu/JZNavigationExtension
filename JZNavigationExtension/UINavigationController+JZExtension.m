@@ -27,6 +27,7 @@
 #import "UINavigationBar+JZExtension.h"
 #import "UIViewController+JZExtension.h"
 #import "UIPercentDrivenInteractiveTransition+JZExtension.h"
+#import "_JZNavigationFullScreenInteractiveTransition.h"
 
 @implementation UINavigationController (JZExtension)
 
@@ -44,37 +45,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
          *  rewrite the implementation of interactivePopGestureRecognizer's delegate.
          */
         {
-            Class _UINavigationInteractiveTransition = JZ_UINavigationInteractiveTransition;
-            
-            {
-                Method gestureShouldReceiveTouch = class_getInstanceMethod(_UINavigationInteractiveTransition, @selector(gestureRecognizer:shouldReceiveTouch:));
-                method_setImplementation(gestureShouldReceiveTouch, imp_implementationWithBlock(^(UIPercentDrivenInteractiveTransition *navTransition,UIGestureRecognizer *gestureRecognizer, UITouch *touch){
-                    UINavigationController *navigationController = (UINavigationController *)[navTransition jz_parent];
-                    return navigationController.viewControllers.count != 1 && ![navigationController jz_isTransitioning] && !CGRectContainsPoint(navigationController.navigationBar.frame, [touch locationInView:gestureRecognizer.view]);
-                }));
-            }
-            
-            {
-                NSString *selectorString = [NSString stringWithFormat:@"_%@",NSStringFromSelector(@selector(gestureRecognizer:shouldBeRequiredToFailByGestureRecognizer:))];
-                Method shouldBeRequiredToFailByGestureRecognizer = class_getInstanceMethod(_UINavigationInteractiveTransition, NSSelectorFromString(selectorString));
-                method_setImplementation(shouldBeRequiredToFailByGestureRecognizer, imp_implementationWithBlock(^(UIPercentDrivenInteractiveTransition *navTransition, UIPanGestureRecognizer *gestureRecognizer, UIGestureRecognizer *a){
-                    UINavigationController *navigationController = (UINavigationController *)[navTransition jz_parent];
-                    if (!navigationController.jz_fullScreenInteractivePopGestureRecognizer) {
-                        return true;
-                    }
-                    CGPoint locationInView = [gestureRecognizer locationInView:gestureRecognizer.view];
-                    return locationInView.x < 30.0f;
-                }));
-                
-            }
-            
-            {
-                Method gestureRecognizerShouldBegin = class_getInstanceMethod(_UINavigationInteractiveTransition, @selector(gestureRecognizerShouldBegin:));
-                method_setImplementation(gestureRecognizerShouldBegin, imp_implementationWithBlock(^(UIPercentDrivenInteractiveTransition *navTransition, UIPanGestureRecognizer *gestureRecognizer){
-                    CGPoint velocityInview = [gestureRecognizer velocityInView:gestureRecognizer.view];
-                    return velocityInview.x >= 0.0f;
-                }));
-            }
             {
                 __method_swizzling([UIPercentDrivenInteractiveTransition class], @selector(updateInteractiveTransition:), @selector(jz_updateInteractiveTransition:));
             }
@@ -231,8 +201,6 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
 }
 
 - (void)jz_navigationWillTransitFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController animated:(BOOL)animated isInterActiveTransition:(BOOL)isInterActiveTransition {
-    
-    self.interactivePopGestureRecognizer.enabled = true;
 
     self.jz_previousVisibleViewController = fromViewController;
     
@@ -260,17 +228,17 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
     self.navigationBar.barTintColor = jz_navigationBarTintColor;
 }
 
-- (void)setJz_fullScreenInteractivePopGestureRecognizer:(BOOL)jz_fullScreenInteractivePopGestureRecognizer {
-    if (jz_fullScreenInteractivePopGestureRecognizer) {
-        if ([self.interactivePopGestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]]) return;
-        object_setClass(self.interactivePopGestureRecognizer, [UIPanGestureRecognizer class]);
-        [self.interactivePopGestureRecognizer setValue:@NO forKey:@"canPanVertically"];
-        self.interactivePopGestureRecognizer.delaysTouchesBegan = false;
-    } else {
-        if ([self.interactivePopGestureRecognizer isMemberOfClass:[UIScreenEdgePanGestureRecognizer class]]) return;
-        object_setClass(self.interactivePopGestureRecognizer, [UIScreenEdgePanGestureRecognizer class]);
-        self.interactivePopGestureRecognizer.delaysTouchesBegan = true;
+- (void)setJz_fullScreenInteractivePopGestureEnabled:(BOOL)jz_fullScreenInteractivePopGestureEnabled {
+    if (!self.jz_fullScreenInteractivePopGestureRecognizer) {
+        NSMutableArray *_interactiveTargets = jz_getProperty(self.interactivePopGestureRecognizer, @"_targets");
+        UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:jz_getProperty(_interactiveTargets.firstObject, @"_target") action:JZ_sel_handleNavigationTransition];
+        [panGestureRecognizer setValue:@NO forKey:@"canPanVertically"];
+        self._jz_fullScreenInteractiveTransition = [[_JZNavigationFullScreenInteractiveTransition alloc] initWithNavigationController:self];
+        panGestureRecognizer.delegate = self._jz_fullScreenInteractiveTransition;
+        [[self.interactivePopGestureRecognizer view] addGestureRecognizer:panGestureRecognizer];
+        self.jz_fullScreenInteractivePopGestureRecognizer = panGestureRecognizer;
     }
+    self.jz_fullScreenInteractivePopGestureRecognizer.enabled = jz_fullScreenInteractivePopGestureEnabled;
 }
 
 - (void)setJz_toolbarBackgroundAlpha:(CGFloat)jz_toolbarBackgroundAlpha {
@@ -306,7 +274,27 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
     objc_setAssociatedObject(self, @selector(jz_previousVisibleViewController), jz_previousVisibleViewController ? [_JZValue valueWithWeakObject:jz_previousVisibleViewController] : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (void)set_jz_fullScreenInteractiveTransition:(_JZNavigationFullScreenInteractiveTransition *)_jz_fullScreenInteractiveTransition {
+    objc_setAssociatedObject(self, @selector(_jz_fullScreenInteractiveTransition), _jz_fullScreenInteractiveTransition, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (void)setJz_fullScreenInteractivePopGestureRecognizer:(UIPanGestureRecognizer *)jz_fullScreenInteractivePopGestureRecognizer {
+    objc_setAssociatedObject(self, @selector(jz_fullScreenInteractivePopGestureRecognizer), jz_fullScreenInteractivePopGestureRecognizer ? [_JZValue valueWithWeakObject:jz_fullScreenInteractivePopGestureRecognizer] : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 #pragma mark - getters
+
+- (UIPanGestureRecognizer *)jz_fullScreenInteractivePopGestureRecognizer {
+    id _fullScreenInteractivePopGestureRecognizer = [objc_getAssociatedObject(self, _cmd) weakObjectValue];
+    if (!_fullScreenInteractivePopGestureRecognizer) {
+        self.jz_fullScreenInteractivePopGestureRecognizer = nil;
+    }
+    return _fullScreenInteractivePopGestureRecognizer;
+}
+
+- (_JZNavigationFullScreenInteractiveTransition *)_jz_fullScreenInteractiveTransition {
+    return objc_getAssociatedObject(self, _cmd);
+}
 
 - (UIViewController *)jz_previousVisibleViewController {
     id _previousVisibleViewController = [objc_getAssociatedObject(self, _cmd) weakObjectValue];
@@ -332,8 +320,8 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
     return [[self.toolbar jz_backgroundView] alpha];
 }
 
-- (BOOL)jz_fullScreenInteractivePopGestureRecognizer {
-    return [self.interactivePopGestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]];
+- (BOOL)jz_fullScreenInteractivePopGestureEnabled {
+    return self.jz_fullScreenInteractivePopGestureRecognizer.enabled;
 }
 
 - (_jz_navigation_block_t)_jz_navigationTransitionFinished {
@@ -353,11 +341,11 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
 }
 
 - (BOOL)jz_isInteractiveTransition {
-    return [objc_getProperty(self, @"isInteractiveTransition") boolValue];
+    return [jz_getProperty(self, @"isInteractiveTransition") boolValue];
 }
 
 - (BOOL)jz_isTransitioning {
-    return [objc_getProperty(self, @"_isTransitioning") boolValue];
+    return [jz_getProperty(self, @"_isTransitioning") boolValue];
 }
 
 - (UIViewController *)jz_previousViewControllerForViewController:(UIViewController *)viewController {

@@ -84,7 +84,7 @@
     switch (indexPath.row) {
         case 0:
             accessoryType = (UITableViewCellAccessoryType)UITableViewCellAccessorySwitch;
-            cell.accessoryModel = @{@"on" : @(self.navigationController.jz_fullScreenInteractivePopGestureRecognizer)};
+            cell.accessoryModel = @{@"on" : @(self.navigationController.jz_fullScreenInteractivePopGestureEnabled)};
             break;
             
         case 1:
@@ -119,7 +119,7 @@
     cell.accessoryViewAction = ^(UIView *accessoryView){
         if ([accessoryView isKindOfClass:[UISwitch class]]) {
             UISwitch *accessorySwitch = (UISwitch *)accessoryView;
-            weakSelf.navigationController.jz_fullScreenInteractivePopGestureRecognizer = accessorySwitch.isOn;
+            weakSelf.navigationController.jz_fullScreenInteractivePopGestureEnabled = accessorySwitch.isOn;
         } else if ([accessoryView isKindOfClass:[UIStepper class]]) {
             UIStepper *accessoryStep = (UIStepper *)accessoryView;
             if (indexPath.row == 1) {
@@ -152,7 +152,7 @@
     viewController.view.backgroundColor = UIColorWithRGBA(34, 195, 98, 1.f);
 
     UIImageView *tipImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tip_pop_gesture"]];
-    tipImageView.layer.position = CGPointMake(self.navigationController.jz_fullScreenInteractivePopGestureRecognizer ? viewController.view.center.x : tipImageView.bounds.size.width*0.5, viewController.view.center.y);
+    tipImageView.layer.position = CGPointMake(self.navigationController.jz_fullScreenInteractivePopGestureEnabled ? viewController.view.center.x : tipImageView.bounds.size.width*0.5, viewController.view.center.y);
     [viewController.view addSubview:tipImageView];
     
     switch (indexPath.row) {
@@ -235,7 +235,7 @@
 - (NSArray *)cellModels {
     if (!_cellModels) {
         NSMutableArray *mutableCellModels = [@[
-                                              @"fullScreenInteractivePopGestureRecognizer",
+                                              @"jz_fullScreenInteractivePopGestureEnabled",
                                               @"navigationBarBackgroundAlpha",
                                               @"navigationBarHeight",
                                               @"wantsNavigationBarVisible:NO",

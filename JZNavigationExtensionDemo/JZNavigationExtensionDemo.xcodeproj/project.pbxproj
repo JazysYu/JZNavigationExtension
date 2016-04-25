@@ -23,6 +23,7 @@
 		40D3B0E81B3C0859009F145F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 40D3B0E61B3C0859009F145F /* LaunchScreen.xib */; };
 		40D3B0FF1B3C095C009F145F /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3B0FE1B3C095C009F145F /* SecondViewController.m */; };
 		40D3B1071B3D1B64009F145F /* DemoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3B1061B3D1B64009F145F /* DemoTableViewCell.m */; };
+		40DB17B01CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 40DB17AF1CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,8 @@
 		40D3B0FE1B3C095C009F145F /* SecondViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
 		40D3B1051B3D1B64009F145F /* DemoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoTableViewCell.h; sourceTree = "<group>"; };
 		40D3B1061B3D1B64009F145F /* DemoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoTableViewCell.m; sourceTree = "<group>"; };
+		40DB17AE1CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _JZNavigationFullScreenInteractiveTransition.h; sourceTree = "<group>"; };
+		40DB17AF1CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _JZNavigationFullScreenInteractiveTransition.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +102,8 @@
 				40695FB01CBDE4A7004F73E8 /* UIPercentDrivenInteractiveTransition+JZExtension.m */,
 				40695FB11CBDE4A7004F73E8 /* UIToolbar+JZExtension.h */,
 				40695FB21CBDE4A7004F73E8 /* UIToolbar+JZExtension.m */,
+				40DB17AE1CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.h */,
+				40DB17AF1CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.m */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -240,6 +245,7 @@
 				40D3B0FF1B3C095C009F145F /* SecondViewController.m in Sources */,
 				40695FBB1CBDE4A7004F73E8 /* UIToolbar+JZExtension.m in Sources */,
 				40695FB91CBDE4A7004F73E8 /* UINavigationBar+JZExtension.m in Sources */,
+				40DB17B01CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.m in Sources */,
 				40695FBA1CBDE4A7004F73E8 /* UIPercentDrivenInteractiveTransition+JZExtension.m in Sources */,
 				40695FBC1CBDE4A7004F73E8 /* UINavigationController+JZExtension.m in Sources */,
 				40D3B1071B3D1B64009F145F /* DemoTableViewCell.m in Sources */,

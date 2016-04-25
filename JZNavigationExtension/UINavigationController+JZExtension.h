@@ -35,7 +35,7 @@
  *
  *  If YES, then you can have a fullscreen gesture recognizer responsible for popping the top view controller off the navigation stack, and the property is still "interactivePopGestureRecognizer", see more for "UINavigationController.h", Default is NO.
  */
-@property (nonatomic, assign) BOOL jz_fullScreenInteractivePopGestureRecognizer NS_AVAILABLE_IOS(7_0);
+@property (nonatomic, assign) BOOL jz_fullScreenInteractivePopGestureEnabled NS_AVAILABLE_IOS(7_0);
 
 /**
  *  @author JazysYu, 16-01-25 14:01:24
