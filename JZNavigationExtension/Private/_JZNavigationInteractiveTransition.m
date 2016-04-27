@@ -103,20 +103,34 @@ NS_INLINE void jz_handleInteractiveTransition(id self, BOOL isCancel) {
     }
     
     UIColor *_interactivePopedViewController_navigationBarTintColor = _getNavigationBarTintColor(navigationController, navigationController.jz_previousVisibleViewController);
+    
     if (_interactivePopedViewController_navigationBarTintColor != navigationController.visibleViewController.jz_navigationBarTintColor) {
+        
         CGFloat red1, green1, blue1, alpha1;
+        red1 = green1 = blue1 = alpha1 = 0.f;
+        
         CGFloat red2, green2, blue2, alpha2;
-        [_interactivePopedViewController_navigationBarTintColor getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
-        [navigationController.visibleViewController.jz_navigationBarTintColor getRed:&red2 green:&green2 blue:&blue2 alpha:&alpha2];
+        red2 = green2 = blue2 = alpha2 = 0.f;
+
+        if (_interactivePopedViewController_navigationBarTintColor) {
+            [_interactivePopedViewController_navigationBarTintColor getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
+        }
+        
+        if (navigationController.visibleViewController.jz_navigationBarTintColor) {
+            [navigationController.visibleViewController.jz_navigationBarTintColor getRed:&red2 green:&green2 blue:&blue2 alpha:&alpha2];
+        }
+        
         red1 += percentComplete * (red2 - red1);
         green1 += percentComplete * (green2 - green1);
         blue1 += percentComplete * (blue2 - blue1);
         alpha1 += percentComplete * (alpha2 - alpha1);
 
         UIColor *barTintColor = [UIColor colorWithRed:red1 green:green1 blue:blue1 alpha:alpha1];
+        
         if (jz_isVersionBelow9_0) {
             if (!navigationController.jz_navigationBarTintColorView) {
                 UIView *virtualViewForAnimation = [[UIView alloc] initWithFrame:navigationController.navigationBar.jz_backgroundView.bounds];
+                virtualViewForAnimation.backgroundColor = _interactivePopedViewController_navigationBarTintColor;
                 [navigationController.navigationBar.jz_backgroundView addSubview:virtualViewForAnimation];
                 navigationController.jz_navigationBarTintColorView = virtualViewForAnimation;
             }
@@ -125,6 +139,7 @@ NS_INLINE void jz_handleInteractiveTransition(id self, BOOL isCancel) {
         } else {
             navigationController.jz_navigationBarTintColor = barTintColor;
         }
+        
     }
 }
 
