@@ -1,12 +1,13 @@
 # JZNavigationExtension
 
-[![Version](https://img.shields.io/badge/pod-v1.4.0-5193DB.svg)](https://cocoapods.org/pods/JZNavigationExtension)
+[![Version](https://img.shields.io/badge/pod-v1.4.5-5193DB.svg)](https://cocoapods.org/pods/JZNavigationExtension)
 [![Platform](https://img.shields.io/badge/platform-ios-lightgrey.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-2F2F2F.svg)](https://github.com/JazysYu/JZNavigationExtension/blob/master/LICENSE)
 
-The "UINavigationController+JZExtension" category integrates some convenient features and open some hide functions for UINavigationController.
+JZNavigationExtension integrates some convenient features for UINavigationController.
 ___
-"UINavigationController+JZExtension"分类为UINavigationController集成了许多方便的功能点，同时为它打开了一些隐藏功能。
+JZNavigationExtension为UINavigationController集成了许多方便的功能。
+
 # Features
 * [To gives you a fullscreen interactivePopGestureRecognizer](#FPG)
 * [To hides navigation bar when the view controller is pushed on to a navigation controller](#HNBP)
@@ -33,14 +34,14 @@ ___
 <a id="FPG"></a>To gives you a fullscreen interactivePopGestureRecognizer【打开全屏Pop手势】:
 
 ``` objc
-navigationController.fullScreenInteractivePopGestureRecognizer = YES;
+navigationController.jz_fullScreenInteractivePopGestureEnabled = YES;
 ```
 ___
 
 <a id="FPG"></a>Set a completion for fullscreen interactivePopGestureRecognizer【全屏Pop手势回调】:
 
 ``` objc
-[self.navigationController setInteractivePopGestureRecognizerCompletion:^(BOOL finished) {
+[self.navigationController jz_setInteractivePopGestureRecognizerCompletion:^(BOOL finished) {
         if (finished) {
             // Codes
         }
@@ -51,14 +52,14 @@ ___
 <a id="HNBP"></a>To hides navigation bar when the view controller is pushed on to a navigation controller【支持转场隐藏、显示导航栏】:
 ``` objc
 UIViewController *viewController = [UIViewController new];
-viewController.wantsNavigationBarVisible = NO;
+viewController.jz_wantsNavigationBarVisible = NO;
 [self.navigationController pushToViewController:viewController animated:YES];
 ```
 ___
 
 <a id="PWB"></a>To Push/Pop view controller With blocks【导航控制器转场回调】:
 ``` objc
-[self.navigationController pushViewController:viewController animated:YES completion:^(BOOL finished) {
+[self.navigationController jz_pushViewController:viewController animated:YES completion:^(BOOL finished) {
 		///Do any thing
 }];
 ```
@@ -67,14 +68,14 @@ ___
 <a id="NBTA"></a>To adjust navigation/tool bar background alpha【调节导航控制器的导航栏、工具条透明度】:
 
 ``` objc
-navigationController.navigationBarBackgroundAlpha = yourAlpha;
+navigationController.jz_navigationBarBackgroundAlpha = yourAlpha;
 ```
 ___
 
 <a id="NBTS"></a>To change navigation/tool bar size【改变导航控制器的导航栏、工具条大小】:
 
 ``` objc
-[navigationController setNavigationBarSize:size];
+[navigationController setJz_navigationBarSize:size];
 ```
 
 ___
@@ -83,7 +84,7 @@ ___
 
 ``` objc
 UIViewController *viewController = [UIViewController new];
-viewController.navigationBarBackgroundHidden = YES;
+viewController.jz_navigationBarBackgroundHidden = YES;
 ```
 
 ![overview](https://raw.githubusercontent.com/JazysYu/JZNavigationExtension/master/Snapshots/JZNavigationExtensionDemo2.gif)
@@ -93,11 +94,15 @@ ___
 
 ``` objc
 UIViewController *viewController = [UIViewController new];
-viewController.navigationBarTintColor = [UIColor redColor];
+viewController.jz_navigationBarTintColor = [UIColor redColor];
 ```
 
 ![overview](https://raw.githubusercontent.com/JazysYu/JZNavigationExtension/master/Snapshots/JZNavigationExtensionDemo3.gif)
 ___
+
+Many other features please look up public header files...
+
+###### NS_AVAILABLE_IOS(7_0) 
 
 # Installation
 #### Use cocoapods
