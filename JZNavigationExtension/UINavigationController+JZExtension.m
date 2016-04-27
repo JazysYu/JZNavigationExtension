@@ -125,9 +125,15 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (void)jz_setViewControllers:(NSArray<UIViewController *> *)viewControllers animated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
-    self.jz_operation = UINavigationControllerOperationPush;
-    self._jz_navigationTransitionFinished = completion;
     NSArray *oldViewControllers = self.viewControllers;
+    UINavigationControllerOperation operation = UINavigationControllerOperationNone;
+    if (viewControllers.count > oldViewControllers.count) {
+        operation = UINavigationControllerOperationPush;
+    } else if (viewControllers.count < oldViewControllers.count) {
+        operation = UINavigationControllerOperationPop;
+    }
+    self.jz_operation = operation;
+    self._jz_navigationTransitionFinished = completion;
     [self jz_setViewControllers:viewControllers animated:animated];
     [self jz_navigationWillTransitFromViewController:oldViewControllers.lastObject toViewController:viewControllers.lastObject animated:animated isInterActiveTransition:NO];
 }
