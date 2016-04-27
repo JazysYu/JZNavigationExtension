@@ -71,7 +71,14 @@
 
 - (CGFloat)jz_navigationBarBackgroundAlpha {
     id _navigationBarBackgroundAlpha = objc_getAssociatedObject(self, _cmd);
-    return _navigationBarBackgroundAlpha ? [_navigationBarBackgroundAlpha jz_CGFloatValue] : self.navigationController.jz_navigationBarBackgroundAlpha;
+    if (_navigationBarBackgroundAlpha) {
+        return [_navigationBarBackgroundAlpha jz_CGFloatValue];
+    }
+    UINavigationController *navigationController = self.navigationController;
+    if (navigationController) {
+        return navigationController.jz_navigationBarBackgroundAlpha;
+    }
+    return 1.f;
 }
 
 - (UIColor *)jz_navigationBarTintColor {
