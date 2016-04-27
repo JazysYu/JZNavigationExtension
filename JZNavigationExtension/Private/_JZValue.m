@@ -1,6 +1,5 @@
 //
 //  _JZValue.m
-//  JZNavigationExtensionDemo
 //
 //  Created by Jazys on 3/12/16.
 //  Copyright © 2016 Jazys. All rights reserved.

@@ -1,6 +1,5 @@
 //
 //  _JZ-objc-internal.h
-//  JZNavigationExtensionDemo
 //
 //  Created by Jazys on 3/11/16.
 //  Copyright © 2016 Jazys. All rights reserved.
@@ -18,13 +17,15 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wnullability-completeness"
 
-@class _JZNavigationFullScreenInteractiveTransition;
+extern __attribute__((visibility ("default"))) BOOL jz_isVersionBelow9_0;
+@class _JZNavigationInteractiveTransition;
 typedef void(^_jz_navigation_block_t)(UINavigationController *navigationController, BOOL finished);
 @interface UINavigationController (_JZExtension)
 @property (nonatomic, copy, setter=jz_setInteractivePopGestureRecognizerCompletion:) void (^jz_interactivePopGestureRecognizerCompletion)(UINavigationController *, BOOL);
 @property (nonatomic, copy) _jz_navigation_block_t _jz_navigationTransitionFinished;
-@property (nonatomic, strong) _JZNavigationFullScreenInteractiveTransition *_jz_fullScreenInteractiveTransition;
+@property (nonatomic, strong) _JZNavigationInteractiveTransition *_jz_interactiveTransition;
 @property (nonatomic, weak, readonly) UIPanGestureRecognizer *jz_fullScreenInteractivePopGestureRecognizer;
+@property (nonatomic, weak, readwrite) UIView *jz_navigationBarTintColorView;
 - (BOOL)jz_isTransitioning;
 - (BOOL)jz_isInteractiveTransition;
 @end

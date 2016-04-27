@@ -1,6 +1,5 @@
 //
 //  UIToolbar+JZExtension.h
-//  JZNavigationExtensionDemo
 //
 //  Created by Jazys on 3/11/16.
 //  Copyright © 2016 Jazys. All rights reserved.

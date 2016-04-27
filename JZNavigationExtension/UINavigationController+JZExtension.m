@@ -26,8 +26,9 @@
 #import "UIToolbar+JZExtension.h"
 #import "UINavigationBar+JZExtension.h"
 #import "UIViewController+JZExtension.h"
-#import "UIPercentDrivenInteractiveTransition+JZExtension.h"
-#import "_JZNavigationFullScreenInteractiveTransition.h"
+#import "_JZNavigationInteractiveTransition.h"
+
+BOOL jz_isVersionBelow9_0 = false;
 
 @implementation UINavigationController (JZExtension)
 
@@ -36,60 +37,80 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        void (^__method_swizzling)(Class, SEL, SEL) = ^(Class cls, SEL sel, SEL _sel) {
+        jz_isVersionBelow9_0 = [[[UIDevice currentDevice] systemVersion] compare:@"9.0" options:NSNumericSearch] == NSOrderedAscending;
+        
+        void (^jz_method_swizzling)(Class, SEL, SEL) = ^(Class cls, SEL sel, SEL _sel) {
             Method  method = class_getInstanceMethod(cls, sel);
             Method _method = class_getInstanceMethod(cls, _sel);
             method_exchangeImplementations(method, _method);
         };
         
+        void (^jz_class_reImplementation)(Class, SEL, IMP) = ^(Class cls, SEL sel, IMP imp) {
+            Method method = class_getInstanceMethod(cls, sel);
+            if (!class_addMethod(cls, sel, imp, method_getTypeEncoding(method))) {
+                method_setImplementation(method, imp);
+            }
+        };
+        
         {
+            Class cls_UINavigationInteractiveTransition = JZ_UINavigationInteractiveTransition;
+            Class cls_JZNavigationFullScreenInteractiveTransition = [_JZNavigationInteractiveTransition class];
             {
-                __method_swizzling([UIPercentDrivenInteractiveTransition class], @selector(updateInteractiveTransition:), @selector(jz_updateInteractiveTransition:));
+                SEL sel_shouldBegin = @selector(gestureRecognizerShouldBegin:);
+                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_shouldBegin, [cls_JZNavigationFullScreenInteractiveTransition instanceMethodForSelector:sel_shouldBegin]);
             }
+            {
+                SEL sel_shouldReceiveTouch = @selector(gestureRecognizer:shouldReceiveTouch:);
+                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_shouldReceiveTouch, [cls_JZNavigationFullScreenInteractiveTransition instanceMethodForSelector:sel_shouldReceiveTouch]);
+            }
+            {
+                SEL sel_shouldBeRequiredToFailByGestureRecognizer = @selector(gestureRecognizer:shouldBeRequiredToFailByGestureRecognizer:);
+                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_shouldBeRequiredToFailByGestureRecognizer, [cls_JZNavigationFullScreenInteractiveTransition instanceMethodForSelector:sel_shouldBeRequiredToFailByGestureRecognizer]);
+            }
+            {
+                SEL sel_updateInteractiveTransition = @selector(updateInteractiveTransition:);
+                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_updateInteractiveTransition, [cls_JZNavigationFullScreenInteractiveTransition instanceMethodForSelector:sel_updateInteractiveTransition]);
+            }
+            {
+                SEL sel_cancelInteractiveTransition = @selector(cancelInteractiveTransition);
+                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_cancelInteractiveTransition, [cls_JZNavigationFullScreenInteractiveTransition instanceMethodForSelector:sel_cancelInteractiveTransition]);
+            }
+            {
+                SEL sel_finishInteractiveTransition = @selector(finishInteractiveTransition);
+                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_finishInteractiveTransition, [cls_JZNavigationFullScreenInteractiveTransition instanceMethodForSelector:sel_finishInteractiveTransition]);
+            }
+        }
             
-            {
-                __method_swizzling([UIPercentDrivenInteractiveTransition class], @selector(cancelInteractiveTransition), @selector(jz_cancelInteractiveTransition));
-            }
-            
-            {
-                __method_swizzling([UIPercentDrivenInteractiveTransition class], @selector(finishInteractiveTransition), @selector(jz_finishInteractiveTransition));
-            }
-            
-            {
-                __method_swizzling([UINavigationBar class], @selector(sizeThatFits:), @selector(jz_sizeThatFits:));
-            }
-            
-            {
-                __method_swizzling([UIToolbar class], @selector(sizeThatFits:), @selector(jz_sizeThatFits:));
-            }
+        {
+            jz_method_swizzling([UINavigationBar class], @selector(sizeThatFits:), @selector(jz_sizeThatFits:));
         }
         
         {
+            jz_method_swizzling([UIToolbar class], @selector(sizeThatFits:), @selector(jz_sizeThatFits:));
+        }
             
-            {
-                __method_swizzling([UINavigationController class], @selector(pushViewController:animated:),@selector(jz_pushViewController:animated:));
-            }
-            
-            {
-                __method_swizzling([UINavigationController class], @selector(popViewControllerAnimated:), @selector(jz_popViewControllerAnimated:));
-            }
-            
-            {
-                __method_swizzling([UINavigationController class], @selector(popToViewController:animated:), @selector(jz_popToViewController:animated:));
-            }
-            
-            {
-                __method_swizzling([UINavigationController class], @selector(popToRootViewControllerAnimated:), @selector(jz_popToRootViewControllerAnimated:));
-            }
+        {
+            jz_method_swizzling([UINavigationController class], @selector(pushViewController:animated:),@selector(jz_pushViewController:animated:));
+        }
+        
+        {
+            jz_method_swizzling([UINavigationController class], @selector(popViewControllerAnimated:), @selector(jz_popViewControllerAnimated:));
+        }
+        
+        {
+            jz_method_swizzling([UINavigationController class], @selector(popToViewController:animated:), @selector(jz_popToViewController:animated:));
+        }
+        
+        {
+            jz_method_swizzling([UINavigationController class], @selector(popToRootViewControllerAnimated:), @selector(jz_popToRootViewControllerAnimated:));
+        }
 
-            {
-                __method_swizzling([UINavigationController class], @selector(setViewControllers:animated:), @selector(jz_setViewControllers:animated:));
-            }
-            
-            {
-                __method_swizzling([UINavigationController class], NSSelectorFromString(@"navigationTransitionView:didEndTransition:fromView:toView:"),@selector(jz_navigationTransitionView:didEndTransition:fromView:toView:));
-            }
-            
+        {
+            jz_method_swizzling([UINavigationController class], @selector(setViewControllers:animated:), @selector(jz_setViewControllers:animated:));
+        }
+        
+        {
+            jz_method_swizzling([UINavigationController class], NSSelectorFromString(@"navigationTransitionView:didEndTransition:fromView:toView:"),@selector(jz_navigationTransitionView:didEndTransition:fromView:toView:));
         }
         
     });
@@ -223,6 +244,10 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
 
 #pragma mark - setters
 
+- (void)setJz_navigationBarTintColorView:(UIView *)jz_navigationBarTintColorView {
+    objc_setAssociatedObject(self, @selector(jz_navigationBarTintColorView), jz_navigationBarTintColorView ? [_JZValue valueWithWeakObject:jz_navigationBarTintColorView] : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 - (void)setJz_navigationBarTintColor:(UIColor *)jz_navigationBarTintColor {
     self.navigationBar.barTintColor = jz_navigationBarTintColor;
 }
@@ -232,8 +257,8 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
         NSMutableArray *_interactiveTargets = jz_getProperty(self.interactivePopGestureRecognizer, @"_targets");
         UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:jz_getProperty(_interactiveTargets.firstObject, @"_target") action:JZ_sel_handleNavigationTransition];
         [panGestureRecognizer setValue:@NO forKey:@"canPanVertically"];
-        self._jz_fullScreenInteractiveTransition = [[_JZNavigationFullScreenInteractiveTransition alloc] initWithNavigationController:self];
-        panGestureRecognizer.delegate = self._jz_fullScreenInteractiveTransition;
+        self._jz_interactiveTransition = [[_JZNavigationInteractiveTransition alloc] initWithNavigationController:self];
+        panGestureRecognizer.delegate = self._jz_interactiveTransition;
         [[self.interactivePopGestureRecognizer view] addGestureRecognizer:panGestureRecognizer];
         self.jz_fullScreenInteractivePopGestureRecognizer = panGestureRecognizer;
     }
@@ -273,8 +298,8 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
     objc_setAssociatedObject(self, @selector(jz_previousVisibleViewController), jz_previousVisibleViewController ? [_JZValue valueWithWeakObject:jz_previousVisibleViewController] : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)set_jz_fullScreenInteractiveTransition:(_JZNavigationFullScreenInteractiveTransition *)_jz_fullScreenInteractiveTransition {
-    objc_setAssociatedObject(self, @selector(_jz_fullScreenInteractiveTransition), _jz_fullScreenInteractiveTransition, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)set_jz_interactiveTransition:(_JZNavigationInteractiveTransition *)_jz_interactiveTransition {
+    objc_setAssociatedObject(self, @selector(_jz_interactiveTransition), _jz_interactiveTransition, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)setJz_fullScreenInteractivePopGestureRecognizer:(UIPanGestureRecognizer *)jz_fullScreenInteractivePopGestureRecognizer {
@@ -282,6 +307,14 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
 }
 
 #pragma mark - getters
+
+- (UIView *)jz_navigationBarTintColorView {
+    id weakObject = [objc_getAssociatedObject(self, _cmd) weakObjectValue];
+    if (!weakObject) {
+        self.jz_navigationBarTintColorView = nil;
+    }
+    return weakObject;
+}
 
 - (UIPanGestureRecognizer *)jz_fullScreenInteractivePopGestureRecognizer {
     id _fullScreenInteractivePopGestureRecognizer = [objc_getAssociatedObject(self, _cmd) weakObjectValue];
@@ -291,7 +324,7 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
     return _fullScreenInteractivePopGestureRecognizer;
 }
 
-- (_JZNavigationFullScreenInteractiveTransition *)_jz_fullScreenInteractiveTransition {
+- (_JZNavigationInteractiveTransition *)_jz_interactiveTransition {
     return objc_getAssociatedObject(self, _cmd);
 }
 

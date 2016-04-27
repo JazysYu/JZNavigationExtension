@@ -12,7 +12,6 @@
 		40695FB71CBDE4A7004F73E8 /* _JZValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 40695FAA1CBDE4A7004F73E8 /* _JZValue.m */; };
 		40695FB81CBDE4A7004F73E8 /* NSNumber+JZExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 40695FAC1CBDE4A7004F73E8 /* NSNumber+JZExtension.m */; };
 		40695FB91CBDE4A7004F73E8 /* UINavigationBar+JZExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 40695FAE1CBDE4A7004F73E8 /* UINavigationBar+JZExtension.m */; };
-		40695FBA1CBDE4A7004F73E8 /* UIPercentDrivenInteractiveTransition+JZExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 40695FB01CBDE4A7004F73E8 /* UIPercentDrivenInteractiveTransition+JZExtension.m */; };
 		40695FBB1CBDE4A7004F73E8 /* UIToolbar+JZExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 40695FB21CBDE4A7004F73E8 /* UIToolbar+JZExtension.m */; };
 		40695FBC1CBDE4A7004F73E8 /* UINavigationController+JZExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 40695FB41CBDE4A7004F73E8 /* UINavigationController+JZExtension.m */; };
 		40695FBD1CBDE4A7004F73E8 /* UIViewController+JZExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 40695FB61CBDE4A7004F73E8 /* UIViewController+JZExtension.m */; };
@@ -23,7 +22,7 @@
 		40D3B0E81B3C0859009F145F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 40D3B0E61B3C0859009F145F /* LaunchScreen.xib */; };
 		40D3B0FF1B3C095C009F145F /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3B0FE1B3C095C009F145F /* SecondViewController.m */; };
 		40D3B1071B3D1B64009F145F /* DemoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3B1061B3D1B64009F145F /* DemoTableViewCell.m */; };
-		40DB17B01CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 40DB17AF1CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.m */; };
+		40DB17B01CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 40DB17AF1CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,8 +38,6 @@
 		40695FAC1CBDE4A7004F73E8 /* NSNumber+JZExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+JZExtension.m"; sourceTree = "<group>"; };
 		40695FAD1CBDE4A7004F73E8 /* UINavigationBar+JZExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationBar+JZExtension.h"; sourceTree = "<group>"; };
 		40695FAE1CBDE4A7004F73E8 /* UINavigationBar+JZExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationBar+JZExtension.m"; sourceTree = "<group>"; };
-		40695FAF1CBDE4A7004F73E8 /* UIPercentDrivenInteractiveTransition+JZExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIPercentDrivenInteractiveTransition+JZExtension.h"; sourceTree = "<group>"; };
-		40695FB01CBDE4A7004F73E8 /* UIPercentDrivenInteractiveTransition+JZExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIPercentDrivenInteractiveTransition+JZExtension.m"; sourceTree = "<group>"; };
 		40695FB11CBDE4A7004F73E8 /* UIToolbar+JZExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIToolbar+JZExtension.h"; sourceTree = "<group>"; };
 		40695FB21CBDE4A7004F73E8 /* UIToolbar+JZExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIToolbar+JZExtension.m"; sourceTree = "<group>"; };
 		40695FB31CBDE4A7004F73E8 /* UINavigationController+JZExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+JZExtension.h"; sourceTree = "<group>"; };
@@ -59,8 +56,8 @@
 		40D3B0FE1B3C095C009F145F /* SecondViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
 		40D3B1051B3D1B64009F145F /* DemoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoTableViewCell.h; sourceTree = "<group>"; };
 		40D3B1061B3D1B64009F145F /* DemoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoTableViewCell.m; sourceTree = "<group>"; };
-		40DB17AE1CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _JZNavigationFullScreenInteractiveTransition.h; sourceTree = "<group>"; };
-		40DB17AF1CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _JZNavigationFullScreenInteractiveTransition.m; sourceTree = "<group>"; };
+		40DB17AE1CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _JZNavigationInteractiveTransition.h; sourceTree = "<group>"; };
+		40DB17AF1CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _JZNavigationInteractiveTransition.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,12 +95,10 @@
 				40695FAC1CBDE4A7004F73E8 /* NSNumber+JZExtension.m */,
 				40695FAD1CBDE4A7004F73E8 /* UINavigationBar+JZExtension.h */,
 				40695FAE1CBDE4A7004F73E8 /* UINavigationBar+JZExtension.m */,
-				40695FAF1CBDE4A7004F73E8 /* UIPercentDrivenInteractiveTransition+JZExtension.h */,
-				40695FB01CBDE4A7004F73E8 /* UIPercentDrivenInteractiveTransition+JZExtension.m */,
 				40695FB11CBDE4A7004F73E8 /* UIToolbar+JZExtension.h */,
 				40695FB21CBDE4A7004F73E8 /* UIToolbar+JZExtension.m */,
-				40DB17AE1CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.h */,
-				40DB17AF1CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.m */,
+				40DB17AE1CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.h */,
+				40DB17AF1CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.m */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -245,8 +240,7 @@
 				40D3B0FF1B3C095C009F145F /* SecondViewController.m in Sources */,
 				40695FBB1CBDE4A7004F73E8 /* UIToolbar+JZExtension.m in Sources */,
 				40695FB91CBDE4A7004F73E8 /* UINavigationBar+JZExtension.m in Sources */,
-				40DB17B01CCB64AB00F8B89C /* _JZNavigationFullScreenInteractiveTransition.m in Sources */,
-				40695FBA1CBDE4A7004F73E8 /* UIPercentDrivenInteractiveTransition+JZExtension.m in Sources */,
+				40DB17B01CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.m in Sources */,
 				40695FBC1CBDE4A7004F73E8 /* UINavigationController+JZExtension.m in Sources */,
 				40D3B1071B3D1B64009F145F /* DemoTableViewCell.m in Sources */,
 				40695FB71CBDE4A7004F73E8 /* _JZValue.m in Sources */,
@@ -297,7 +291,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -342,7 +336,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -368,6 +362,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				INFOPLIST_FILE = JZNavigationExtensionDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
@@ -382,6 +378,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				INFOPLIST_FILE = JZNavigationExtensionDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
