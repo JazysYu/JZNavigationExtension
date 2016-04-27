@@ -103,7 +103,7 @@ NS_INLINE void jz_handleInteractiveTransition(id self, BOOL isCancel) {
     }
     
     UIColor *_interactivePopedViewController_navigationBarTintColor = _getNavigationBarTintColor(navigationController, navigationController.jz_previousVisibleViewController);
-    if (![_interactivePopedViewController_navigationBarTintColor isEqual:navigationController.visibleViewController.jz_navigationBarTintColor]) {
+    if (_interactivePopedViewController_navigationBarTintColor != navigationController.visibleViewController.jz_navigationBarTintColor) {
         CGFloat red1, green1, blue1, alpha1;
         CGFloat red2, green2, blue2, alpha2;
         [_interactivePopedViewController_navigationBarTintColor getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
