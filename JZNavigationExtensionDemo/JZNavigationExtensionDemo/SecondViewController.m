@@ -40,7 +40,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.tableView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
+    
+    self.jz_wantsNavigationBarVisible = true;
+    
     [self.navigationController jz_setInteractivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, BOOL finished) {
         if (finished) {
             NSLog(@"Interactive pop transition has been finished");

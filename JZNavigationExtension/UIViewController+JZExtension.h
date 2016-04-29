@@ -27,7 +27,7 @@
 /**
  *  @author JazysYu, 16-01-25 14:01:14
  *
- *  This property may only be used during push/pop function called. Default is YES.
+ *  Adjust navigation bar hidden state for view controller in anytime you want. If have not set, this property will not work.
  */
 @property (nonatomic, assign) IBInspectable BOOL jz_wantsNavigationBarVisible;
 

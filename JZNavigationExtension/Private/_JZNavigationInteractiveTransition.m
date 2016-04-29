@@ -85,6 +85,7 @@ NS_INLINE void jz_handleInteractiveTransition(id self, BOOL isCancel) {
     if (jz_isVersionBelow9_0) {
         navigationController.jz_navigationBarTintColorView.backgroundColor = newNavigationBarColor;
         [CATransaction setCompletionBlock:^{
+            [CATransaction setCompletionBlock:NULL];
             [navigationController.jz_navigationBarTintColorView removeFromSuperview];
         }];
     }

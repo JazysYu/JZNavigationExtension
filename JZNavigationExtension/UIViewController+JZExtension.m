@@ -54,6 +54,7 @@
 
 - (void)setJz_wantsNavigationBarVisible:(BOOL)jz_wantsNavigationBarVisible {
     objc_setAssociatedObject(self, @selector(jz_wantsNavigationBarVisible), @(jz_wantsNavigationBarVisible), OBJC_ASSOCIATION_ASSIGN);
+    [self.navigationController setNavigationBarHidden:!jz_wantsNavigationBarVisible animated:true];
 }
 
 - (BOOL)jz_isNavigationBarBackgroundHidden {
