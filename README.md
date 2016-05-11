@@ -1,7 +1,7 @@
 # JZNavigationExtension
 
 [![Version](https://img.shields.io/badge/pod-v1.4.7-5193DB.svg)](https://cocoapods.org/pods/JZNavigationExtension)
-[![Platform](https://img.shields.io/badge/platform-ios-lightgrey.svg)]()
+[![Platform](https://img.shields.io/badge/platform-iOS7+-lightgrey.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-2F2F2F.svg)](https://github.com/JazysYu/JZNavigationExtension/blob/master/LICENSE)
 
 JZNavigationExtension integrates some convenient features for UINavigationController.
@@ -103,6 +103,9 @@ ___
 Many other features please look up public header files...
 
 ###### NS_AVAILABLE_IOS(7_0) 
+
+# WIKI
+因为许多国内朋友问我的几个API的问题，所以写了一篇文档简单解释了一下，请参考这里 <https://github.com/JazysYu/JZNavigationExtension/wiki>
 
 # Installation
 #### Use cocoapods
