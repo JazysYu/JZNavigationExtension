@@ -45,6 +45,10 @@
     
     self.jz_wantsNavigationBarVisible = true;
     
+    self.jz_navigationBarTintColor = nil;
+    
+    self.jz_navigationBarBackgroundAlpha = 1.f;
+    
     [self.navigationController jz_setInteractivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, BOOL finished) {
         if (finished) {
             NSLog(@"Interactive pop transition has been finished");
@@ -145,7 +149,7 @@
 - (void)push {
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     SecondViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"SecondViewController"];
-    vc.view.backgroundColor = [UIColor redColor];
+    vc.view.backgroundColor = self.view.backgroundColor;
     vc.jz_navigationBarTintColor = [UIColor blueColor];
     [self.navigationController pushViewController:vc animated:true];
 }
@@ -183,14 +187,12 @@
             break;
         case 6:
         {
-            self.jz_navigationBarBackgroundAlpha = 1.f;
             viewController.jz_navigationBarBackgroundAlpha = 0.3;
             [self.navigationController pushViewController:viewController animated:YES];
         }
             break;
         case 7:
         {
-            self.jz_navigationBarTintColor = nil;
             viewController.jz_navigationBarTintColor = [UIColor redColor];
             [self.navigationController pushViewController:viewController animated:YES];
         }

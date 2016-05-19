@@ -54,30 +54,35 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         
         {
             Class cls_UINavigationInteractiveTransition = JZ_UINavigationInteractiveTransition;
-            Class cls_JZNavigationFullScreenInteractiveTransition = [_JZNavigationInteractiveTransition class];
-            {
-                SEL sel_shouldBegin = @selector(gestureRecognizerShouldBegin:);
-                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_shouldBegin, [cls_JZNavigationFullScreenInteractiveTransition instanceMethodForSelector:sel_shouldBegin]);
-            }
+            Class cls_JZNavigationInteractiveTransition = [_JZNavigationInteractiveTransition class];
             {
                 SEL sel_shouldReceiveTouch = @selector(gestureRecognizer:shouldReceiveTouch:);
-                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_shouldReceiveTouch, [cls_JZNavigationFullScreenInteractiveTransition instanceMethodForSelector:sel_shouldReceiveTouch]);
-            }
-            {
-                SEL sel_shouldBeRequiredToFailByGestureRecognizer = @selector(gestureRecognizer:shouldBeRequiredToFailByGestureRecognizer:);
-                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_shouldBeRequiredToFailByGestureRecognizer, [cls_JZNavigationFullScreenInteractiveTransition instanceMethodForSelector:sel_shouldBeRequiredToFailByGestureRecognizer]);
+                BOOL (*_originalShouldReceiveTouchIMP)(id, SEL, id, id) = (void *)[cls_UINavigationInteractiveTransition instanceMethodForSelector:sel_shouldReceiveTouch];
+                Method method_shouldReceiveTouch = class_getInstanceMethod(cls_UINavigationInteractiveTransition, sel_shouldReceiveTouch);
+                method_setImplementation(method_shouldReceiveTouch, imp_implementationWithBlock(^BOOL(id navigationTransition, id gestureRecognizer, id touch) {
+                    UINavigationController *navigationController = [navigationTransition valueForKey:@"__parent"];
+                    BOOL navigationBarHidden = navigationController.navigationBarHidden;
+                    if (navigationBarHidden) {
+                        navigationController.navigationBarHidden = false;
+                    }
+                    BOOL shouldReceiveTouch = _originalShouldReceiveTouchIMP(navigationTransition, sel_shouldReceiveTouch, gestureRecognizer, touch);
+                    if (navigationBarHidden) {
+                        navigationController.navigationBarHidden = true;
+                    }
+                    return shouldReceiveTouch;
+                }));
             }
             {
                 SEL sel_updateInteractiveTransition = @selector(updateInteractiveTransition:);
-                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_updateInteractiveTransition, [cls_JZNavigationFullScreenInteractiveTransition instanceMethodForSelector:sel_updateInteractiveTransition]);
+                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_updateInteractiveTransition, [cls_JZNavigationInteractiveTransition instanceMethodForSelector:sel_updateInteractiveTransition]);
             }
             {
                 SEL sel_cancelInteractiveTransition = @selector(cancelInteractiveTransition);
-                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_cancelInteractiveTransition, [cls_JZNavigationFullScreenInteractiveTransition instanceMethodForSelector:sel_cancelInteractiveTransition]);
+                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_cancelInteractiveTransition, [cls_JZNavigationInteractiveTransition instanceMethodForSelector:sel_cancelInteractiveTransition]);
             }
             {
                 SEL sel_finishInteractiveTransition = @selector(finishInteractiveTransition);
-                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_finishInteractiveTransition, [cls_JZNavigationFullScreenInteractiveTransition instanceMethodForSelector:sel_finishInteractiveTransition]);
+                jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_finishInteractiveTransition, [cls_JZNavigationInteractiveTransition instanceMethodForSelector:sel_finishInteractiveTransition]);
             }
         }
             
@@ -229,8 +234,11 @@ CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINav
 - (void)jz_navigationWillTransitFromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController animated:(BOOL)animated isInterActiveTransition:(BOOL)isInterActiveTransition {
 
     self.jz_previousVisibleViewController = fromViewController;
-    
-    if( objc_getAssociatedObject(toViewController, [toViewController jz_wantsNavigationBarVisibleAssociatedObjectKey]) ) {
+
+    if (self.jz_isInteractiveTransition && self.navigationBar.hidden && !toViewController.jz_wantsNavigationBarVisible) {
+        [self setNavigationBarHidden:false animated:animated];
+        self.navigationBar.hidden = true;
+    } else if( objc_getAssociatedObject(toViewController, [toViewController jz_wantsNavigationBarVisibleAssociatedObjectKey]) ) {
         [self setNavigationBarHidden:!toViewController.jz_wantsNavigationBarVisible animated:animated];
     }
     

@@ -62,8 +62,7 @@
 }
 
 - (BOOL)jz_wantsNavigationBarVisible {
-    id _wantsNavigationBarVisible = objc_getAssociatedObject(self, _cmd);
-    return _wantsNavigationBarVisible != nil ? [_wantsNavigationBarVisible boolValue] : YES;
+    return [objc_getAssociatedObject(self, _cmd) boolValue];
 }
 
 - (BOOL)jz_hasNavigationBarTintColorSetterBeenCalled {

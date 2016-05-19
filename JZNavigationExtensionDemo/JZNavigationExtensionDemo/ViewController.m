@@ -12,6 +12,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self performSegueWithIdentifier:@"Push" sender:self];
 }
 
 @end
