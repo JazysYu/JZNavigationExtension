@@ -84,6 +84,12 @@ NS_INLINE void jz_handleInteractiveTransition(id self, BOOL isCancel) {
             [navigationController.jz_navigationBarTintColorView removeFromSuperview];
         }];
     }
+    if (!isCancel) {
+        if (navigationController.navigationBar.hidden) {
+            navigationController.navigationBarHidden = true;
+            navigationController.navigationBar.hidden = false;
+        }
+    }
 }
 
 - (void)updateInteractiveTransition:(CGFloat)percentComplete {
