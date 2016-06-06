@@ -203,13 +203,13 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 CG_INLINE void _updateNavigationBarDuringTransitionAnimated(bool animated, UINavigationController *navigationController, UIViewController *fromViewController, UIViewController *toViewController) {
 
-    if (fromViewController.jz_navigationBarBackgroundAlpha != toViewController.jz_navigationBarBackgroundAlpha) {
+    if ([fromViewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController] != [toViewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController]) {
         [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
-            [navigationController setJz_navigationBarBackgroundAlpha:toViewController.jz_navigationBarBackgroundAlpha];
+            [navigationController setJz_navigationBarBackgroundAlpha:[toViewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController]];
         }];
     }
     
-    if (fromViewController.jz_navigationBarTintColor != toViewController.jz_navigationBarTintColor) {
+    if ([fromViewController jz_navigationBarTintColorWithNavigationController:navigationController] != [toViewController jz_navigationBarTintColorWithNavigationController:navigationController]) {
         
         if (!navigationController.jz_navigationBarTintColor) {
             navigationController.jz_navigationBarTintColor = [UIColor colorWithWhite:navigationController.navigationBar.barStyle == UIBarStyleDefault alpha:1.0];

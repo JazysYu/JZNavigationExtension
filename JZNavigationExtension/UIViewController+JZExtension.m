@@ -70,24 +70,11 @@
 }
 
 - (CGFloat)jz_navigationBarBackgroundAlpha {
-    id _navigationBarBackgroundAlpha = objc_getAssociatedObject(self, _cmd);
-    if (_navigationBarBackgroundAlpha) {
-        return [_navigationBarBackgroundAlpha jz_CGFloatValue];
-    }
-    UINavigationController *navigationController = self.navigationController;
-    if (navigationController) {
-        return navigationController.jz_navigationBarBackgroundAlpha;
-    }
-    return 1.f;
+    return self.navigationController ? [self jz_navigationBarBackgroundAlphaWithNavigationController:self.navigationController] : 1.f;
 }
 
 - (UIColor *)jz_navigationBarTintColor {
-    UIColor *_navigationBarTintColor = objc_getAssociatedObject(self, _cmd);
-    if (!self.jz_hasNavigationBarTintColorSetterBeenCalled) {
-        return _navigationBarTintColor ? _navigationBarTintColor : self.navigationController.jz_navigationBarTintColor;
-    } else {
-        return _navigationBarTintColor;
-    }
+    return [self jz_navigationBarTintColorWithNavigationController:self.navigationController];
 }
 
 - (UIViewController *)jz_previousViewController {
@@ -97,6 +84,23 @@
 #pragma mark - Private
 - (const void *)jz_wantsNavigationBarVisibleAssociatedObjectKey {
     return @selector(jz_wantsNavigationBarVisible);
+}
+
+- (UIColor *)jz_navigationBarTintColorWithNavigationController:(UINavigationController *)navigationController {
+    UIColor *_navigationBarTintColor = objc_getAssociatedObject(self, _cmd);
+    if (!self.jz_hasNavigationBarTintColorSetterBeenCalled) {
+        return _navigationBarTintColor ? _navigationBarTintColor : navigationController.jz_navigationBarTintColor;
+    } else {
+        return _navigationBarTintColor;
+    }
+}
+
+- (CGFloat)jz_navigationBarBackgroundAlphaWithNavigationController:(UINavigationController *)navigationController {
+    id _navigationBarBackgroundAlpha = objc_getAssociatedObject(self, _cmd);
+    if (_navigationBarBackgroundAlpha) {
+        return [_navigationBarBackgroundAlpha jz_CGFloatValue];
+    }
+    return navigationController.jz_navigationBarBackgroundAlpha;
 }
 
 @end

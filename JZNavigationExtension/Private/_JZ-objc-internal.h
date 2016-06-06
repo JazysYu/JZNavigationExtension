@@ -33,6 +33,8 @@ typedef void(^_jz_navigation_block_t)(UINavigationController *navigationControll
 @interface UIViewController (_JZExtension)
 @property (nonatomic, assign, getter=jz_hasNavigationBarTintColorSetterBeenCalled) BOOL jz_navigationBarTintColorSetterBeenCalled;
 - (const void *)jz_wantsNavigationBarVisibleAssociatedObjectKey;
+- (UIColor *)jz_navigationBarTintColorWithNavigationController:(UINavigationController *)navigationController;
+- (CGFloat)jz_navigationBarBackgroundAlphaWithNavigationController:(UINavigationController *)navigationController;
 @end
 
 @protocol JZExtensionBarProtocol <NSObject>
