@@ -116,6 +116,3 @@ pod 'JZNavigationExtension'
 
 #### Manually
 Drag all source files under floder JZNavigationExtension to your project.
-
-# To be Continued
-![overview](https://raw.githubusercontent.com/JazysYu/JZNavigationExtension/master/Snapshots/JZNavigationExtensionEvolution01.gif)
