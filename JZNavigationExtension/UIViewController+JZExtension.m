@@ -87,7 +87,7 @@
 }
 
 - (UIColor *)jz_navigationBarTintColorWithNavigationController:(UINavigationController *)navigationController {
-    UIColor *_navigationBarTintColor = objc_getAssociatedObject(self, _cmd);
+    UIColor *_navigationBarTintColor = objc_getAssociatedObject(self, @selector(jz_navigationBarTintColor));
     if (!self.jz_hasNavigationBarTintColorSetterBeenCalled) {
         return _navigationBarTintColor ? _navigationBarTintColor : navigationController.jz_navigationBarTintColor;
     } else {
@@ -96,7 +96,7 @@
 }
 
 - (CGFloat)jz_navigationBarBackgroundAlphaWithNavigationController:(UINavigationController *)navigationController {
-    id _navigationBarBackgroundAlpha = objc_getAssociatedObject(self, _cmd);
+    id _navigationBarBackgroundAlpha = objc_getAssociatedObject(self, @selector(jz_navigationBarBackgroundAlpha));
     if (_navigationBarBackgroundAlpha) {
         return [_navigationBarBackgroundAlpha jz_CGFloatValue];
     }

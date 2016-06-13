@@ -1,6 +1,6 @@
 # JZNavigationExtension
 
-[![Version](https://img.shields.io/badge/pod-v1.4.7-5193DB.svg)](https://cocoapods.org/pods/JZNavigationExtension)
+[![Version](https://img.shields.io/badge/pod-v1.4.8-5193DB.svg)](https://cocoapods.org/pods/JZNavigationExtension)
 [![Platform](https://img.shields.io/badge/platform-iOS7+-lightgrey.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-2F2F2F.svg)](https://github.com/JazysYu/JZNavigationExtension/blob/master/LICENSE)
 
@@ -116,3 +116,6 @@ pod 'JZNavigationExtension'
 
 #### Manually
 Drag all source files under floder JZNavigationExtension to your project.
+
+# To be Continued
+![overview](https://raw.githubusercontent.com/JazysYu/JZNavigationExtension/master/Snapshots/JZNavigationExtensionEvolution01.gif)
