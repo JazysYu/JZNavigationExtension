@@ -39,7 +39,12 @@ static NSString *kNavigationController = @"__parent";
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return true;
+    UINavigationController *navigationController = [self valueForKey:kNavigationController];
+    if (!navigationController.jz_fullScreenInteractivePopGestureEnabled) {
+        return true;
+    }
+    CGPoint locationInView = [gestureRecognizer locationInView:gestureRecognizer.view];
+    return locationInView.x < 30.0f;
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)gestureRecognizer {
