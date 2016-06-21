@@ -19,12 +19,12 @@ JZExtensionBarImplementation
     }
 }
 
-- (void)setJz_inject_popForTouchAtPoint:(dispatch_block_t)jz_inject_popForTouchAtPoint {
-    objc_setAssociatedObject(self, @selector(jz_inject_popForTouchAtPoint), jz_inject_popForTouchAtPoint, OBJC_ASSOCIATION_COPY_NONATOMIC);
+- (void)setJz_transitionAnimated:(BOOL)jz_transitionAnimated {
+    objc_setAssociatedObject(self, @selector(jz_transitionAnimated), @(jz_transitionAnimated), OBJC_ASSOCIATION_ASSIGN);
 }
 
-- (dispatch_block_t)jz_inject_popForTouchAtPoint {
-    return objc_getAssociatedObject(self, _cmd);
+- (BOOL)jz_transitionAnimated {
+    return [objc_getAssociatedObject(self, _cmd) boolValue];
 }
 
 @end

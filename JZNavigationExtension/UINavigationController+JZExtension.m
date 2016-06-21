@@ -124,8 +124,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
         {
             jz_class_reImplementation([UINavigationBar class], NSSelectorFromString(@"_popForTouchAtPoint:"), imp_implementationWithBlock(^(UINavigationBar *navigationBar) {
-                !navigationBar.jz_inject_popForTouchAtPoint ?: navigationBar.jz_inject_popForTouchAtPoint();
-                navigationBar.jz_inject_popForTouchAtPoint = NULL;
+                [(UINavigationController *)navigationBar.delegate popViewControllerAnimated:navigationBar.jz_transitionAnimated];
             }));
         }
 
@@ -166,9 +165,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (void)jz_handleNavigationTransitionAnimated:(BOOL)animated fromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController transitionBlock:(dispatch_block_t)transitionBlock {
 
-    self.navigationBar.jz_inject_popForTouchAtPoint = ^{
-        [self popViewControllerAnimated:animated];
-    };
+    self.navigationBar.jz_transitionAnimated = animated;
 
     self.jz_previousVisibleViewController = fromViewController;
     
@@ -240,8 +237,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         return snapshotLayer;
     };
     
-    if (!self.navigationBarHidden) {
-        
+    if (!self.navigationBarHidden && navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
         [fromViewController.view.layer addSublayer:_snapshotLayerWithImage(UIGraphicsGetImageFromCurrentImageContext())];
     }
 

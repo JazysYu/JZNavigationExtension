@@ -38,6 +38,10 @@ typedef void(^_jz_navigation_block_t)(UINavigationController *navigationControll
 - (BOOL)jz_wantsNavigationBarVisibleWithNavigationController:(UINavigationController *)navigationController;
 @end
 
+@interface UINavigationBar (_JZExtension)
+@property (nonatomic) BOOL jz_transitionAnimated;
+@end
+
 @protocol JZExtensionBarProtocol <NSObject>
 @property (nonatomic, assign) CGSize jz_size;
 - (UIView * _Nullable)jz_backgroundView;
