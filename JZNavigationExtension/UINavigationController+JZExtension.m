@@ -56,19 +56,53 @@ __attribute__((constructor)) static void JZ_Inject(void) {
             Class cls_UINavigationInteractiveTransition = JZ_UINavigationInteractiveTransition;
             Class cls_JZNavigationInteractiveTransition = [_JZNavigationInteractiveTransition class];
             {
+                static NSInvocation *(^jz_invocation_create)(id, SEL, void *) = ^NSInvocation *(id target, SEL selector, void *argument){
+                    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[target methodSignatureForSelector:selector]];
+                    [invocation setTarget:target];
+                    [invocation setSelector:selector];
+                    [invocation setArgument:argument atIndex:2];
+                    return invocation;
+                };
+                
                 SEL sel_shouldReceiveTouch = @selector(gestureRecognizer:shouldReceiveTouch:);
+                
                 BOOL (*_originalShouldReceiveTouchIMP)(id, SEL, id, id) = (void *)[cls_UINavigationInteractiveTransition instanceMethodForSelector:sel_shouldReceiveTouch];
+                
                 Method method_shouldReceiveTouch = class_getInstanceMethod(cls_UINavigationInteractiveTransition, sel_shouldReceiveTouch);
                 method_setImplementation(method_shouldReceiveTouch, imp_implementationWithBlock(^BOOL(id navigationTransition, id gestureRecognizer, id touch) {
+                    
                     UINavigationController *navigationController = [navigationTransition valueForKey:@"__parent"];
-                    BOOL navigationBarHidden = navigationController.navigationBarHidden;
-                    if (navigationBarHidden) {
+                    
+                    NSMutableArray<NSInvocation *> *invocations = [NSMutableArray array];
+
+                    if (navigationController.navigationBarHidden) {
+                        BOOL navigationBarHidden = true;
+                        [invocations addObject:jz_invocation_create(navigationController, @selector(setNavigationBarHidden:), &navigationBarHidden)];
                         navigationController.navigationBarHidden = false;
                     }
-                    BOOL shouldReceiveTouch = _originalShouldReceiveTouchIMP(navigationTransition, sel_shouldReceiveTouch, gestureRecognizer, touch);
-                    if (navigationBarHidden) {
-                        navigationController.navigationBarHidden = true;
+
+                    if (!navigationController.visibleViewController.navigationItem.leftItemsSupplementBackButton) {
+                        if (navigationController.visibleViewController.navigationItem.leftBarButtonItems) {
+                            NSArray *leftBarButtonItems = navigationController.visibleViewController.navigationItem.leftBarButtonItems;
+                            [invocations addObject:jz_invocation_create(navigationController.visibleViewController.navigationItem, @selector(setLeftBarButtonItems:), &leftBarButtonItems)];
+                            navigationController.visibleViewController.navigationItem.leftBarButtonItems = nil;
+                        } else if (navigationController.visibleViewController.navigationItem.leftBarButtonItem) {
+                            UIBarButtonItem *leftBarButtonItem = navigationController.visibleViewController.navigationItem.leftBarButtonItem;
+                            [invocations addObject:jz_invocation_create(navigationController.visibleViewController.navigationItem, @selector(setLeftBarButtonItem:), &leftBarButtonItem)];
+                            navigationController.visibleViewController.navigationItem.leftBarButtonItem = nil;
+                        }
                     }
+                    
+                    if (navigationController.visibleViewController.navigationItem.hidesBackButton) {
+                        BOOL hidesBackButton = true;
+                        [invocations addObject:jz_invocation_create(navigationController.visibleViewController.navigationItem, @selector(setHidesBackButton:), &hidesBackButton)];
+                        navigationController.visibleViewController.navigationItem.hidesBackButton = false;
+                    }
+
+                    BOOL shouldReceiveTouch = _originalShouldReceiveTouchIMP(navigationTransition, sel_shouldReceiveTouch, gestureRecognizer, touch);
+                    
+                    [invocations makeObjectsPerformSelector:@selector(invoke)];
+
                     return shouldReceiveTouch;
                 }));
             }

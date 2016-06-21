@@ -197,6 +197,9 @@
 				TargetAttributes = {
 					40D3B0D31B3C0859009F145F = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = VZHUC69497;
+						DevelopmentTeamName = "宇声 张 (Personal Team)";
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -368,7 +371,7 @@
 				INFOPLIST_FILE = JZNavigationExtensionDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.jazys.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = jazys.yu.JZNavigationExtensionDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -384,7 +387,7 @@
 				INFOPLIST_FILE = JZNavigationExtensionDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.jazys.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = jazys.yu.JZNavigationExtensionDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
