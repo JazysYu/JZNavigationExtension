@@ -172,23 +172,23 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
     self.jz_previousVisibleViewController = fromViewController;
     
-    BOOL isCustomNavigationTransition = false;
-
-    if ([self.delegate respondsToSelector:@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:)]) {
-        isCustomNavigationTransition = [self.delegate navigationController:self animationControllerForOperation:self.jz_operation fromViewController:fromViewController toViewController:toViewController] != nil;
-    }
+    UIView *snapshotView = [UIApplication sharedApplication].keyWindow;
     
-    if (!isCustomNavigationTransition) {
-        if ([self.delegate respondsToSelector:@selector(navigationController:willShowViewController:animated:)]) {
-            [self.delegate navigationController:self willShowViewController:toViewController animated:animated];
+    if (objc_getAssociatedObject(self, @selector(jz_navigationBarTransitionStyle))) {
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(self.navigationBar.bounds.size.width, self.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height + 0.1), NO, 0.0);
+        
+        if (!self.navigationBarHidden) {
+            [snapshotView drawViewHierarchyInRect:snapshotView.bounds afterScreenUpdates:false];
         }
     }
+    
+    transitionBlock();
 
     JZNavigationBarTransitionStyle navigationBarTransitionStyle = self.jz_navigationBarTransitionStyle;
 
-    if ( isCustomNavigationTransition || navigationBarTransitionStyle == JZNavigationBarTransitionStyleSystem ) {
+    if ( ![[self valueForKey:@"isBuiltinTransition"] boolValue] || navigationBarTransitionStyle == JZNavigationBarTransitionStyleSystem ) {
 
-        transitionBlock();
+        UIGraphicsEndImageContext();
 
         if (self.jz_isInteractiveTransition && self.navigationBar.hidden && !toViewController.jz_wantsNavigationBarVisible) {
             [self setNavigationBarHidden:false animated:animated];
@@ -239,21 +239,15 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         snapshotLayer.frame = (CGRect){CGPointZero, snapshotImage.size};
         return snapshotLayer;
     };
-
-    UIView *snapshotView = [UIApplication sharedApplication].keyWindow;
-
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(self.navigationBar.bounds.size.width, self.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height + 0.1), NO, 0.0);
-
-    if (!self.navigationBarHidden && navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
-        [snapshotView drawViewHierarchyInRect:snapshotView.bounds afterScreenUpdates:false];
+    
+    if (!self.navigationBarHidden) {
+        
         [fromViewController.view.layer addSublayer:_snapshotLayerWithImage(UIGraphicsGetImageFromCurrentImageContext())];
     }
 
     self.navigationBarHidden = ![toViewController jz_wantsNavigationBarVisibleWithNavigationController:self];
     self.jz_navigationBarTintColor = [toViewController jz_navigationBarTintColorWithNavigationController:self];
     self.jz_navigationBarBackgroundAlpha = [toViewController jz_navigationBarBackgroundAlphaWithNavigationController:self];
-    
-    transitionBlock();
     
     if (!self.navigationBarHidden) {
 
