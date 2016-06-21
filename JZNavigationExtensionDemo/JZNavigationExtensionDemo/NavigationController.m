@@ -7,12 +7,12 @@
 //
 
 #import "NavigationController.h"
+#import "JZNavigationExtension.h"
 
 @implementation NavigationController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-//    [[UINavigationBar appearance] setBarTintColor:[UIColor purpleColor]];
 }
 
 @end

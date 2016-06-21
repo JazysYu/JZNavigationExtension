@@ -54,34 +54,15 @@ static NSString *kNavigationController = @"__parent";
 
 #pragma mark - UIPercentDrivenInteractiveTransition
 
-CG_INLINE CGFloat _getNavigationBarBackgroundAlpha(UINavigationController *navigationController, UIViewController *viewController) {
-    id _navigationBarBackgroundAlphaAssociatedObject = objc_getAssociatedObject(viewController, @selector(jz_navigationBarBackgroundAlpha));
-    CGFloat _navigationBarBackgroundAlpha = [_navigationBarBackgroundAlphaAssociatedObject jz_CGFloatValue];
-    if (!_navigationBarBackgroundAlphaAssociatedObject) {
-        _navigationBarBackgroundAlpha = navigationController.jz_navigationBarBackgroundAlpha;
-    }
-    return _navigationBarBackgroundAlpha;
-}
-
-CG_INLINE UIColor *_getNavigationBarTintColor(UINavigationController *navigationController, UIViewController *viewController) {
-    id _navigationBarTintColorAssociatedObject = objc_getAssociatedObject(viewController, @selector(jz_navigationBarTintColor));
-    if (!viewController.jz_hasNavigationBarTintColorSetterBeenCalled) {
-        if (!_navigationBarTintColorAssociatedObject) {
-            _navigationBarTintColorAssociatedObject = navigationController.jz_navigationBarTintColor;
-        }
-    }
-    
-    return _navigationBarTintColorAssociatedObject;
-}
-
-NS_INLINE void jz_handleInteractiveTransition(id self, BOOL isCancel) {
+NS_INLINE void jz_handleInteractiveTransition(UIPercentDrivenInteractiveTransition *self, BOOL isCancel) {
 
     UINavigationController *navigationController = [self valueForKey:kNavigationController];
     UIViewController *adjustViewController = isCancel ? navigationController.jz_previousVisibleViewController : navigationController.visibleViewController;
-    navigationController.jz_navigationBarBackgroundAlpha = _getNavigationBarBackgroundAlpha(navigationController, adjustViewController);
-    UIColor *newNavigationBarColor = _getNavigationBarTintColor(navigationController, adjustViewController);
+    navigationController.jz_navigationBarBackgroundAlpha = [adjustViewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
+    UIColor *newNavigationBarColor = [adjustViewController jz_navigationBarTintColorWithNavigationController:navigationController];
     navigationController.jz_navigationBarTintColor = newNavigationBarColor;
     !navigationController.jz_interactivePopGestureRecognizerCompletion ?: navigationController.jz_interactivePopGestureRecognizerCompletion(navigationController, !isCancel);
+    [navigationController setValue:@(UINavigationControllerOperationNone) forKey:@"jz_operation"];
     if (jz_isVersionBelow9_0) {
         navigationController.jz_navigationBarTintColorView.backgroundColor = newNavigationBarColor;
         [CATransaction setCompletionBlock:^{
@@ -89,7 +70,15 @@ NS_INLINE void jz_handleInteractiveTransition(id self, BOOL isCancel) {
             [navigationController.jz_navigationBarTintColorView removeFromSuperview];
         }];
     }
-    if (!isCancel) {
+    if (isCancel) {
+        if (navigationController.jz_didEndNavigationTransitionBlock) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.percentComplete * self.duration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if (!navigationController.jz_isInteractiveTransition) {
+                    navigationController.jz_didEndNavigationTransitionBlock();
+                }
+            });
+        }
+    } else {
         if (navigationController.navigationBar.hidden) {
             navigationController.navigationBarHidden = true;
             navigationController.navigationBar.hidden = false;
@@ -103,13 +92,14 @@ NS_INLINE void jz_handleInteractiveTransition(id self, BOOL isCancel) {
     
     UINavigationController *navigationController = [self valueForKey:kNavigationController];
 
-    CGFloat _interactivePopedViewController_navigationBarBackgroundAlpha = _getNavigationBarBackgroundAlpha(navigationController, navigationController.jz_previousVisibleViewController);
+    CGFloat _interactivePopedViewController_navigationBarBackgroundAlpha = [navigationController.jz_previousVisibleViewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
+
     if (_interactivePopedViewController_navigationBarBackgroundAlpha != navigationController.visibleViewController.jz_navigationBarBackgroundAlpha) {
         CGFloat _percentComplete = percentComplete * (navigationController.visibleViewController.jz_navigationBarBackgroundAlpha - _interactivePopedViewController_navigationBarBackgroundAlpha) + _interactivePopedViewController_navigationBarBackgroundAlpha;
         navigationController.jz_navigationBarBackgroundAlpha = _percentComplete;
     }
     
-    UIColor *_interactivePopedViewController_navigationBarTintColor = _getNavigationBarTintColor(navigationController, navigationController.jz_previousVisibleViewController);
+    UIColor *_interactivePopedViewController_navigationBarTintColor = [navigationController.jz_previousVisibleViewController jz_navigationBarTintColorWithNavigationController:navigationController];
     
     if (_interactivePopedViewController_navigationBarTintColor != navigationController.visibleViewController.jz_navigationBarTintColor) {
         

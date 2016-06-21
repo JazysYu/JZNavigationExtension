@@ -22,34 +22,46 @@
 
 #import <UIKit/UIKit.h>
 
-/// The "UINavigationController+JZExtension" category integrates some convenient functions and open some hide property
-/// for UINavigationController, such as gives your UINavigationController a fullscreen interactivePopGestureRecognizer,
-/// all you need is enable/disable "fullScreenInteractivePopGestureRecognizer" property for each ViewController.
-/// If you have some ViewController which doesn't wants a navigation bar, you can set the "wantsNavigationBarVisible"
+/// The "UINavigationController+JZExtension" category integrates many convenient functions, such as gives your UINavigationController a fullscreen interactivePopGestureRecognizer, different navigation bar transition style, or customise navigation bar tint color for each view controller.
+/// If you have some ViewController which doesn't wants a navigation bar, you can set the "jz_wantsNavigationBarVisible"
 /// property to NO.
 /// You can also adjust your navigationBar or toolbar's background alpha.
+
+typedef enum : NSInteger {
+    JZNavigationBarTransitionStyleNone = -1,
+    JZNavigationBarTransitionStyleSystem,
+    JZNavigationBarTransitionStyleDoppelganger
+} JZNavigationBarTransitionStyle;
+
 @interface UINavigationController (JZExtension)
+
+/**
+ *  @author JazysYu, 16-05-09 10:05:41
+ *
+ *  Expand two different navigation bar transition style, setting this property for the global navigation transition. It is worth noting that all custom transitions will crossfade the navigation bar forcibly.
+ */
+@property (nonatomic, assign) JZNavigationBarTransitionStyle jz_navigationBarTransitionStyle;
 
 /**
  *  @author JazysYu, 16-01-25 14:01:53
  *
  *  If YES, then you can have a fullscreen gesture recognizer responsible for popping the top view controller off the navigation stack, and the property is still "interactivePopGestureRecognizer", see more for "UINavigationController.h", Default is NO.
  */
-@property (nonatomic, assign) BOOL jz_fullScreenInteractivePopGestureEnabled NS_AVAILABLE_IOS(7_0);
+@property (nonatomic, assign) BOOL jz_fullScreenInteractivePopGestureEnabled;
 
 /**
  *  @author JazysYu, 16-01-25 14:01:24
  *
  *  navigationBar's background alpha, when 0 your navigationBar will be invisable, default is 1. Animatable
  */
-@property (nonatomic, assign) CGFloat jz_navigationBarBackgroundAlpha NS_AVAILABLE_IOS(7_0);
+@property (nonatomic, assign) CGFloat jz_navigationBarBackgroundAlpha;
 
 /**
  *  @author JazysYu, 16-01-25 14:01:57
  *
  *  Current navigationController's toolbar background alpha, make sure the toolbarHidden property is NO, default is 1. Animatable
  */
-@property (nonatomic, assign) CGFloat jz_toolbarBackgroundAlpha NS_AVAILABLE_IOS(7_0);
+@property (nonatomic, assign) CGFloat jz_toolbarBackgroundAlpha;
 
 /**
  *  @author JazysYu, 16-03-12 16:03:12
@@ -127,6 +139,7 @@
  *
  */
 - (void)jz_setViewControllers:(NSArray<UIViewController *> *)viewControllers animated:(BOOL)animated completion:(void (^)(UINavigationController *navigationController, BOOL finished))completion;
+
 /**
  *  @author JazysYu, 16-01-25 14:01:20
  *

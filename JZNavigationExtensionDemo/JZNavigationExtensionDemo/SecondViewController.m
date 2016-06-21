@@ -15,18 +15,20 @@
 {
     BOOL _didRegisterForPreviewing;
 }
-@property (weak,   nonatomic) IBOutlet UITableView *tableView;
-@property (strong, nonatomic) NSArray *cellModels;
-@property (nonatomic, strong) id <UIViewControllerPreviewing> previewingContext;
+@property (nonatomic, weak) IBOutlet UITableView *tableView;
+@property (nonatomic) NSArray *cellModels;
+@property (nonatomic) id <UIViewControllerPreviewing> previewingContext;
 @end
 
 @implementation SecondViewController
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
     if ([self.navigationController.jz_previousVisibleViewController isKindOfClass:NSClassFromString(@"ViewController")]) {
         NSLog(@"Came from ViewController Class.");
     }
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -39,15 +41,16 @@
 }
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
     
-    self.tableView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
+    [super viewDidLoad];
     
     self.jz_wantsNavigationBarVisible = true;
     
+    self.jz_navigationBarBackgroundAlpha = 1.f;
+    
     self.jz_navigationBarTintColor = nil;
     
-    self.jz_navigationBarBackgroundAlpha = 1.f;
+    self.tableView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
     
     [self.navigationController jz_setInteractivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, BOOL finished) {
         if (finished) {
@@ -55,7 +58,7 @@
         } else {
             NSLog(@"Interactive pop transition has been canceled");
         }
-        NSLog(@"%@",navigationController.jz_previousVisibleViewController);
+        NSLog(@"jz_setInteractivePopGestureRecognizerCompletion : %@",navigationController.jz_previousVisibleViewController);
     }];
     
     if ([[[UIDevice currentDevice] systemVersion] compare:@"9.0" options:NSNumericSearch] != NSOrderedAscending) {
@@ -152,6 +155,7 @@
     vc.view.backgroundColor = self.view.backgroundColor;
     vc.jz_navigationBarTintColor = [UIColor blueColor];
     [self.navigationController pushViewController:vc animated:true];
+    vc.jz_wantsNavigationBarVisible = true;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

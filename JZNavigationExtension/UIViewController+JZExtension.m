@@ -27,6 +27,8 @@
 
 @implementation UIViewController (JZExtension)
 
+#pragma mark - Setter
+
 - (void)setJz_navigationBarTintColorSetterBeenCalled:(BOOL)jz_navigationBarTintColorSetterBeenCalled {
     objc_setAssociatedObject(self, @selector(jz_hasNavigationBarTintColorSetterBeenCalled), @(jz_navigationBarTintColorSetterBeenCalled), OBJC_ASSOCIATION_ASSIGN);
 }
@@ -57,6 +59,8 @@
     [self.navigationController setNavigationBarHidden:!jz_wantsNavigationBarVisible animated:true];
 }
 
+#pragma mark - Getter
+
 - (BOOL)jz_isNavigationBarBackgroundHidden {
     return self.jz_navigationBarBackgroundAlpha - 0.0f <= 0.0001;
 }
@@ -82,8 +86,13 @@
 }
 
 #pragma mark - Private
-- (const void *)jz_wantsNavigationBarVisibleAssociatedObjectKey {
-    return @selector(jz_wantsNavigationBarVisible);
+
+- (BOOL)jz_wantsNavigationBarVisibleWithNavigationController:(UINavigationController *)navigationController {
+    id jz_wantsNavigationBarVisibleObject = objc_getAssociatedObject(self, @selector(jz_wantsNavigationBarVisible));
+    if (jz_wantsNavigationBarVisibleObject) {
+        return [jz_wantsNavigationBarVisibleObject boolValue];
+    }
+    return !navigationController.navigationBarHidden;
 }
 
 - (UIColor *)jz_navigationBarTintColorWithNavigationController:(UINavigationController *)navigationController {

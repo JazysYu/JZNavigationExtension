@@ -19,4 +19,12 @@ JZExtensionBarImplementation
     }
 }
 
+- (void)setJz_inject_popForTouchAtPoint:(dispatch_block_t)jz_inject_popForTouchAtPoint {
+    objc_setAssociatedObject(self, @selector(jz_inject_popForTouchAtPoint), jz_inject_popForTouchAtPoint, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (dispatch_block_t)jz_inject_popForTouchAtPoint {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
 @end
