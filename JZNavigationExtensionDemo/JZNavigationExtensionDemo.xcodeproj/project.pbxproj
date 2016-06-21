@@ -197,7 +197,6 @@
 				TargetAttributes = {
 					40D3B0D31B3C0859009F145F = {
 						CreatedOnToolsVersion = 6.3.2;
-						DevelopmentTeam = VZHUC69497;
 						DevelopmentTeamName = "宇声 张 (Personal Team)";
 						ProvisioningStyle = Automatic;
 					};
@@ -365,7 +364,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				INFOPLIST_FILE = JZNavigationExtensionDemo/Info.plist;
@@ -381,7 +380,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				INFOPLIST_FILE = JZNavigationExtensionDemo/Info.plist;
