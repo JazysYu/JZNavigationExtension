@@ -16,20 +16,22 @@
 @implementation ViewController
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    self.jz_wantsNavigationBarVisible = true;
+    
     self.navigationController.delegate = self;
+
 }
 
+/**
+ *  @author JazysYu, 16-05-27 10:05:21
+ *
+ *  Some logic
+ */
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)toViewController animated:(BOOL)animated {
 //    UIViewController *fromViewController = [navigationController visibleViewController];
 //    if (fromViewController.....) {
-        /**
-        *  @author JazysYu, 16-05-27 10:05:21
-        *
-        *  Do some logic.
-        */
-        navigationController.jz_navigationBarTransitionStyle = JZNavigationBarTransitionStyleDoppelganger;
+//        navigationController.jz_navigationBarTransitionStyle = JZNavigationBarTransitionStyleDoppelganger;
 //    }
 }
 

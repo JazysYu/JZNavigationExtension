@@ -187,7 +187,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
         UIGraphicsEndImageContext();
 
-        if (self.jz_isInteractiveTransition && self.navigationBar.hidden && !toViewController.jz_wantsNavigationBarVisible) {
+        if (self.jz_isInteractiveTransition && self.navigationBar.hidden && ![toViewController jz_wantsNavigationBarVisibleWithNavigationController:self]) {
             [self setNavigationBarHidden:false animated:animated];
             self.navigationBar.hidden = true;
         } else {
@@ -201,7 +201,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
                     [self setJz_navigationBarBackgroundAlpha:[toViewController jz_navigationBarBackgroundAlphaWithNavigationController:self]];
                 }];
             }
-            
+
             if ([fromViewController jz_navigationBarTintColorWithNavigationController:self] != [toViewController jz_navigationBarTintColorWithNavigationController:self]) {
                 
                 if (!self.jz_navigationBarTintColor) {

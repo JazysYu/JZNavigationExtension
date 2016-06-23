@@ -12,7 +12,11 @@
 @implementation NavigationController
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
+    
+    self.jz_navigationBarTransitionStyle = JZNavigationBarTransitionStyleDoppelganger;
+    
 }
 
 @end
