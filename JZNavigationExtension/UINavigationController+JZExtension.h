@@ -38,7 +38,7 @@ typedef enum : NSInteger {
 /**
  *  @author JazysYu, 16-05-09 10:05:41
  *
- *  Expand two different navigation bar transition style, setting this property for the global navigation transition. It is worth noting that all custom transitions will crossfade the navigation bar forcibly.
+ *  Expand two different navigation bar transition style, setting this property for the global navigation transition. It is worth noting that custom navigation transitions or disable navigation bar translucent will crossfade the navigation bar forcibly.
  */
 @property (nonatomic, assign) JZNavigationBarTransitionStyle jz_navigationBarTransitionStyle;
 

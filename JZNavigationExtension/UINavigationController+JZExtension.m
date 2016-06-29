@@ -35,7 +35,7 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
 @implementation UINavigationController (JZExtension)
 
 __attribute__((constructor)) static void JZ_Inject(void) {
-
+    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
@@ -76,13 +76,13 @@ __attribute__((constructor)) static void JZ_Inject(void) {
                     UINavigationController *navigationController = [navigationTransition valueForKey:@"__parent"];
                     
                     NSMutableArray<NSInvocation *> *invocations = [NSMutableArray array];
-
+                    
                     if (navigationController.navigationBarHidden) {
                         BOOL navigationBarHidden = true;
                         [invocations addObject:jz_invocation_create(navigationController, @selector(setNavigationBarHidden:), &navigationBarHidden)];
                         navigationController.navigationBarHidden = false;
                     }
-
+                    
                     if (!navigationController.visibleViewController.navigationItem.leftItemsSupplementBackButton) {
                         if (navigationController.visibleViewController.navigationItem.leftBarButtonItems) {
                             NSArray *leftBarButtonItems = navigationController.visibleViewController.navigationItem.leftBarButtonItems;
@@ -100,11 +100,11 @@ __attribute__((constructor)) static void JZ_Inject(void) {
                         [invocations addObject:jz_invocation_create(navigationController.visibleViewController.navigationItem, @selector(setHidesBackButton:), &hidesBackButton)];
                         navigationController.visibleViewController.navigationItem.hidesBackButton = false;
                     }
-
+                    
                     BOOL shouldReceiveTouch = _originalShouldReceiveTouchIMP(navigationTransition, sel_shouldReceiveTouch, gestureRecognizer, touch);
                     
                     [invocations makeObjectsPerformSelector:@selector(invoke)];
-
+                    
                     return shouldReceiveTouch;
                 }));
             }
@@ -121,13 +121,13 @@ __attribute__((constructor)) static void JZ_Inject(void) {
                 jz_class_reImplementation(cls_UINavigationInteractiveTransition, sel_finishInteractiveTransition, [cls_JZNavigationInteractiveTransition instanceMethodForSelector:sel_finishInteractiveTransition]);
             }
         }
-
+        
         {
             jz_class_reImplementation([UINavigationBar class], NSSelectorFromString(@"_popForTouchAtPoint:"), imp_implementationWithBlock(^(UINavigationBar *navigationBar) {
                 [(UINavigationController *)navigationBar.delegate popViewControllerAnimated:navigationBar.jz_transitionAnimated];
             }));
         }
-
+        
         {
             jz_method_swizzling([UINavigationBar class], @selector(sizeThatFits:), @selector(jz_sizeThatFits:));
         }
@@ -135,7 +135,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         {
             jz_method_swizzling([UIToolbar class], @selector(sizeThatFits:), @selector(jz_sizeThatFits:));
         }
-            
+        
         {
             jz_method_swizzling([UINavigationController class], @selector(pushViewController:animated:),@selector(jz_pushViewController:animated:));
         }
@@ -151,7 +151,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         {
             jz_method_swizzling([UINavigationController class], @selector(popToRootViewControllerAnimated:), @selector(jz_popToRootViewControllerAnimated:));
         }
-
+        
         {
             jz_method_swizzling([UINavigationController class], @selector(setViewControllers:animated:), @selector(jz_setViewControllers:animated:));
         }
@@ -164,9 +164,9 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (void)jz_handleNavigationTransitionAnimated:(BOOL)animated fromViewController:(UIViewController *)fromViewController toViewController:(UIViewController *)toViewController transitionBlock:(dispatch_block_t)transitionBlock {
-
+    
     self.navigationBar.jz_transitionAnimated = animated;
-
+    
     self.jz_previousVisibleViewController = fromViewController;
     
     UIView *snapshotView = [UIApplication sharedApplication].keyWindow;
@@ -180,20 +180,20 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     }
     
     transitionBlock();
-
+    
     JZNavigationBarTransitionStyle navigationBarTransitionStyle = self.jz_navigationBarTransitionStyle;
-
-    if ( ![[self valueForKey:@"isBuiltinTransition"] boolValue] || navigationBarTransitionStyle == JZNavigationBarTransitionStyleSystem ) {
-
+    
+    if ( ![[self valueForKey:@"isBuiltinTransition"] boolValue] || !self.navigationBar.isTranslucent || navigationBarTransitionStyle == JZNavigationBarTransitionStyleSystem ) {
+        
         UIGraphicsEndImageContext();
-
+        
         if (self.jz_isInteractiveTransition && self.navigationBar.hidden && ![toViewController jz_wantsNavigationBarVisibleWithNavigationController:self]) {
             [self setNavigationBarHidden:false animated:animated];
             self.navigationBar.hidden = true;
         } else {
             [self setNavigationBarHidden:![toViewController jz_wantsNavigationBarVisibleWithNavigationController:self] animated:animated];
         }
-
+        
         if (![self jz_isInteractiveTransition]) {
             
             if ([fromViewController jz_navigationBarBackgroundAlphaWithNavigationController:self] != [toViewController jz_navigationBarBackgroundAlphaWithNavigationController:self]) {
@@ -201,7 +201,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
                     [self setJz_navigationBarBackgroundAlpha:[toViewController jz_navigationBarBackgroundAlphaWithNavigationController:self]];
                 }];
             }
-
+            
             if ([fromViewController jz_navigationBarTintColorWithNavigationController:self] != [toViewController jz_navigationBarTintColorWithNavigationController:self]) {
                 
                 if (!self.jz_navigationBarTintColor) {
@@ -224,10 +224,10 @@ __attribute__((constructor)) static void JZ_Inject(void) {
             }
             
         }
-
+        
         return;
     }
-
+    
     static CALayer * (^_snapshotLayerWithImage) (UIImage *snapshotImage) = ^CALayer *(UIImage *snapshotImage) {
         CALayer *snapshotLayer = [CALayer layer];
         snapshotLayer.name = kSnapshotLayerNameForTransition;
@@ -240,46 +240,55 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     if (!self.navigationBarHidden && navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
         [fromViewController.view.layer addSublayer:_snapshotLayerWithImage(UIGraphicsGetImageFromCurrentImageContext())];
     }
-
+    
     self.navigationBarHidden = ![toViewController jz_wantsNavigationBarVisibleWithNavigationController:self];
     self.jz_navigationBarTintColor = [toViewController jz_navigationBarTintColorWithNavigationController:self];
     self.jz_navigationBarBackgroundAlpha = [toViewController jz_navigationBarBackgroundAlphaWithNavigationController:self];
     
-    if (!self.navigationBarHidden) {
-
-        [snapshotView.layer renderInContext:UIGraphicsGetCurrentContext()];
-
-        CALayer *snapshotLayer = _snapshotLayerWithImage(UIGraphicsGetImageFromCurrentImageContext());
-
-        if (navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
-            [toViewController.view.layer addSublayer:snapshotLayer];
-        } else {
-            [self.navigationBar.superview.layer addSublayer:snapshotLayer];
-        }
-
-    }
+    [snapshotView.layer renderInContext:UIGraphicsGetCurrentContext()];
     
-    UIGraphicsEndImageContext();
-
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        if (!self.jz_didEndNavigationTransitionBlock) {
+            UIGraphicsEndImageContext();
+            return;
+        }
+        
+        if (!self.navigationBarHidden) {
+            
+            CALayer *snapshotLayer = _snapshotLayerWithImage(UIGraphicsGetImageFromCurrentImageContext());
+            
+            if (navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
+                [toViewController.view.layer addSublayer:snapshotLayer];
+            } else {
+                [self.navigationBar.superview.layer addSublayer:snapshotLayer];
+            }
+            
+        }
+        
+        UIGraphicsEndImageContext();
+        
+    });
+    
     CGFloat navigationBarAlpha = self.navigationBar.alpha;
-
+    
     self.navigationBar.alpha = 0.f;
-
+    
     __weak typeof(self) weakSelf = self;
-
+    
     self.jz_didEndNavigationTransitionBlock = ^{
-
+        
         weakSelf.jz_didEndNavigationTransitionBlock = NULL;
-
+        
         if (![toViewController isEqual:weakSelf.visibleViewController]) {
             UIViewController *toViewController = weakSelf.visibleViewController;
             weakSelf.navigationBarHidden = ![toViewController jz_wantsNavigationBarVisibleWithNavigationController:weakSelf];
             weakSelf.jz_navigationBarTintColor = toViewController.jz_navigationBarTintColor;
             weakSelf.jz_navigationBarBackgroundAlpha = [toViewController jz_navigationBarBackgroundAlphaWithNavigationController:weakSelf];
         }
-
+        
         weakSelf.navigationBar.alpha = navigationBarAlpha;
-
+        
         NSPredicate *getSubSnapshotLayerPredicate = [NSPredicate predicateWithFormat:@"name == %@", kSnapshotLayerNameForTransition];
         NSArray <CALayer *> *result = nil;
         if (navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
@@ -291,7 +300,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
             result = [weakSelf.navigationBar.superview.layer.sublayers filteredArrayUsingPredicate:getSubSnapshotLayerPredicate];
             [result makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
         }
-
+        
     };
 }
 
@@ -322,7 +331,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     [self jz_handleNavigationTransitionAnimated:animated fromViewController:oldViewControllers.lastObject toViewController:viewControllers.lastObject transitionBlock:^{
         [self jz_setViewControllers:viewControllers animated:animated];
     }];
-
+    
 }
 
 - (UIViewController *)jz_popViewControllerAnimated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
@@ -342,7 +351,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     
     self.jz_operation = UINavigationControllerOperationPop;
     self._jz_navigationTransitionFinished = completion;
-
+    
     __block NSArray *popedViewControllers = nil;
     [self jz_handleNavigationTransitionAnimated:animated fromViewController:self.visibleViewController toViewController:viewController transitionBlock:^{
         popedViewControllers = [self jz_popToViewController:viewController animated:animated];
@@ -396,7 +405,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     !self._jz_navigationTransitionFinished ?: self._jz_navigationTransitionFinished(self, YES);
     
     self._jz_navigationTransitionFinished = NULL;
-
+    
     [self jz_previousVisibleViewController];
 }
 
@@ -558,7 +567,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     NSUInteger index = [self.viewControllers indexOfObject:viewController];
     
     if (!index || index == NSNotFound) return nil;
-
+    
     return self.viewControllers[index - 1];
 }
 
