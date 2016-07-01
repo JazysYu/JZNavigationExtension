@@ -63,6 +63,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
                     [invocation setTarget:target];
                     [invocation setSelector:selector];
                     [invocation setArgument:argument atIndex:2];
+                    [invocation retainArguments];
                     return invocation;
                 };
                 
