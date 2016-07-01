@@ -1,6 +1,6 @@
 # JZNavigationExtension
 
-[![Version](https://img.shields.io/badge/pod-v1.5.0-5193DB.svg)](https://cocoapods.org/pods/JZNavigationExtension)
+[![Version](https://img.shields.io/badge/pod-v1.5.0.1-5193DB.svg)](https://cocoapods.org/pods/JZNavigationExtension)
 [![Platform](https://img.shields.io/badge/platform-iOS7+-lightgrey.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-2F2F2F.svg)](https://github.com/JazysYu/JZNavigationExtension/blob/master/LICENSE)
 
