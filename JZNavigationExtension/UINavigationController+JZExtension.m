@@ -127,9 +127,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
             jz_class_reImplementation([UINavigationBar class], NSSelectorFromString(@"_popForTouchAtPoint:"), imp_implementationWithBlock(^(UINavigationBar *navigationBar) {
                 [(UINavigationController *)navigationBar.delegate popViewControllerAnimated:navigationBar.jz_transitionAnimated];
             }));
-        }
-        
-        {
             jz_method_swizzling([UINavigationBar class], @selector(sizeThatFits:), @selector(jz_sizeThatFits:));
         }
         
@@ -138,26 +135,12 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         }
         
         {
+            jz_method_swizzling([UINavigationController class], @selector(interactivePopGestureRecognizer), @selector(jz_interactivePopGestureRecognizer));
             jz_method_swizzling([UINavigationController class], @selector(pushViewController:animated:),@selector(jz_pushViewController:animated:));
-        }
-        
-        {
             jz_method_swizzling([UINavigationController class], @selector(popViewControllerAnimated:), @selector(jz_popViewControllerAnimated:));
-        }
-        
-        {
             jz_method_swizzling([UINavigationController class], @selector(popToViewController:animated:), @selector(jz_popToViewController:animated:));
-        }
-        
-        {
             jz_method_swizzling([UINavigationController class], @selector(popToRootViewControllerAnimated:), @selector(jz_popToRootViewControllerAnimated:));
-        }
-        
-        {
             jz_method_swizzling([UINavigationController class], @selector(setViewControllers:animated:), @selector(jz_setViewControllers:animated:));
-        }
-        
-        {
             jz_method_swizzling([UINavigationController class], NSSelectorFromString(@"navigationTransitionView:didEndTransition:fromView:toView:"),@selector(jz_navigationTransitionView:didEndTransition:fromView:toView:));
         }
         
@@ -483,6 +466,10 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 #pragma mark - getters
+
+- (UIGestureRecognizer *)jz_interactivePopGestureRecognizer {
+    return self.jz_fullScreenInteractivePopGestureEnabled ? self.jz_fullScreenInteractivePopGestureRecognizer : [self jz_interactivePopGestureRecognizer];
+}
 
 - (dispatch_block_t)jz_didEndNavigationTransitionBlock {
     return objc_getAssociatedObject(self, _cmd);
