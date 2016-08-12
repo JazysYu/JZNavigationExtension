@@ -72,7 +72,7 @@ NS_INLINE void jz_handleInteractiveTransition(UIPercentDrivenInteractiveTransiti
     }
     if (isCancel) {
         if (navigationController.jz_didEndNavigationTransitionBlock) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.percentComplete * self.duration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.duration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (!navigationController.jz_isInteractiveTransition) {
                     navigationController.jz_didEndNavigationTransitionBlock();
                 }
