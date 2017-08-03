@@ -35,7 +35,7 @@ static NSString *kNavigationController = @"__parent";
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     UINavigationController *navigationController = [self valueForKey:kNavigationController];
-    return navigationController.viewControllers.count != 1 && ![navigationController jz_isTransitioning] && !CGRectContainsPoint(navigationController.navigationBar.frame, [touch locationInView:gestureRecognizer.view]);
+    return navigationController.viewControllers.count != 1 && ![navigationController transitionCoordinator] && !CGRectContainsPoint(navigationController.navigationBar.frame, [touch locationInView:gestureRecognizer.view]);
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
@@ -73,7 +73,7 @@ NS_INLINE void jz_handleInteractiveTransition(UIPercentDrivenInteractiveTransiti
     if (isCancel) {
         if (navigationController.jz_didEndNavigationTransitionBlock) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.percentComplete * self.duration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (!navigationController.jz_isInteractiveTransition) {
+                if (!navigationController.transitionCoordinator.isInteractive) {
                     navigationController.jz_didEndNavigationTransitionBlock();
                 }
             });

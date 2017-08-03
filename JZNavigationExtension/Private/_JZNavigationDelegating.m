@@ -20,12 +20,37 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     
-    if (navigationController.jz_navigationBarTransitionStyle == JZNavigationBarTransitionStyleSystem) {
-        [navigationController setNavigationBarHidden:![viewController jz_wantsNavigationBarVisibleWithNavigationController:navigationController] animated:animated];
-        [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
+    id<UIViewControllerTransitionCoordinator> transitionCoordinator = navigationController.topViewController.transitionCoordinator;
+    navigationController.jz_previousVisibleViewController = [transitionCoordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
+    if ([navigationController.viewControllers containsObject:navigationController.jz_previousVisibleViewController]) {
+        navigationController.jz_operation = UINavigationControllerOperationPush;
+    } else {
+        navigationController.jz_operation = UINavigationControllerOperationPop;
+    }
+    [transitionCoordinator notifyWhenInteractionEndsUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        !navigationController.jz_interactivePopGestureRecognizerCompletion ?: navigationController.jz_interactivePopGestureRecognizerCompletion(navigationController, !context.isCancelled);
+        if (context.isCancelled) {
+            !navigationController.jz_didEndNavigationTransitionBlock ?: navigationController.jz_didEndNavigationTransitionBlock();
+        }
+        
+        UIViewController *adjustViewController = context.isCancelled ? navigationController.jz_previousVisibleViewController : navigationController.visibleViewController;
+        navigationController.jz_navigationBarBackgroundAlpha = [adjustViewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
+        UIColor *newNavigationBarColor = [adjustViewController jz_navigationBarTintColorWithNavigationController:navigationController];
+        navigationController.jz_navigationBarTintColor = newNavigationBarColor;
+        
+        navigationController.jz_operation = UINavigationControllerOperationNone;
+        [navigationController jz_previousVisibleViewController];
+        
+    }];
+    
+    if (![[navigationController valueForKey:@"isBuiltinTransition"] boolValue] || !navigationController.navigationBar.isTranslucent || navigationController.jz_navigationBarTransitionStyle == JZNavigationBarTransitionStyleSystem) {
+        
+        [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+            navigationController.navigationBarHidden = ![viewController jz_wantsNavigationBarVisibleWithNavigationController:navigationController];
             navigationController.jz_navigationBarTintColor = [viewController jz_navigationBarTintColorWithNavigationController:navigationController];
             navigationController.jz_navigationBarBackgroundAlpha = [viewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
-        }];
+        } completion:NULL];
+        
     } else if (navigationController.jz_navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
         
         UIView *snapshotView = [UIApplication sharedApplication].keyWindow;
@@ -132,36 +157,6 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
     !navigationController.jz_didEndNavigationTransitionBlock ?: navigationController.jz_didEndNavigationTransitionBlock();
     navigationController.jz_operation = UINavigationControllerOperationNone;
     [navigationController jz_previousVisibleViewController];
-}
-
-//- (UIInterfaceOrientationMask)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController {
-//    return 0;
-//}
-//
-//- (UIInterfaceOrientation)navigationControllerPreferredInterfaceOrientationForPresentation:(UINavigationController *)navigationController {
-//    return 0;
-//}
-
-- (nullable id <UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
-                                   interactionControllerForAnimationController:(id <UIViewControllerAnimatedTransitioning>) animationController {
-    return nil;
-//    navigationController._jz_interactiveTransition;
-}
-
-- (nullable id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
-                                            animationControllerForOperation:(UINavigationControllerOperation)operation
-                                                         fromViewController:(UIViewController *)fromVC
-                                                           toViewController:(UIViewController *)toVC {
-    navigationController.jz_operation = operation;
-    navigationController.jz_previousVisibleViewController = fromVC;
-    return nil;
-}
-
-- (BOOL)respondsToSelector:(SEL)aSelector {
-    if ([[NSString stringWithUTF8String:sel_getName(aSelector)] isEqualToString:@"navigationController:animationControllerForOperation:fromViewController:toViewController:"]) {
-        return false;
-    }
-     return true;
 }
 
 /**
