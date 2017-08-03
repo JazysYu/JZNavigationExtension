@@ -15,7 +15,7 @@
     
     [super viewDidLoad];
     
-    self.jz_navigationBarTransitionStyle = JZNavigationBarTransitionStyleDoppelganger;
+//    self.jz_navigationBarTransitionStyle = JZNavigationBarTransitionStyleDoppelganger;
     
 }
 

@@ -31,6 +31,10 @@
 
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     if (self.navigationController.jz_operation == UINavigationControllerOperationPop) {
@@ -211,7 +215,6 @@
                 viewController.title = @"Pushed";
                 viewController.view.backgroundColor = UIColorWithRGBA(253, 69, 67, 1.f);
             }];
-            return;
         }
             break;
         case 9:

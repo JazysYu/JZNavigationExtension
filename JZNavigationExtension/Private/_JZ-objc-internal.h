@@ -27,6 +27,8 @@ typedef void(^_jz_navigation_block_t)(UINavigationController *navigationControll
 @property (nonatomic, strong) _JZNavigationInteractiveTransition *_jz_interactiveTransition;
 @property (nonatomic, weak, readonly) UIPanGestureRecognizer *jz_fullScreenInteractivePopGestureRecognizer;
 @property (nonatomic, weak, readwrite) UIView *jz_navigationBarTintColorView;
+- (void)setJz_operation:(UINavigationControllerOperation)jz_operation;
+- (void)setJz_previousVisibleViewController:(UIViewController * _Nullable)jz_previousVisibleViewController;
 - (BOOL)jz_isTransitioning;
 - (BOOL)jz_isInteractiveTransition;
 @end

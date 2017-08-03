@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		400169511C604100005DF34C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 400169501C604100005DF34C /* ViewController.m */; };
 		400169541C60452A005DF34C /* NavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 400169531C60452A005DF34C /* NavigationController.m */; };
+		403DAA801DCC7C6E0054304F /* _JZNavigationDelegating.m in Sources */ = {isa = PBXBuildFile; fileRef = 403DAA7F1DCC7C6E0054304F /* _JZNavigationDelegating.m */; };
 		404F89B51D1944E10076D3FB /* DemoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 404F89B41D1944E10076D3FB /* DemoTableViewCell.m */; };
 		40695FB71CBDE4A7004F73E8 /* _JZValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 40695FAA1CBDE4A7004F73E8 /* _JZValue.m */; };
 		40695FB81CBDE4A7004F73E8 /* NSNumber+JZExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 40695FAC1CBDE4A7004F73E8 /* NSNumber+JZExtension.m */; };
@@ -30,6 +31,8 @@
 		400169501C604100005DF34C /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		400169521C60452A005DF34C /* NavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationController.h; sourceTree = "<group>"; };
 		400169531C60452A005DF34C /* NavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationController.m; sourceTree = "<group>"; };
+		403DAA7E1DCC7C6E0054304F /* _JZNavigationDelegating.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _JZNavigationDelegating.h; sourceTree = "<group>"; };
+		403DAA7F1DCC7C6E0054304F /* _JZNavigationDelegating.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _JZNavigationDelegating.m; sourceTree = "<group>"; };
 		404F89B31D1944E10076D3FB /* DemoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoTableViewCell.h; sourceTree = "<group>"; };
 		404F89B41D1944E10076D3FB /* DemoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoTableViewCell.m; sourceTree = "<group>"; };
 		40695FA61CBDE4A7004F73E8 /* JZNavigationExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JZNavigationExtension.h; sourceTree = "<group>"; };
@@ -97,6 +100,8 @@
 		40695FA71CBDE4A7004F73E8 /* Private */ = {
 			isa = PBXGroup;
 			children = (
+				403DAA7E1DCC7C6E0054304F /* _JZNavigationDelegating.h */,
+				403DAA7F1DCC7C6E0054304F /* _JZNavigationDelegating.m */,
 				40695FA81CBDE4A7004F73E8 /* _JZ-objc-internal.h */,
 				40695FA91CBDE4A7004F73E8 /* _JZValue.h */,
 				40695FAA1CBDE4A7004F73E8 /* _JZValue.m */,
@@ -197,8 +202,9 @@
 				TargetAttributes = {
 					40D3B0D31B3C0859009F145F = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = 943N5LACZV;
 						DevelopmentTeamName = "宇声 张 (Personal Team)";
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -245,6 +251,7 @@
 				40DB17B01CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.m in Sources */,
 				40695FBC1CBDE4A7004F73E8 /* UINavigationController+JZExtension.m in Sources */,
 				40695FB71CBDE4A7004F73E8 /* _JZValue.m in Sources */,
+				403DAA801DCC7C6E0054304F /* _JZNavigationDelegating.m in Sources */,
 				40695FBD1CBDE4A7004F73E8 /* UIViewController+JZExtension.m in Sources */,
 				404F89B51D1944E10076D3FB /* DemoTableViewCell.m in Sources */,
 				40D3B0DD1B3C0859009F145F /* AppDelegate.m in Sources */,
@@ -366,13 +373,15 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 943N5LACZV;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				INFOPLIST_FILE = JZNavigationExtensionDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = jazys.yu.JZNavigationExtensionDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = jazysYu.demo.JZNavigationExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "b5d066df-bf04-4268-a47f-57108f1de862";
+				PROVISIONING_PROFILE_SPECIFIER = pinguo_beijing_development;
 			};
 			name = Debug;
 		};
@@ -383,11 +392,12 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				INFOPLIST_FILE = JZNavigationExtensionDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = jazys.yu.JZNavigationExtensionDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = jazysYu.demo.JZNavigationExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
