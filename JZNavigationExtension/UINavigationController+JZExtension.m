@@ -33,138 +33,45 @@ BOOL jz_isVersionBelow9_0 = false;
 
 @implementation UINavigationController (JZExtension)
 
+void (^jz_method_swizzling)(Class, SEL, Class, SEL) = ^(Class cls1, SEL sel1, Class cls2, SEL sel2) {
+    Method method1 = class_getInstanceMethod(cls1, sel1);
+    Method method2 = class_getInstanceMethod(cls2, sel2);
+    method_exchangeImplementations(method1, method2);
+};
+
+void (^jz_sel_method_swizzling)(Class, Class, SEL) = ^(Class cls1, Class cls2, SEL sel) {
+    jz_method_swizzling(cls1, sel, cls2, sel);
+};
+
+void (^jz_class_method_swizzling)(Class, SEL, SEL) = ^(Class cls, SEL sel1, SEL sel2) {
+    jz_method_swizzling(cls, sel1, cls, sel2);
+};
+
 __attribute__((constructor)) static void JZ_Inject(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        void (^jz_method_swizzling)(Class, SEL, SEL) = ^(Class cls, SEL sel, SEL _sel) {
-            Method  method = class_getInstanceMethod(cls, sel);
-            Method _method = class_getInstanceMethod(cls, _sel);
-            method_exchangeImplementations(method, _method);
-        };
-        
-        jz_method_swizzling([UINavigationController class], @selector(setDelegate:), @selector(jz_setDelegate:));
-        jz_method_swizzling([UINavigationController class], @selector(interactivePopGestureRecognizer), @selector(jz_interactivePopGestureRecognizer));
-        
-        
-//        void (^jz_class_reImplementation)(Class, SEL, IMP) = ^(Class cls, SEL sel, IMP imp) {
-//            Method method = class_getInstanceMethod(cls, sel);
-//            if (!class_addMethod(cls, sel, imp, method_getTypeEncoding(method))) {
-//                method_setImplementation(method, imp);
-//            }
-//        };
-        
-        
-//        {
-//            Class cls_UINavigationInteractiveTransition = JZ_UINavigationInteractiveTransition;
-//            Class cls_JZNavigationInteractiveTransition = [_JZNavigationInteractiveTransition class];
-//            {
-//                static NSInvocation *(^jz_invocation_create)(id, SEL, void *) = ^NSInvocation *(id target, SEL selector, void *argument){
-//                    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[target methodSignatureForSelector:selector]];
-//                    [invocation setTarget:target];
-//                    [invocation setSelector:selector];
-//                    [invocation setArgument:argument atIndex:2];
-//                    [invocation retainArguments];
-//                    return invocation;
-//                };
-//
-//                SEL sel_shouldReceiveTouch = @selector(gestureRecognizer:shouldReceiveTouch:);
-//
-//                BOOL (*_originalShouldReceiveTouchIMP)(id, SEL, id, id) = (void *)[cls_UINavigationInteractiveTransition instanceMethodForSelector:sel_shouldReceiveTouch];
-//
-//                Method method_shouldReceiveTouch = class_getInstanceMethod(cls_UINavigationInteractiveTransition, sel_shouldReceiveTouch);
-//                method_setImplementation(method_shouldReceiveTouch, imp_implementationWithBlock(^BOOL(id navigationTransition, id gestureRecognizer, id touch) {
-//
-//                    UINavigationController *navigationController = [navigationTransition valueForKey:@"__parent"];
-//
-//                    NSMutableArray<NSInvocation *> *invocations = [NSMutableArray array];
-//
-//                    if (navigationController.navigationBarHidden) {
-//                        BOOL navigationBarHidden = true;
-//                        [invocations addObject:jz_invocation_create(navigationController, @selector(setNavigationBarHidden:), &navigationBarHidden)];
-//                        navigationController.navigationBarHidden = false;
-//                    }
-//
-//                    if (!navigationController.visibleViewController.navigationItem.leftItemsSupplementBackButton) {
-//                        if (navigationController.visibleViewController.navigationItem.leftBarButtonItems) {
-//                            NSArray *leftBarButtonItems = navigationController.visibleViewController.navigationItem.leftBarButtonItems;
-//                            [invocations addObject:jz_invocation_create(navigationController.visibleViewController.navigationItem, @selector(setLeftBarButtonItems:), &leftBarButtonItems)];
-//                            navigationController.visibleViewController.navigationItem.leftBarButtonItems = nil;
-//                        } else if (navigationController.visibleViewController.navigationItem.leftBarButtonItem) {
-//                            UIBarButtonItem *leftBarButtonItem = navigationController.visibleViewController.navigationItem.leftBarButtonItem;
-//                            [invocations addObject:jz_invocation_create(navigationController.visibleViewController.navigationItem, @selector(setLeftBarButtonItem:), &leftBarButtonItem)];
-//                            navigationController.visibleViewController.navigationItem.leftBarButtonItem = nil;
-//                        }
-//                    }
-//
-//                    if (navigationController.visibleViewController.navigationItem.hidesBackButton) {
-//                        BOOL hidesBackButton = true;
-//                        [invocations addObject:jz_invocation_create(navigationController.visibleViewController.navigationItem, @selector(setHidesBackButton:), &hidesBackButton)];
-//                        navigationController.visibleViewController.navigationItem.hidesBackButton = false;
-//                    }
-//
-//                    BOOL shouldReceiveTouch = _originalShouldReceiveTouchIMP(navigationTransition, sel_shouldReceiveTouch, gestureRecognizer, touch);
-//
-//                    [invocations makeObjectsPerformSelector:@selector(invoke)];
-//
-//                    return shouldReceiveTouch;
-//                }));
-//            }
-//        }
-        
-        
-        
+        jz_class_method_swizzling([UINavigationController class], @selector(setDelegate:), @selector(jz_setDelegate:));
+        jz_class_method_swizzling([UINavigationController class], @selector(interactivePopGestureRecognizer), @selector(jz_interactivePopGestureRecognizer));
     });
 }
 
 - (void)jz_setDelegate:(id<UINavigationControllerDelegate>)delegate {
     
-    if (!delegate || [delegate isKindOfClass:[_JZNavigationDelegating class]]) {
-        goto setDelegate;
+    if (self.delegate) {
+        jz_sel_method_swizzling([self.delegate class], [_JZNavigationDelegating class], @selector(navigationController:willShowViewController:animated:));
+        jz_sel_method_swizzling([self.delegate class], [_JZNavigationDelegating class], @selector(navigationController:didShowViewController:animated:));
     }
     
-    Class superClass = object_getClass(delegate);
-    
-    const char *jz_class_name = [NSString stringWithFormat:@"%@_%@",NSStringFromClass([_JZNavigationDelegating class]),NSStringFromClass(superClass)].UTF8String;
-    
-    if (objc_getClass(jz_class_name)) {
-        goto setDelegate;
+    if (!delegate) {
+        delegate = [[_JZNavigationDelegating alloc] init];
+        self.jz_navigationDelegate = delegate;
+    } else if (![delegate isKindOfClass:[_JZNavigationDelegating class]]) {
+        self.jz_navigationDelegate = nil;
+        jz_sel_method_swizzling([delegate class], [_JZNavigationDelegating class], @selector(navigationController:willShowViewController:animated:));
+        jz_sel_method_swizzling([delegate class], [_JZNavigationDelegating class], @selector(navigationController:didShowViewController:animated:));
     }
-    
-    Class JZNavigationDelegating = objc_allocateClassPair(superClass, jz_class_name, 0);
-    
-    if (JZNavigationDelegating) {
-        
-        void (^jz_replaceMethod)(SEL) = ^(SEL sel) {
-            Method method = class_getInstanceMethod([_JZNavigationDelegating class], sel);
-            IMP imp = method_getImplementation(method);
-            const char *types = method_getTypeEncoding(method);
-            class_replaceMethod(JZNavigationDelegating, sel, imp, types);
-        };
-        
-        jz_replaceMethod(@selector(navigationController:willShowViewController:animated:));
-        jz_replaceMethod(@selector(navigationController:didShowViewController:animated:));
-//        jz_replaceMethod(@selector(navigationControllerSupportedInterfaceOrientations:));
-//        jz_replaceMethod(@selector(navigationControllerPreferredInterfaceOrientationForPresentation:));
-//        jz_replaceMethod(@selector(navigationController:interactionControllerForAnimationController:));
-//        jz_replaceMethod(@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:));
-        
-        objc_registerClassPair(JZNavigationDelegating);
-        
-        object_setClass(delegate, JZNavigationDelegating);
-        
-    }
-    
-setDelegate:
     
     [self jz_setDelegate:delegate];
-    
-}
-#warning here
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
-    return [NSMethodSignature signatureWithObjCTypes:"v@:"];
-}
-
-- (void)forwardInvocation:(NSInvocation *)anInvocation {
     
 }
 
@@ -277,6 +184,10 @@ setDelegate:
     self.jz_fullScreenInteractivePopGestureRecognizer.enabled = jz_fullScreenInteractivePopGestureEnabled;
 }
 
+- (void)setJz_navigationDelegate:(_JZNavigationDelegating *)jz_navigationDelegate {
+    objc_setAssociatedObject(self, @selector(jz_navigationDelegate), jz_navigationDelegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 #pragma mark - getters
 
 - (UIGestureRecognizer *)jz_interactivePopGestureRecognizer {
@@ -361,6 +272,10 @@ setDelegate:
     if (!index || index == NSNotFound) return nil;
     
     return self.viewControllers[index - 1];
+}
+
+- (_JZNavigationDelegating *)jz_navigationDelegate {
+    return objc_getAssociatedObject(self, _cmd);
 }
 
 @end

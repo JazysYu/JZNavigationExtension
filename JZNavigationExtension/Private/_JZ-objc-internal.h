@@ -18,7 +18,7 @@
 #pragma clang diagnostic ignored"-Wnullability-completeness"
 
 extern __attribute__((visibility ("default"))) BOOL jz_isVersionBelow9_0;
-@class _JZNavigationInteractiveTransition;
+@class _JZNavigationInteractiveTransition, _JZNavigationDelegating;
 typedef void(^_jz_navigation_block_t)(UINavigationController *navigationController, BOOL finished);
 @interface UINavigationController (_JZExtension) <UINavigationBarDelegate>
 @property (nonatomic, copy) dispatch_block_t jz_didEndNavigationTransitionBlock;
@@ -27,6 +27,7 @@ typedef void(^_jz_navigation_block_t)(UINavigationController *navigationControll
 @property (nonatomic, strong) _JZNavigationInteractiveTransition *_jz_interactiveTransition;
 @property (nonatomic, weak, readonly) UIPanGestureRecognizer *jz_fullScreenInteractivePopGestureRecognizer;
 @property (nonatomic, weak, readwrite) UIView *jz_navigationBarTintColorView;
+@property (nonatomic) _JZNavigationDelegating *jz_navigationDelegate;
 - (void)setJz_operation:(UINavigationControllerOperation)jz_operation;
 - (void)setJz_previousVisibleViewController:(UIViewController * _Nullable)jz_previousVisibleViewController;
 @end

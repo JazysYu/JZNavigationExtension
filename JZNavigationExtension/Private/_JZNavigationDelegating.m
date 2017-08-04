@@ -20,6 +20,10 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     
+    if (!navigationController.jz_navigationDelegate) {
+        [self navigationController:navigationController willShowViewController:viewController animated:animated];
+    }
+    
     id<UIViewControllerTransitionCoordinator> transitionCoordinator = navigationController.topViewController.transitionCoordinator;
     navigationController.jz_previousVisibleViewController = [transitionCoordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
     if ([navigationController.viewControllers containsObject:navigationController.jz_previousVisibleViewController]) {
@@ -48,8 +52,10 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
         [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
             navigationController.navigationBarHidden = ![viewController jz_wantsNavigationBarVisibleWithNavigationController:navigationController];
             navigationController.jz_navigationBarTintColor = [viewController jz_navigationBarTintColorWithNavigationController:navigationController];
+        } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+#warning jz_navigationBarBackgroundAlpha cannot be animated
             navigationController.jz_navigationBarBackgroundAlpha = [viewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
-        } completion:NULL];
+        }];
         
     } else if (navigationController.jz_navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
         
@@ -152,6 +158,9 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
 }
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    if (!navigationController.jz_navigationDelegate) {
+        [self navigationController:navigationController didShowViewController:viewController animated:animated];
+    }
     !navigationController._jz_navigationTransitionFinished ?: navigationController._jz_navigationTransitionFinished(navigationController, true);
     navigationController._jz_navigationTransitionFinished = NULL;
     !navigationController.jz_didEndNavigationTransitionBlock ?: navigationController.jz_didEndNavigationTransitionBlock();
