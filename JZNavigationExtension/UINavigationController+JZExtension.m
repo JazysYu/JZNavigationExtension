@@ -84,7 +84,9 @@ __attribute__((constructor)) static void JZ_Inject(void) {
                         navigationController.navigationBarHidden = false;
                     }
                     
-                    if (!navigationController.visibleViewController.navigationItem.leftItemsSupplementBackButton) {
+                    //修正：iOS11点击后退按钮没有反应问题
+                    if (!navigationController.visibleViewController.navigationItem.leftItemsSupplementBackButton
+                       && UIDevice.currentDevice.systemVersion.floatValue < 11.0) {
                         if (navigationController.visibleViewController.navigationItem.leftBarButtonItems) {
                             NSArray *leftBarButtonItems = navigationController.visibleViewController.navigationItem.leftBarButtonItems;
                             [invocations addObject:jz_invocation_create(navigationController.visibleViewController.navigationItem, @selector(setLeftBarButtonItems:), &leftBarButtonItems)];
