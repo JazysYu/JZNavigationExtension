@@ -12,6 +12,8 @@
 #import "_JZ-objc-internal.h"
 #import "UINavigationBar+JZExtension.h"
 
+typedef void (*JZNavigationShowViewControllerIMP)(id _Nonnull, SEL _Nonnull, UINavigationController *, UIViewController *, BOOL);
+
 static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapshotLayerName";
 
 @interface NSObject (JZExtension) <UINavigationControllerDelegate>
@@ -22,9 +24,9 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     
     Class superClass = class_getSuperclass(object_getClass(self));
-    VIMP instanceMethod = (VIMP)class_getMethodImplementation(superClass, _cmd);
-    instanceMethod(self, _cmd, navigationController, viewController, animated);
-    
+    JZNavigationShowViewControllerIMP superInstanceMethod = (void *)class_getMethodImplementation(superClass, _cmd);
+    superInstanceMethod(self, _cmd, navigationController, viewController, animated);
+   
     id<UIViewControllerTransitionCoordinator> transitionCoordinator = navigationController.topViewController.transitionCoordinator;
     navigationController.jz_previousVisibleViewController = [transitionCoordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
     if ([navigationController.viewControllers containsObject:navigationController.jz_previousVisibleViewController]) {
@@ -149,33 +151,15 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
 //        }
         
     }
- 
-//    IMP superIMP = [super methodForSelector:_cmd];
-//    IMP selfIMP = [self methodForSelector:_cmd];
-//    if (superIMP != selfIMP) {
-//        [super navigationController:navigationController willShowViewController:viewController animated:animated];
-//    }
     
 }
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-//    if (!navigationController.jz_navigationDelegate) {
-//        [self navigationController:navigationController didShowViewController:viewController animated:animated];
-//    }
     !navigationController._jz_navigationTransitionFinished ?: navigationController._jz_navigationTransitionFinished(navigationController, true);
     navigationController._jz_navigationTransitionFinished = NULL;
     !navigationController.jz_didEndNavigationTransitionBlock ?: navigationController.jz_didEndNavigationTransitionBlock();
     navigationController.jz_operation = UINavigationControllerOperationNone;
     [navigationController jz_previousVisibleViewController];
 }
-
-/**
- *  @author JazysYu, 16-08-29 18:08:52
- *
- *  Fake the class
- */
-//- (Class)class {
-//    return [super superclass];
-//}
 
 @end

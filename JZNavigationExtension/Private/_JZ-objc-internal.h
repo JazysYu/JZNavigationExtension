@@ -17,7 +17,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wnullability-completeness"
 
-typedef void (*VIMP)(id _Nonnull, SEL _Nonnull, ...);
 extern __attribute__((visibility ("default"))) BOOL jz_isVersionBelow9_0;
 @class _JZNavigationInteractiveTransition, _JZNavigationDelegating;
 typedef void(^_jz_navigation_block_t)(UINavigationController *navigationController, BOOL finished);
@@ -26,7 +25,6 @@ typedef void(^_jz_navigation_block_t)(UINavigationController *navigationControll
 @property (nonatomic, copy, setter=jz_setInteractivePopGestureRecognizerCompletion:) _jz_navigation_block_t jz_interactivePopGestureRecognizerCompletion;
 @property (nonatomic, copy) _jz_navigation_block_t _jz_navigationTransitionFinished;
 @property (nonatomic, strong) _JZNavigationInteractiveTransition *_jz_interactiveTransition;
-@property (nonatomic, weak, readonly) UIPanGestureRecognizer *jz_fullScreenInteractivePopGestureRecognizer;
 @property (nonatomic, weak, readwrite) UIView *jz_navigationBarTintColorView;
 @property (nonatomic) _JZNavigationDelegating *jz_navigationDelegate;
 - (void)setJz_operation:(UINavigationControllerOperation)jz_operation;

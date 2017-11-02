@@ -50,55 +50,50 @@ void (^jz_class_method_swizzling)(Class, SEL, SEL) = ^(Class cls, SEL sel1, SEL 
 __attribute__((constructor)) static void JZ_Inject(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-//        [_JZNavigationDelegating setImp_willShowViewController:[NSMethodSignature instanceMethodForSelector:@selector(navigationController:willShowViewController:animated:)]];
-//        [_JZNavigationDelegating setImp_didShowViewController:[NSMethodSignature instanceMethodForSelector:@selector(navigationController:didShowViewController:animated:)]];
         jz_class_method_swizzling([UINavigationController class], @selector(setDelegate:), @selector(jz_setDelegate:));
-        jz_class_method_swizzling([UINavigationController class], @selector(interactivePopGestureRecognizer), @selector(jz_interactivePopGestureRecognizer));
     });
 }
 
-- (void)jz_setDelegate:(id<UINavigationControllerDelegate>)delegate {
+- (void)jz_setDelegate:(NSObject <UINavigationControllerDelegate> *)delegate {
+    
+    if ([self.delegate isEqual:delegate]) {
+        return;
+    }
+    
+    NSString *_JZNavigationDelegatingTrigger = @"_JZNavigationDelegatingTrigger";
+    
+    if (![self.delegate isEqual:self.jz_navigationDelegate]) {
+        [(NSObject *)self.delegate removeObserver:self forKeyPath:_JZNavigationDelegatingTrigger context:_cmd];
+    }
     
     if (!delegate) {
         
-        delegate = [[_JZNavigationDelegating alloc] init];
-        self.jz_navigationDelegate = delegate;
+        self.jz_navigationDelegate = [[_JZNavigationDelegating alloc] init];
+        delegate = self.jz_navigationDelegate;
         
-    } else if (![delegate isKindOfClass:[_JZNavigationDelegating class]]) {
+    } else {
         
-        Class superClass = object_getClass(delegate);
+        NSAssert([delegate isKindOfClass:[NSObject class]], @"Must inherit form NSObject");
         
-        const char *jz_class_name = [NSString stringWithFormat:@"%@_%@",NSStringFromClass([_JZNavigationDelegating class]),NSStringFromClass(superClass)].UTF8String;
+        [delegate addObserver:self forKeyPath:_JZNavigationDelegatingTrigger options:NSKeyValueObservingOptionNew context:_cmd];
+                
+        void (^jz_replaceMethod)(Class, Class, SEL) = ^(Class cls1, Class cls2, SEL sel) {
+            Method method = class_getInstanceMethod(cls1, sel);
+            IMP imp = method_getImplementation(method);
+            const char *types = method_getTypeEncoding(method);
+            class_replaceMethod(cls2, sel, imp, types);
+        };
         
-        Class JZNavigationDelegating = objc_allocateClassPair(superClass, jz_class_name, 0);
-        
-        if (JZNavigationDelegating) {
-            
-            void (^jz_replaceMethod)(Class, Class, SEL) = ^(Class cls1, Class cls2, SEL sel) {
-                Method method = class_getInstanceMethod(cls1, sel);
-                IMP imp = method_getImplementation(method);
-                const char *types = method_getTypeEncoding(method);
-                class_replaceMethod(cls2, sel, imp, types);
-            };
-            
-            jz_replaceMethod([_JZNavigationDelegating class], JZNavigationDelegating, @selector(navigationController:willShowViewController:animated:));
-            jz_replaceMethod([_JZNavigationDelegating class], JZNavigationDelegating, @selector(navigationController:didShowViewController:animated:));
-            //        jz_replaceMethod(@selector(navigationControllerSupportedInterfaceOrientations:));
-            //        jz_replaceMethod(@selector(navigationControllerPreferredInterfaceOrientationForPresentation:));
-            //        jz_replaceMethod(@selector(navigationController:interactionControllerForAnimationController:));
-            //        jz_replaceMethod(@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:));
-            
-            objc_registerClassPair(JZNavigationDelegating);
-            
-            object_setClass(delegate, JZNavigationDelegating);
-            
-        }
+        Class realClass = object_getClass(delegate);
+        jz_replaceMethod([_JZNavigationDelegating class], realClass, @selector(navigationController:willShowViewController:animated:));
+        jz_replaceMethod([_JZNavigationDelegating class], realClass, @selector(navigationController:didShowViewController:animated:));
         
     }
     
     [self jz_setDelegate:delegate];
     
 }
+
 
 - (void)jz_pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
     
@@ -192,21 +187,11 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     objc_setAssociatedObject(self, @selector(jz_didEndNavigationTransitionBlock), jz_didEndNavigationTransitionBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (void)setJz_fullScreenInteractivePopGestureRecognizer:(UIPanGestureRecognizer *)jz_fullScreenInteractivePopGestureRecognizer {
-    objc_setAssociatedObject(self, @selector(jz_fullScreenInteractivePopGestureRecognizer), jz_fullScreenInteractivePopGestureRecognizer ? [_JZValue valueWithWeakObject:jz_fullScreenInteractivePopGestureRecognizer] : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
 - (void)setJz_fullScreenInteractivePopGestureEnabled:(BOOL)jz_fullScreenInteractivePopGestureEnabled {
-    if (!self.jz_fullScreenInteractivePopGestureRecognizer) {
-        NSMutableArray *_interactiveTargets = jz_getProperty(self.interactivePopGestureRecognizer, @"_targets");
-        UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:jz_getProperty(_interactiveTargets.firstObject, @"_target") action:JZ_sel_handleNavigationTransition];
-        [panGestureRecognizer setValue:@NO forKey:@"canPanVertically"];
-        self._jz_interactiveTransition = [[_JZNavigationInteractiveTransition alloc] initWithNavigationController:self];
-        panGestureRecognizer.delegate = self._jz_interactiveTransition;
-        [[self.interactivePopGestureRecognizer view] addGestureRecognizer:panGestureRecognizer];
-        self.jz_fullScreenInteractivePopGestureRecognizer = panGestureRecognizer;
-    }
-    self.jz_fullScreenInteractivePopGestureRecognizer.enabled = jz_fullScreenInteractivePopGestureEnabled;
+    self._jz_interactiveTransition = [_JZNavigationInteractiveTransition new];
+    [self.interactivePopGestureRecognizer setValue:@NO forKey:@"canPanVertically"];
+    self.interactivePopGestureRecognizer.delegate = self._jz_interactiveTransition;
+    object_setClass(self.interactivePopGestureRecognizer, jz_fullScreenInteractivePopGestureEnabled ? [UIPanGestureRecognizer class] : [UIScreenEdgePanGestureRecognizer class]);
 }
 
 - (void)setJz_navigationDelegate:(_JZNavigationDelegating *)jz_navigationDelegate {
@@ -214,10 +199,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 #pragma mark - getters
-
-- (UIGestureRecognizer *)jz_interactivePopGestureRecognizer {
-    return self.jz_fullScreenInteractivePopGestureEnabled ? self.jz_fullScreenInteractivePopGestureRecognizer : [self jz_interactivePopGestureRecognizer];
-}
 
 - (dispatch_block_t)jz_didEndNavigationTransitionBlock {
     return objc_getAssociatedObject(self, _cmd);
@@ -233,14 +214,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         self.jz_navigationBarTintColorView = nil;
     }
     return weakObject;
-}
-
-- (UIPanGestureRecognizer *)jz_fullScreenInteractivePopGestureRecognizer {
-    id _fullScreenInteractivePopGestureRecognizer = [objc_getAssociatedObject(self, _cmd) weakObjectValue];
-    if (!_fullScreenInteractivePopGestureRecognizer) {
-        self.jz_fullScreenInteractivePopGestureRecognizer = nil;
-    }
-    return _fullScreenInteractivePopGestureRecognizer;
 }
 
 - (_JZNavigationInteractiveTransition *)_jz_interactiveTransition {
@@ -272,7 +245,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (BOOL)jz_fullScreenInteractivePopGestureEnabled {
-    return self.jz_fullScreenInteractivePopGestureRecognizer.enabled;
+    return [self.interactivePopGestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]];
 }
 
 - (_jz_navigation_block_t)_jz_navigationTransitionFinished {
