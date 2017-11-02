@@ -23,9 +23,11 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     
-    Class superClass = class_getSuperclass(object_getClass(self));
-    JZNavigationShowViewControllerIMP superInstanceMethod = (void *)class_getMethodImplementation(superClass, _cmd);
-    superInstanceMethod(self, _cmd, navigationController, viewController, animated);
+    if (!navigationController.jz_navigationDelegate) {
+        Class superClass = class_getSuperclass(object_getClass(self));
+        JZNavigationShowViewControllerIMP superInstanceMethod = (void *)class_getMethodImplementation(superClass, _cmd);
+        superInstanceMethod(self, _cmd, navigationController, viewController, animated);
+    }
    
     id<UIViewControllerTransitionCoordinator> transitionCoordinator = navigationController.topViewController.transitionCoordinator;
     navigationController.jz_previousVisibleViewController = [transitionCoordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
@@ -155,11 +157,19 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
 }
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    
+    if (!navigationController.jz_navigationDelegate) {
+        Class superClass = class_getSuperclass(object_getClass(self));
+        JZNavigationShowViewControllerIMP superInstanceMethod = (void *)class_getMethodImplementation(superClass, _cmd);
+        superInstanceMethod(self, _cmd, navigationController, viewController, animated);
+    }
+    
     !navigationController._jz_navigationTransitionFinished ?: navigationController._jz_navigationTransitionFinished(navigationController, true);
     navigationController._jz_navigationTransitionFinished = NULL;
     !navigationController.jz_didEndNavigationTransitionBlock ?: navigationController.jz_didEndNavigationTransitionBlock();
     navigationController.jz_operation = UINavigationControllerOperationNone;
     [navigationController jz_previousVisibleViewController];
+    
 }
 
 @end

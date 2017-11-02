@@ -33,25 +33,33 @@ BOOL jz_isVersionBelow9_0 = false;
 
 @implementation UINavigationController (JZExtension)
 
-void (^jz_method_swizzling)(Class, SEL, Class, SEL) = ^(Class cls1, SEL sel1, Class cls2, SEL sel2) {
-    Method method1 = class_getInstanceMethod(cls1, sel1);
-    Method method2 = class_getInstanceMethod(cls2, sel2);
-    method_exchangeImplementations(method1, method2);
-};
-
-void (^jz_sel_method_swizzling)(Class, Class, SEL) = ^(Class cls1, Class cls2, SEL sel) {
-    jz_method_swizzling(cls1, sel, cls2, sel);
-};
-
-void (^jz_class_method_swizzling)(Class, SEL, SEL) = ^(Class cls, SEL sel1, SEL sel2) {
-    jz_method_swizzling(cls, sel1, cls, sel2);
+void (^jz_method_swizzling)(Class, SEL, SEL) = ^(Class class, SEL originalSelector, SEL swizzledSelector) {
+    
+    Method originalMethod = class_getInstanceMethod(class, originalSelector);
+    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+    
+    if (class_addMethod(class, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))) {
+        class_replaceMethod(class, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
+    } else {
+        method_exchangeImplementations(originalMethod, swizzledMethod);
+    }
+    
 };
 
 __attribute__((constructor)) static void JZ_Inject(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        jz_class_method_swizzling([UINavigationController class], @selector(setDelegate:), @selector(jz_setDelegate:));
+        jz_method_swizzling([UINavigationController class], @selector(setDelegate:), @selector(jz_setDelegate:));
+        jz_method_swizzling([UINavigationController class], @selector(viewDidLoad), @selector(jz_viewDidLoad));
     });
+}
+
+- (void)jz_viewDidLoad {
+    [self jz_viewDidLoad];
+    self.delegate = nil;
+    self._jz_interactiveTransition = [_JZNavigationInteractiveTransition new];
+    [self.interactivePopGestureRecognizer setValue:@NO forKey:@"canPanVertically"];
+    self.interactivePopGestureRecognizer.delegate = self._jz_interactiveTransition;
 }
 
 - (void)jz_setDelegate:(NSObject <UINavigationControllerDelegate> *)delegate {
@@ -72,6 +80,8 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         delegate = self.jz_navigationDelegate;
         
     } else {
+        
+        self.jz_navigationDelegate = nil;
         
         NSAssert([delegate isKindOfClass:[NSObject class]], @"Must inherit form NSObject");
         
@@ -188,9 +198,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (void)setJz_fullScreenInteractivePopGestureEnabled:(BOOL)jz_fullScreenInteractivePopGestureEnabled {
-    self._jz_interactiveTransition = [_JZNavigationInteractiveTransition new];
-    [self.interactivePopGestureRecognizer setValue:@NO forKey:@"canPanVertically"];
-    self.interactivePopGestureRecognizer.delegate = self._jz_interactiveTransition;
     object_setClass(self.interactivePopGestureRecognizer, jz_fullScreenInteractivePopGestureEnabled ? [UIPanGestureRecognizer class] : [UIScreenEdgePanGestureRecognizer class]);
 }
 
