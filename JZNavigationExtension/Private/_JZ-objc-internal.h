@@ -17,6 +17,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wnullability-completeness"
 
+typedef void (*VIMP)(id _Nonnull, SEL _Nonnull, ...);
 extern __attribute__((visibility ("default"))) BOOL jz_isVersionBelow9_0;
 @class _JZNavigationInteractiveTransition, _JZNavigationDelegating;
 typedef void(^_jz_navigation_block_t)(UINavigationController *navigationController, BOOL finished);

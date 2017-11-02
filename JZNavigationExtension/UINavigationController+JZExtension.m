@@ -50,6 +50,8 @@ void (^jz_class_method_swizzling)(Class, SEL, SEL) = ^(Class cls, SEL sel1, SEL 
 __attribute__((constructor)) static void JZ_Inject(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+//        [_JZNavigationDelegating setImp_willShowViewController:[NSMethodSignature instanceMethodForSelector:@selector(navigationController:willShowViewController:animated:)]];
+//        [_JZNavigationDelegating setImp_didShowViewController:[NSMethodSignature instanceMethodForSelector:@selector(navigationController:didShowViewController:animated:)]];
         jz_class_method_swizzling([UINavigationController class], @selector(setDelegate:), @selector(jz_setDelegate:));
         jz_class_method_swizzling([UINavigationController class], @selector(interactivePopGestureRecognizer), @selector(jz_interactivePopGestureRecognizer));
     });
@@ -57,18 +59,41 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (void)jz_setDelegate:(id<UINavigationControllerDelegate>)delegate {
     
-    if (self.delegate) {
-        jz_sel_method_swizzling([self.delegate class], [_JZNavigationDelegating class], @selector(navigationController:willShowViewController:animated:));
-        jz_sel_method_swizzling([self.delegate class], [_JZNavigationDelegating class], @selector(navigationController:didShowViewController:animated:));
-    }
-    
     if (!delegate) {
+        
         delegate = [[_JZNavigationDelegating alloc] init];
         self.jz_navigationDelegate = delegate;
+        
     } else if (![delegate isKindOfClass:[_JZNavigationDelegating class]]) {
-        self.jz_navigationDelegate = nil;
-        jz_sel_method_swizzling([delegate class], [_JZNavigationDelegating class], @selector(navigationController:willShowViewController:animated:));
-        jz_sel_method_swizzling([delegate class], [_JZNavigationDelegating class], @selector(navigationController:didShowViewController:animated:));
+        
+        Class superClass = object_getClass(delegate);
+        
+        const char *jz_class_name = [NSString stringWithFormat:@"%@_%@",NSStringFromClass([_JZNavigationDelegating class]),NSStringFromClass(superClass)].UTF8String;
+        
+        Class JZNavigationDelegating = objc_allocateClassPair(superClass, jz_class_name, 0);
+        
+        if (JZNavigationDelegating) {
+            
+            void (^jz_replaceMethod)(Class, Class, SEL) = ^(Class cls1, Class cls2, SEL sel) {
+                Method method = class_getInstanceMethod(cls1, sel);
+                IMP imp = method_getImplementation(method);
+                const char *types = method_getTypeEncoding(method);
+                class_replaceMethod(cls2, sel, imp, types);
+            };
+            
+            jz_replaceMethod([_JZNavigationDelegating class], JZNavigationDelegating, @selector(navigationController:willShowViewController:animated:));
+            jz_replaceMethod([_JZNavigationDelegating class], JZNavigationDelegating, @selector(navigationController:didShowViewController:animated:));
+            //        jz_replaceMethod(@selector(navigationControllerSupportedInterfaceOrientations:));
+            //        jz_replaceMethod(@selector(navigationControllerPreferredInterfaceOrientationForPresentation:));
+            //        jz_replaceMethod(@selector(navigationController:interactionControllerForAnimationController:));
+            //        jz_replaceMethod(@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:));
+            
+            objc_registerClassPair(JZNavigationDelegating);
+            
+            object_setClass(delegate, JZNavigationDelegating);
+            
+        }
+        
     }
     
     [self jz_setDelegate:delegate];
