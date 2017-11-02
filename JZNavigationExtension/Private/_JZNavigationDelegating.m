@@ -36,30 +36,36 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
     } else {
         navigationController.jz_operation = UINavigationControllerOperationPop;
     }
+    
     [transitionCoordinator notifyWhenInteractionEndsUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        
         !navigationController.jz_interactivePopGestureRecognizerCompletion ?: navigationController.jz_interactivePopGestureRecognizerCompletion(navigationController, !context.isCancelled);
-        if (context.isCancelled) {
-            !navigationController.jz_didEndNavigationTransitionBlock ?: navigationController.jz_didEndNavigationTransitionBlock();
-        }
         
         UIViewController *adjustViewController = context.isCancelled ? navigationController.jz_previousVisibleViewController : navigationController.visibleViewController;
-        navigationController.jz_navigationBarBackgroundAlpha = [adjustViewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
-        UIColor *newNavigationBarColor = [adjustViewController jz_navigationBarTintColorWithNavigationController:navigationController];
-        navigationController.jz_navigationBarTintColor = newNavigationBarColor;
         
+        if (context.isCancelled) {
+            !navigationController.jz_didEndNavigationTransitionBlock ?: navigationController.jz_didEndNavigationTransitionBlock();
+            UIColor *newNavigationBarColor = [adjustViewController jz_navigationBarTintColorWithNavigationController:navigationController];
+            navigationController.jz_navigationBarTintColor = newNavigationBarColor;
+    //        navigationController.jz_navigationBarBackgroundAlpha = [adjustViewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
+        } else {
+            [navigationController setNavigationBarHidden:![adjustViewController jz_wantsNavigationBarVisibleWithNavigationController:navigationController] animated:animated];
+        }
+        
+
         navigationController.jz_operation = UINavigationControllerOperationNone;
         [navigationController jz_previousVisibleViewController];
-        
+
     }];
-    
+
     if (![[navigationController valueForKey:@"isBuiltinTransition"] boolValue] || !navigationController.navigationBar.isTranslucent || navigationController.jz_navigationBarTransitionStyle == JZNavigationBarTransitionStyleSystem) {
+
+        [navigationController setNavigationBarHidden:![viewController jz_wantsNavigationBarVisibleWithNavigationController:navigationController] animated:animated];
         
         [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-            navigationController.navigationBarHidden = ![viewController jz_wantsNavigationBarVisibleWithNavigationController:navigationController];
             navigationController.jz_navigationBarTintColor = [viewController jz_navigationBarTintColorWithNavigationController:navigationController];
-            navigationController.jz_navigationBarBackgroundAlpha = [viewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
+//            navigationController.jz_navigationBarBackgroundAlpha = [viewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
         } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-#warning jz_navigationBarBackgroundAlpha cannot be animated on iOS11.0
         }];
         
     } else if (navigationController.jz_navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {

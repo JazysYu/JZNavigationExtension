@@ -55,11 +55,11 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (void)jz_viewDidLoad {
-    [self jz_viewDidLoad];
     self.delegate = nil;
     self._jz_interactiveTransition = [_JZNavigationInteractiveTransition new];
     [self.interactivePopGestureRecognizer setValue:@NO forKey:@"canPanVertically"];
     self.interactivePopGestureRecognizer.delegate = self._jz_interactiveTransition;
+    [self jz_viewDidLoad];
 }
 
 - (void)jz_setDelegate:(NSObject <UINavigationControllerDelegate> *)delegate {
