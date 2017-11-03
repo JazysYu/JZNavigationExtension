@@ -141,10 +141,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     objc_setAssociatedObject(self, @selector(jz_navigationBarTransitionStyle), @(jz_navigationBarTransitionStyle), OBJC_ASSOCIATION_ASSIGN);
 }
 
-- (void)setJz_navigationBarTintColorView:(UIView *)jz_navigationBarTintColorView {
-    objc_setAssociatedObject(self, @selector(jz_navigationBarTintColorView), jz_navigationBarTintColorView ? [_JZValue valueWithWeakObject:jz_navigationBarTintColorView] : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
 - (void)setJz_navigationBarTintColor:(UIColor *)jz_navigationBarTintColor {
     self.navigationBar.barTintColor = jz_navigationBarTintColor;
 }
@@ -202,14 +198,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (JZNavigationBarTransitionStyle)jz_navigationBarTransitionStyle {
     return [objc_getAssociatedObject(self, _cmd) unsignedIntegerValue];
-}
-
-- (UIView *)jz_navigationBarTintColorView {
-    id weakObject = [objc_getAssociatedObject(self, _cmd) weakObjectValue];
-    if (!weakObject) {
-        self.jz_navigationBarTintColorView = nil;
-    }
-    return weakObject;
 }
 
 - (UIViewController *)jz_previousVisibleViewController {

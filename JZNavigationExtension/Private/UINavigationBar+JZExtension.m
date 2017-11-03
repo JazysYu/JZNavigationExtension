@@ -19,12 +19,4 @@ JZExtensionBarImplementation
     }
 }
 
-- (void)setJz_transitionAnimated:(BOOL)jz_transitionAnimated {
-    objc_setAssociatedObject(self, @selector(jz_transitionAnimated), @(jz_transitionAnimated), OBJC_ASSOCIATION_ASSIGN);
-}
-
-- (BOOL)jz_transitionAnimated {
-    return [objc_getAssociatedObject(self, _cmd) boolValue];
-}
-
 @end

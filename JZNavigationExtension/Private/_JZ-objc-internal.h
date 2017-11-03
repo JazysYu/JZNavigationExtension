@@ -23,7 +23,6 @@ typedef void(^_jz_navigation_block_t)(UINavigationController *navigationControll
 @property (nonatomic, copy) dispatch_block_t jz_navigationTransitionStyleObserving;
 @property (nonatomic, copy, setter=jz_setInteractivePopGestureRecognizerCompletion:) _jz_navigation_block_t jz_interactivePopGestureRecognizerCompletion;
 @property (nonatomic, copy) _jz_navigation_block_t jz_navigationTransitionCompletion;
-@property (nonatomic, weak, readwrite) UIView *jz_navigationBarTintColorView;
 @property (nonatomic) _JZNavigationDelegating *jz_navigationDelegate;
 - (void)setJz_operation:(UINavigationControllerOperation)jz_operation;
 - (void)setJz_previousVisibleViewController:(UIViewController * _Nullable)jz_previousVisibleViewController;
@@ -34,10 +33,6 @@ typedef void(^_jz_navigation_block_t)(UINavigationController *navigationControll
 - (CGFloat)jz_navigationBarBackgroundAlphaWithNavigationController:(UINavigationController *)navigationController;
 - (UIColor *)jz_navigationBarTintColorWithNavigationController:(UINavigationController *)navigationController;
 - (BOOL)jz_wantsNavigationBarVisibleWithNavigationController:(UINavigationController *)navigationController;
-@end
-
-@interface UINavigationBar (_JZExtension)
-@property (nonatomic) BOOL jz_transitionAnimated;
 @end
 
 @protocol JZExtensionBarProtocol <NSObject>
@@ -61,9 +56,6 @@ return [objc_getAssociatedObject(self, _cmd) CGSizeValue]; \
 - (UIView *)jz_backgroundView { \
 return jz_getProperty(self, @"_backgroundView"); \
 }
-
-#define JZ_sel_handleNavigationTransition NSSelectorFromString(@"handleNavigationTransition:")
-#define JZ_UINavigationInteractiveTransition NSClassFromString(@"_UINavigationInteractiveTransition")
 
 #pragma clang diagnostic pop
 
