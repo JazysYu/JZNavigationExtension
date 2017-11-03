@@ -71,10 +71,10 @@ NS_INLINE void jz_handleInteractiveTransition(UIPercentDrivenInteractiveTransiti
         }];
     }
     if (isCancel) {
-        if (navigationController.jz_didEndNavigationTransitionBlock) {
+        if (navigationController.jz_navigationTransitionStyleObserving) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.percentComplete * self.duration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (!navigationController.transitionCoordinator.isInteractive) {
-                    navigationController.jz_didEndNavigationTransitionBlock();
+                    navigationController.jz_navigationTransitionStyleObserving();
                 }
             });
         }

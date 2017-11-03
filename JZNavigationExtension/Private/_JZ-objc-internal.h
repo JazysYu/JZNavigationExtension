@@ -21,9 +21,9 @@ extern __attribute__((visibility ("default"))) BOOL jz_isVersionBelow9_0;
 @class _JZNavigationInteractiveTransition, _JZNavigationDelegating;
 typedef void(^_jz_navigation_block_t)(UINavigationController *navigationController, BOOL finished);
 @interface UINavigationController (_JZExtension) <UINavigationBarDelegate>
-@property (nonatomic, copy) dispatch_block_t jz_didEndNavigationTransitionBlock;
+@property (nonatomic, copy) dispatch_block_t jz_navigationTransitionStyleObserving;
 @property (nonatomic, copy, setter=jz_setInteractivePopGestureRecognizerCompletion:) _jz_navigation_block_t jz_interactivePopGestureRecognizerCompletion;
-@property (nonatomic, copy) _jz_navigation_block_t _jz_navigationTransitionFinished;
+@property (nonatomic, copy) _jz_navigation_block_t jz_navigationTransitionCompletion;
 @property (nonatomic, strong) _JZNavigationInteractiveTransition *_jz_interactiveTransition;
 @property (nonatomic, weak, readwrite) UIView *jz_navigationBarTintColorView;
 @property (nonatomic) _JZNavigationDelegating *jz_navigationDelegate;

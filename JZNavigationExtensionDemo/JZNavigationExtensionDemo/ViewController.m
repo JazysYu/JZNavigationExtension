@@ -20,7 +20,7 @@
     [super viewDidLoad];
     
 //    self.navigationController.delegate = self;
-//    self.navigationController.jz_navigationBarTransitionStyle = JZNavigationBarTransitionStyleDoppelganger;
+    self.navigationController.jz_navigationBarTransitionStyle = JZNavigationBarTransitionStyleDoppelganger;
 }
 
 /**

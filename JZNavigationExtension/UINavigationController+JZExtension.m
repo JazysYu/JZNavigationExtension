@@ -107,7 +107,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (void)jz_pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
     
-    self._jz_navigationTransitionFinished = completion;
+    self.jz_navigationTransitionCompletion = completion;
     
     [self pushViewController:viewController animated:animated];
     
@@ -115,7 +115,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (void)jz_setViewControllers:(NSArray<UIViewController *> *)viewControllers animated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
     
-    self._jz_navigationTransitionFinished = completion;
+    self.jz_navigationTransitionCompletion = completion;
     
     [self setViewControllers:viewControllers animated:animated];
     
@@ -123,21 +123,21 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (UIViewController *)jz_popViewControllerAnimated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
     
-    self._jz_navigationTransitionFinished = completion;
+    self.jz_navigationTransitionCompletion = completion;
     
     return [self popViewControllerAnimated:animated];
 }
 
 - (NSArray *)jz_popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
     
-    self._jz_navigationTransitionFinished = completion;
+    self.jz_navigationTransitionCompletion = completion;
     
     return [self popToViewController:viewController animated:animated];
 }
 
 - (NSArray *)jz_popToRootViewControllerAnimated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
     
-    self._jz_navigationTransitionFinished = completion;
+    self.jz_navigationTransitionCompletion = completion;
     
     return [self popToRootViewControllerAnimated:animated];
 }
@@ -173,8 +173,8 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     [self.toolbar setJz_size:jz_toolbarSize];
 }
 
-- (void)set_jz_navigationTransitionFinished:(_jz_navigation_block_t)_jz_navigationTransitionFinished {
-    objc_setAssociatedObject(self, @selector(_jz_navigationTransitionFinished), _jz_navigationTransitionFinished, OBJC_ASSOCIATION_COPY_NONATOMIC);
+- (void)setJz_navigationTransitionCompletion:(_jz_navigation_block_t)jz_navigationTransitionCompletion {
+    objc_setAssociatedObject(self, @selector(jz_navigationTransitionCompletion), jz_navigationTransitionCompletion, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 - (void)jz_setInteractivePopGestureRecognizerCompletion:(_jz_navigation_block_t)jz_interactivePopGestureRecognizerCompletion {
@@ -193,8 +193,8 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     objc_setAssociatedObject(self, @selector(_jz_interactiveTransition), _jz_interactiveTransition, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)setJz_didEndNavigationTransitionBlock:(dispatch_block_t)jz_didEndNavigationTransitionBlock {
-    objc_setAssociatedObject(self, @selector(jz_didEndNavigationTransitionBlock), jz_didEndNavigationTransitionBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+- (void)setJz_navigationTransitionStyleObserving:(dispatch_block_t)jz_navigationTransitionStyleObserving {
+    objc_setAssociatedObject(self, @selector(jz_navigationTransitionStyleObserving), jz_navigationTransitionStyleObserving, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 - (void)setJz_fullScreenInteractivePopGestureEnabled:(BOOL)jz_fullScreenInteractivePopGestureEnabled {
@@ -207,7 +207,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 #pragma mark - getters
 
-- (dispatch_block_t)jz_didEndNavigationTransitionBlock {
+- (dispatch_block_t)jz_navigationTransitionStyleObserving {
     return objc_getAssociatedObject(self, _cmd);
 }
 
@@ -255,7 +255,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     return [self.interactivePopGestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]];
 }
 
-- (_jz_navigation_block_t)_jz_navigationTransitionFinished {
+- (_jz_navigation_block_t)jz_navigationTransitionCompletion {
     return objc_getAssociatedObject(self, _cmd);
 }
 
