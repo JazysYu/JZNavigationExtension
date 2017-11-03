@@ -26,10 +26,7 @@
 #import "UIToolbar+JZExtension.h"
 #import "UINavigationBar+JZExtension.h"
 #import "UIViewController+JZExtension.h"
-#import "_JZNavigationInteractiveTransition.h"
 #import "_JZNavigationDelegating.h"
-
-BOOL jz_isVersionBelow9_0 = false;
 
 @implementation UINavigationController (JZExtension)
 
@@ -56,9 +53,8 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 - (void)jz_viewDidLoad {
     self.delegate = nil;
-    self._jz_interactiveTransition = [_JZNavigationInteractiveTransition new];
     [self.interactivePopGestureRecognizer setValue:@NO forKey:@"canPanVertically"];
-    self.interactivePopGestureRecognizer.delegate = self._jz_interactiveTransition;
+    self.interactivePopGestureRecognizer.delegate = self.jz_navigationDelegate;
     [self jz_viewDidLoad];
 }
 
@@ -76,12 +72,9 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     
     if (!delegate) {
         
-        self.jz_navigationDelegate = [[_JZNavigationDelegating alloc] init];
         delegate = self.jz_navigationDelegate;
         
     } else {
-        
-        self.jz_navigationDelegate = nil;
         
         NSAssert([delegate isKindOfClass:[NSObject class]], @"Must inherit form NSObject");
         
@@ -189,10 +182,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     objc_setAssociatedObject(self, @selector(jz_previousVisibleViewController), jz_previousVisibleViewController ? [_JZValue valueWithWeakObject:jz_previousVisibleViewController] : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)set_jz_interactiveTransition:(_JZNavigationInteractiveTransition *)_jz_interactiveTransition {
-    objc_setAssociatedObject(self, @selector(_jz_interactiveTransition), _jz_interactiveTransition, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
 - (void)setJz_navigationTransitionStyleObserving:(dispatch_block_t)jz_navigationTransitionStyleObserving {
     objc_setAssociatedObject(self, @selector(jz_navigationTransitionStyleObserving), jz_navigationTransitionStyleObserving, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
@@ -221,10 +210,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         self.jz_navigationBarTintColorView = nil;
     }
     return weakObject;
-}
-
-- (_JZNavigationInteractiveTransition *)_jz_interactiveTransition {
-    return objc_getAssociatedObject(self, _cmd);
 }
 
 - (UIViewController *)jz_previousVisibleViewController {
@@ -280,7 +265,12 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (_JZNavigationDelegating *)jz_navigationDelegate {
-    return objc_getAssociatedObject(self, _cmd);
+    _JZNavigationDelegating *jz_navigationDelegate = objc_getAssociatedObject(self, _cmd);
+    if (!jz_navigationDelegate) {
+        jz_navigationDelegate = [[_JZNavigationDelegating alloc] initWithNavigationController:self];
+        self.jz_navigationDelegate = jz_navigationDelegate;
+    }
+    return jz_navigationDelegate;
 }
 
 @end

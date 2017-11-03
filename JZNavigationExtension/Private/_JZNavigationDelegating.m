@@ -16,14 +16,23 @@ typedef void (*JZNavigationShowViewControllerIMP)(id _Nonnull, SEL _Nonnull, UIN
 
 static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapshotLayerName";
 
-@interface NSObject (JZExtension) <UINavigationControllerDelegate>
+@interface _JZNavigationDelegating()
+@property (nonatomic, weak) UINavigationController *navigationController;
 @end
 
 @implementation _JZNavigationDelegating
 
+- (instancetype)initWithNavigationController:(UINavigationController *)navigationController {
+    self = [super init];
+    if (self) {
+        self.navigationController = navigationController;
+    }
+    return self;
+}
+
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     
-    if (!navigationController.jz_navigationDelegate) {
+    if (![navigationController.delegate isEqual:navigationController.jz_navigationDelegate]) {
         Class superClass = class_getSuperclass(object_getClass(self));
         JZNavigationShowViewControllerIMP superInstanceMethod = (void *)class_getMethodImplementation(superClass, _cmd);
         superInstanceMethod(self, _cmd, navigationController, viewController, animated);
@@ -163,7 +172,7 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     
-    if (!navigationController.jz_navigationDelegate) {
+    if (![navigationController.delegate isEqual:navigationController.jz_navigationDelegate]) {
         Class superClass = class_getSuperclass(object_getClass(self));
         JZNavigationShowViewControllerIMP superInstanceMethod = (void *)class_getMethodImplementation(superClass, _cmd);
         superInstanceMethod(self, _cmd, navigationController, viewController, animated);
@@ -175,6 +184,27 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
     navigationController.jz_operation = UINavigationControllerOperationNone;
     [navigationController jz_previousVisibleViewController];
     
+}
+
+#pragma mark - gestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    UINavigationController *navigationController = self.navigationController;
+    return navigationController.viewControllers.count != 1 && ![navigationController transitionCoordinator] && !CGRectContainsPoint(navigationController.navigationBar.frame, [touch locationInView:gestureRecognizer.view]);
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    UINavigationController *navigationController = self.navigationController;
+    if (!navigationController.jz_fullScreenInteractivePopGestureEnabled) {
+        return true;
+    }
+    CGPoint locationInView = [gestureRecognizer locationInView:gestureRecognizer.view];
+    return locationInView.x < 30.0f;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)gestureRecognizer {
+    CGPoint velocityInview = [gestureRecognizer velocityInView:gestureRecognizer.view];
+    return velocityInview.x >= 0.0f;
 }
 
 @end

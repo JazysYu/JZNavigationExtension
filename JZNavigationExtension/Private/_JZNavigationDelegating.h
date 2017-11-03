@@ -8,6 +8,8 @@
 
 #import <UIKit/UINavigationController.h>
 
-@interface _JZNavigationDelegating : NSObject <UINavigationControllerDelegate>
+@interface _JZNavigationDelegating : NSObject <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
+
+- (instancetype)initWithNavigationController:(UINavigationController *)navigationController;
 
 @end

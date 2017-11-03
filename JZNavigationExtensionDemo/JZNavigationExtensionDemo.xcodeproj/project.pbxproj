@@ -23,7 +23,6 @@
 		40D3B0E51B3C0859009F145F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 40D3B0E41B3C0859009F145F /* Images.xcassets */; };
 		40D3B0E81B3C0859009F145F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 40D3B0E61B3C0859009F145F /* LaunchScreen.xib */; };
 		40D3B0FF1B3C095C009F145F /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D3B0FE1B3C095C009F145F /* SecondViewController.m */; };
-		40DB17B01CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 40DB17AF1CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,8 +58,6 @@
 		40D3B0E71B3C0859009F145F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		40D3B0FD1B3C095C009F145F /* SecondViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
 		40D3B0FE1B3C095C009F145F /* SecondViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
-		40DB17AE1CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _JZNavigationInteractiveTransition.h; sourceTree = "<group>"; };
-		40DB17AF1CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _JZNavigationInteractiveTransition.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,8 +108,6 @@
 				40695FAE1CBDE4A7004F73E8 /* UINavigationBar+JZExtension.m */,
 				40695FB11CBDE4A7004F73E8 /* UIToolbar+JZExtension.h */,
 				40695FB21CBDE4A7004F73E8 /* UIToolbar+JZExtension.m */,
-				40DB17AE1CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.h */,
-				40DB17AF1CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.m */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -248,7 +243,6 @@
 				40D3B0FF1B3C095C009F145F /* SecondViewController.m in Sources */,
 				40695FBB1CBDE4A7004F73E8 /* UIToolbar+JZExtension.m in Sources */,
 				40695FB91CBDE4A7004F73E8 /* UINavigationBar+JZExtension.m in Sources */,
-				40DB17B01CCB64AB00F8B89C /* _JZNavigationInteractiveTransition.m in Sources */,
 				40695FBC1CBDE4A7004F73E8 /* UINavigationController+JZExtension.m in Sources */,
 				40695FB71CBDE4A7004F73E8 /* _JZValue.m in Sources */,
 				403DAA801DCC7C6E0054304F /* _JZNavigationDelegating.m in Sources */,
