@@ -31,15 +31,13 @@
 
 @end
 
-#define JZNavigationBarHeight 44.f
-
 @implementation UINavigationBar (JZExtension)
 
 JZExtensionBarImplementation
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
     if ([[self jz_backgroundView] alpha] < 1.0f) {
-        return CGRectContainsPoint(CGRectMake(0, self.bounds.size.height - JZNavigationBarHeight, self.bounds.size.width, JZNavigationBarHeight), point);
+        return CGRectContainsPoint(CGRectMake(0, self.bounds.size.height - 44.f, self.bounds.size.width, 44.f), point);
     } else {
         return [super pointInside:point withEvent:event];
     }

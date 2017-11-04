@@ -51,6 +51,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (void)jz_viewDidLoad {
+    NSAssert(!self.delegate, @"Set delegate should be invoked when viewDidLoad");
     self.delegate = nil;
     [self.interactivePopGestureRecognizer setValue:@NO forKey:@"canPanVertically"];
     self.interactivePopGestureRecognizer.delegate = self.jz_navigationDelegate;
@@ -63,7 +64,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         return;
     }
     
-    NSString *_JZNavigationDelegatingTrigger = @"_JZNavigationDelegatingTrigger";
+    static NSString *_JZNavigationDelegatingTrigger = @"_JZNavigationDelegatingTrigger";
     
     if (![self.delegate isEqual:self.jz_navigationDelegate]) {
         [(NSObject *)self.delegate removeObserver:self forKeyPath:_JZNavigationDelegatingTrigger context:_cmd];
@@ -79,7 +80,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         
         [delegate addObserver:self forKeyPath:_JZNavigationDelegatingTrigger options:NSKeyValueObservingOptionNew context:_cmd];
                 
-        void (^jz_replaceMethod)(Class, Class, SEL) = ^(Class cls1, Class cls2, SEL sel) {
+        static void (^jz_replaceMethod)(Class, Class, SEL) = ^(Class cls1, Class cls2, SEL sel) {
             Method method = class_getInstanceMethod(cls1, sel);
             IMP imp = method_getImplementation(method);
             const char *types = method_getTypeEncoding(method);

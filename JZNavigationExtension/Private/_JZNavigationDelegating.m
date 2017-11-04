@@ -13,8 +13,6 @@
 
 typedef void (*JZNavigationShowViewControllerIMP)(id _Nonnull, SEL _Nonnull, UINavigationController *, UIViewController *, BOOL);
 
-static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapshotLayerName";
-
 @interface _JZNavigationDelegating()
 @property (nonatomic, weak) UINavigationController *navigationController;
 @end
@@ -52,6 +50,8 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
 
     } else if (navigationController.jz_navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
         
+        static NSString *_JZNavigationExtensionSnapshotLayerName = @"JZNavigationExtensionSnapshotLayerName";
+        
         UIView *snapshotView = [UIApplication sharedApplication].keyWindow;
         
         JZNavigationBarTransitionStyle navigationBarTransitionStyle = navigationController.jz_navigationBarTransitionStyle;
@@ -64,7 +64,7 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
         
         static CALayer * (^_snapshotLayerWithImage) (UIImage *snapshotImage) = ^CALayer *(UIImage *snapshotImage) {
             CALayer *snapshotLayer = [CALayer layer];
-            snapshotLayer.name = kSnapshotLayerNameForTransition;
+            snapshotLayer.name = _JZNavigationExtensionSnapshotLayerName;
             snapshotLayer.contents = (__bridge id _Nullable)snapshotImage.CGImage;
             snapshotLayer.contentsScale = snapshotImage.scale;
             snapshotLayer.frame = (CGRect){CGPointZero, snapshotImage.size};
@@ -120,7 +120,7 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
             
             navigationController.navigationBar.alpha = navigationBarAlpha;
             
-            NSPredicate *getSubSnapshotLayerPredicate = [NSPredicate predicateWithFormat:@"name == %@", kSnapshotLayerNameForTransition];
+            NSPredicate *getSubSnapshotLayerPredicate = [NSPredicate predicateWithFormat:@"name == %@", _JZNavigationExtensionSnapshotLayerName];
             NSArray <CALayer *> *result = nil;
             if (navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
                 result = [navigationController.jz_previousVisibleViewController.view.layer.sublayers filteredArrayUsingPredicate:getSubSnapshotLayerPredicate];
