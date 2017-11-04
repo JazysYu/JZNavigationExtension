@@ -27,24 +27,26 @@
 
 @implementation UINavigationController (JZExtension)
 
-void (^jz_method_swizzling)(Class, SEL, SEL) = ^(Class class, SEL originalSelector, SEL swizzledSelector) {
-    
-    Method originalMethod = class_getInstanceMethod(class, originalSelector);
-    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
-    
-    if (class_addMethod(class, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))) {
-        class_replaceMethod(class, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
-    } else {
-        method_exchangeImplementations(originalMethod, swizzledMethod);
-    }
-    
-};
-
 __attribute__((constructor)) static void JZ_Inject(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+        
+        void (^jz_method_swizzling)(Class, SEL, SEL) = ^(Class class, SEL originalSelector, SEL swizzledSelector) {
+            
+            Method originalMethod = class_getInstanceMethod(class, originalSelector);
+            Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+            
+            if (class_addMethod(class, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))) {
+                class_replaceMethod(class, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
+            } else {
+                method_exchangeImplementations(originalMethod, swizzledMethod);
+            }
+            
+        };
+        
         jz_method_swizzling([UINavigationController class], @selector(setDelegate:), @selector(jz_setDelegate:));
         jz_method_swizzling([UINavigationController class], @selector(viewDidLoad), @selector(jz_viewDidLoad));
+        
     });
 }
 
@@ -73,7 +75,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         
     } else {
         
-        NSAssert([delegate isKindOfClass:[NSObject class]], @"Must inherit form NSObject");
+        NSAssert([delegate isKindOfClass:[NSObject class]], @"Must inherit form NSObject!");
         
         [delegate addObserver:self forKeyPath:_JZNavigationDelegatingTrigger options:NSKeyValueObservingOptionNew context:_cmd];
                 
@@ -86,7 +88,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         
         Class realClass = object_getClass(delegate);
         jz_replaceMethod([_JZNavigationDelegating class], realClass, @selector(navigationController:willShowViewController:animated:));
-        jz_replaceMethod([_JZNavigationDelegating class], realClass, @selector(navigationController:didShowViewController:animated:));
         
     }
     
