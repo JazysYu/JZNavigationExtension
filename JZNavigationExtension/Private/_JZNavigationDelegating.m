@@ -31,18 +31,18 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     
-    if (![navigationController.delegate isEqual:navigationController.jz_navigationDelegate]) {
-        Class superClass = class_getSuperclass(object_getClass(self));
-        JZNavigationShowViewControllerIMP superInstanceMethod = (void *)class_getMethodImplementation(superClass, _cmd);
-        superInstanceMethod(self, _cmd, navigationController, viewController, animated);
-    }
-    
     id<UIViewControllerTransitionCoordinator> transitionCoordinator = navigationController.topViewController.transitionCoordinator;
     navigationController.jz_previousVisibleViewController = [transitionCoordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
     if ([navigationController.viewControllers containsObject:navigationController.jz_previousVisibleViewController]) {
         navigationController.jz_operation = UINavigationControllerOperationPush;
     } else {
         navigationController.jz_operation = UINavigationControllerOperationPop;
+    }
+    
+    if (![navigationController.delegate isEqual:navigationController.jz_navigationDelegate]) {
+        Class superClass = class_getSuperclass(object_getClass(self));
+        JZNavigationShowViewControllerIMP superInstanceMethod = (void *)class_getMethodImplementation(superClass, _cmd);
+        superInstanceMethod(self, _cmd, navigationController, viewController, animated);
     }
     
     [transitionCoordinator notifyWhenInteractionEndsUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext> context) {
@@ -171,16 +171,17 @@ static NSString *kSnapshotLayerNameForTransition = @"JZNavigationExtensionSnapsh
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     
+    !navigationController.jz_navigationTransitionCompletion ?: navigationController.jz_navigationTransitionCompletion(navigationController, true);
+    navigationController.jz_navigationTransitionCompletion = NULL;
+    !navigationController.jz_navigationTransitionStyleObserving ?: navigationController.jz_navigationTransitionStyleObserving();
+    navigationController.jz_operation = UINavigationControllerOperationNone;
+    
     if (![navigationController.delegate isEqual:navigationController.jz_navigationDelegate]) {
         Class superClass = class_getSuperclass(object_getClass(self));
         JZNavigationShowViewControllerIMP superInstanceMethod = (void *)class_getMethodImplementation(superClass, _cmd);
         superInstanceMethod(self, _cmd, navigationController, viewController, animated);
     }
     
-    !navigationController.jz_navigationTransitionCompletion ?: navigationController.jz_navigationTransitionCompletion(navigationController, true);
-    navigationController.jz_navigationTransitionCompletion = NULL;
-    !navigationController.jz_navigationTransitionStyleObserving ?: navigationController.jz_navigationTransitionStyleObserving();
-    navigationController.jz_operation = UINavigationControllerOperationNone;
     [navigationController jz_previousVisibleViewController];
     
 }
