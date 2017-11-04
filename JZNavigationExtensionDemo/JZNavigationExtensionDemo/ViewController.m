@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "JZNavigationExtension.h"
+#import "_JZ-objc-internal.h"
 
 @interface ViewController () <UINavigationControllerDelegate>
 
@@ -18,10 +19,8 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    
 //    self.navigationController.delegate = self;
 //    self.navigationController.jz_navigationBarTransitionStyle = JZNavigationBarTransitionStyleDoppelganger;
-
 }
 
 /**

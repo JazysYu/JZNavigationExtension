@@ -175,10 +175,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     objc_setAssociatedObject(self, @selector(jz_previousVisibleViewController), jz_previousVisibleViewController ? [_JZValue valueWithWeakObject:jz_previousVisibleViewController] : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)setJz_navigationTransitionStyleObserving:(dispatch_block_t)jz_navigationTransitionStyleObserving {
-    objc_setAssociatedObject(self, @selector(jz_navigationTransitionStyleObserving), jz_navigationTransitionStyleObserving, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
 - (void)setJz_fullScreenInteractivePopGestureEnabled:(BOOL)jz_fullScreenInteractivePopGestureEnabled {
     object_setClass(self.interactivePopGestureRecognizer, jz_fullScreenInteractivePopGestureEnabled ? [UIPanGestureRecognizer class] : [UIScreenEdgePanGestureRecognizer class]);
 }
@@ -188,10 +184,6 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 #pragma mark - getters
-
-- (dispatch_block_t)jz_navigationTransitionStyleObserving {
-    return objc_getAssociatedObject(self, _cmd);
-}
 
 - (JZNavigationBarTransitionStyle)jz_navigationBarTransitionStyle {
     return [objc_getAssociatedObject(self, _cmd) unsignedIntegerValue];
