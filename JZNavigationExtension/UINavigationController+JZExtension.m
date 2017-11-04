@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2016 JazysYu ( https://github.com/JazysYu )
+// Copyright (c) 2015-present JazysYu ( https://github.com/JazysYu )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,11 +22,8 @@
 
 #import "UINavigationController+JZExtension.h"
 #import "_JZ-objc-internal.h"
-#import "_JZValue.h"
-#import "UIToolbar+JZExtension.h"
-#import "UINavigationBar+JZExtension.h"
-#import "UIViewController+JZExtension.h"
 #import "_JZNavigationDelegating.h"
+#import "UIViewController+JZExtension.h"
 
 @implementation UINavigationController (JZExtension)
 

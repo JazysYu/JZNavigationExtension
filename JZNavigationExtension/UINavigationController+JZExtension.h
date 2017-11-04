@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2016 JazysYu ( https://github.com/JazysYu )
+// Copyright (c) 2015-present JazysYu ( https://github.com/JazysYu )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal

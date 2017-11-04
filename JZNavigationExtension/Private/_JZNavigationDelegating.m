@@ -1,16 +1,15 @@
 //
 //  _JZNavigationControllerDelegate.m
-//  JZNavigationExtension2
+//  
 //
 //  Created by Jazys on 8/29/16.
 //  Copyright © 2016 Jazys. All rights reserved.
 //
 
 #import "_JZNavigationDelegating.h"
+#import "_JZ-objc-internal.h"
 #import "UIViewController+JZExtension.h"
 #import "UINavigationController+JZExtension.h"
-#import "_JZ-objc-internal.h"
-#import "UINavigationBar+JZExtension.h"
 
 typedef void (*JZNavigationShowViewControllerIMP)(id _Nonnull, SEL _Nonnull, UINavigationController *, UIViewController *, BOOL);
 

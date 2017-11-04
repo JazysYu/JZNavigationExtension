@@ -5,14 +5,8 @@
 //  Copyright © 2016 Jazys. All rights reserved.
 //
 
-#ifndef _JZ_objc_internal_h
-#define _JZ_objc_internal_h
-
+#import <UIKit/UIKit.h>
 #import <objc/runtime.h>
-
-#define jz_getProperty(objc,key) [objc valueForKey:key]
-
-#define JZNavigationBarHeight 44.f
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wnullability-completeness"
@@ -35,10 +29,26 @@ typedef void(^_jz_navigation_block_t)(UINavigationController *navigationControll
 - (BOOL)jz_wantsNavigationBarVisibleWithNavigationController:(UINavigationController *)navigationController;
 @end
 
+@interface NSNumber (JZExtension)
+- (CGFloat)jz_CGFloatValue;
+@end
+
+@interface _JZValue : NSObject
++ (_JZValue *)valueWithWeakObject:(id)anObject;
+@property (weak, readonly) id weakObjectValue;
+@end
+
 @protocol JZExtensionBarProtocol <NSObject>
 @property (nonatomic, assign) CGSize jz_size;
 - (UIView * _Nullable)jz_backgroundView;
 - (CGSize)jz_sizeThatFits:(CGSize)size;
+@end
+
+@interface UINavigationBar (JZExtension) <JZExtensionBarProtocol>
+@end
+
+@interface UIToolbar (JZExtension) <JZExtensionBarProtocol>
+- (UIView *)jz_shadowView;
 @end
 
 #define JZExtensionBarImplementation \
@@ -54,9 +64,7 @@ objc_setAssociatedObject(self, @selector(jz_size), [NSValue valueWithCGSize:size
 return [objc_getAssociatedObject(self, _cmd) CGSizeValue]; \
 } \
 - (UIView *)jz_backgroundView { \
-return jz_getProperty(self, @"_backgroundView"); \
+return [self valueForKey:@"_backgroundView"]; \
 }
 
 #pragma clang diagnostic pop
-
-#endif /* _JZ_objc_internal_h */
