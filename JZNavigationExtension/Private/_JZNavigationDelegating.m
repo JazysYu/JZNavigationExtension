@@ -52,16 +52,6 @@ typedef void (*JZNavigationShowViewControllerIMP)(id _Nonnull, SEL _Nonnull, UIN
         
         static NSString *_JZNavigationExtensionSnapshotLayerName = @"JZNavigationExtensionSnapshotLayerName";
         
-        UIView *snapshotView = [UIApplication sharedApplication].keyWindow;
-        
-        JZNavigationBarTransitionStyle navigationBarTransitionStyle = navigationController.jz_navigationBarTransitionStyle;
-        
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(navigationController.navigationBar.bounds.size.width, navigationController.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height + 0.1), NO, 0.0);
-        
-        if (!navigationController.navigationBarHidden) {
-            [snapshotView drawViewHierarchyInRect:snapshotView.bounds afterScreenUpdates:false];
-        }
-        
         static CALayer * (^_snapshotLayerWithImage) (UIImage *snapshotImage) = ^CALayer *(UIImage *snapshotImage) {
             CALayer *snapshotLayer = [CALayer layer];
             snapshotLayer.name = _JZNavigationExtensionSnapshotLayerName;
@@ -71,7 +61,14 @@ typedef void (*JZNavigationShowViewControllerIMP)(id _Nonnull, SEL _Nonnull, UIN
             return snapshotLayer;
         };
         
-        if (!navigationController.navigationBarHidden) {
+        UIView *snapshotView = [UIApplication sharedApplication].keyWindow;
+        
+        JZNavigationBarTransitionStyle navigationBarTransitionStyle = navigationController.jz_navigationBarTransitionStyle;
+        
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(navigationController.navigationBar.bounds.size.width, navigationController.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height + 0.1), NO, 0.0);
+        
+        if (!navigationController.isNavigationBarHidden) {
+            [snapshotView drawViewHierarchyInRect:snapshotView.bounds afterScreenUpdates:false];
             [navigationController.jz_previousVisibleViewController.view.layer addSublayer:_snapshotLayerWithImage(UIGraphicsGetImageFromCurrentImageContext())];
         }
         
@@ -110,7 +107,7 @@ typedef void (*JZNavigationShowViewControllerIMP)(id _Nonnull, SEL _Nonnull, UIN
             
         });
         
-        dispatch_block_t doppelgangerCompletion = ^ {
+        completion = ^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
             
             isDoppelgangerCompleted = true;
             
@@ -132,18 +129,6 @@ typedef void (*JZNavigationShowViewControllerIMP)(id _Nonnull, SEL _Nonnull, UIN
                 [result makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
             }
             
-        };
-        
-        completion = ^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-            if (context.isCancelled) {
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(context.percentComplete * context.transitionDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    if (!navigationController.transitionCoordinator.isInteractive) {
-                        doppelgangerCompletion();
-                    }
-                });
-            } else {
-                doppelgangerCompletion();
-            }
         };
         
     }
