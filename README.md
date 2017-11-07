@@ -1,12 +1,16 @@
 # JZNavigationExtension
 
-[![Version](https://img.shields.io/badge/pod-v1.5.0.1-5193DB.svg)](https://cocoapods.org/pods/JZNavigationExtension)
+[![Version](https://img.shields.io/badge/pod-v2.0-5193DB.svg)](https://cocoapods.org/pods/JZNavigationExtension)
 [![Platform](https://img.shields.io/badge/platform-iOS7+-lightgrey.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-2F2F2F.svg)](https://github.com/JazysYu/JZNavigationExtension/blob/master/LICENSE)
 
 JZNavigationExtension integrates many convenient features for UINavigationController.
 ___
 JZNavigationExtension为UINavigationController集成了许多方便的功能。
+
+#Release notes
+
+	v2.0 New cleaner File Struct and safer Implementation.
 
 # Features
 * [To gives you a fullscreen interactivePopGestureRecognizer](#FPG)
