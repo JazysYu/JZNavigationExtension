@@ -11,8 +11,6 @@
 #import "UIViewController+JZExtension.h"
 #import "UINavigationController+JZExtension.h"
 
-typedef void (*JZNavigationShowViewControllerIMP)(id _Nonnull, SEL _Nonnull, UINavigationController *, UIViewController *, BOOL);
-
 @interface _JZNavigationDelegating()
 @property (nonatomic, weak) UINavigationController *navigationController;
 @end
@@ -30,12 +28,6 @@ typedef void (*JZNavigationShowViewControllerIMP)(id _Nonnull, SEL _Nonnull, UIN
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     
     id<UIViewControllerTransitionCoordinator> transitionCoordinator = navigationController.topViewController.transitionCoordinator;
-    navigationController.jz_previousVisibleViewController = [transitionCoordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
-    if ([navigationController.viewControllers containsObject:navigationController.jz_previousVisibleViewController]) {
-        navigationController.jz_operation = UINavigationControllerOperationPush;
-    } else {
-        navigationController.jz_operation = UINavigationControllerOperationPop;
-    }
     
     void (^animateAlongsideTransition)(id <UIViewControllerTransitionCoordinatorContext>) = NULL;
     void (^completion)(id <UIViewControllerTransitionCoordinatorContext>) = NULL;
@@ -119,14 +111,15 @@ typedef void (*JZNavigationShowViewControllerIMP)(id _Nonnull, SEL _Nonnull, UIN
             
             NSPredicate *getSubSnapshotLayerPredicate = [NSPredicate predicateWithFormat:@"name == %@", _JZNavigationExtensionSnapshotLayerName];
             NSArray <CALayer *> *result = nil;
+            SEL sel_removeFromSuperlayer = @selector(removeFromSuperlayer);
             if (navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
                 result = [navigationController.jz_previousVisibleViewController.view.layer.sublayers filteredArrayUsingPredicate:getSubSnapshotLayerPredicate];
-                [result makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
+                [result makeObjectsPerformSelector:sel_removeFromSuperlayer];
                 result = [viewController.view.layer.sublayers filteredArrayUsingPredicate:getSubSnapshotLayerPredicate];
-                [result makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
+                [result makeObjectsPerformSelector:sel_removeFromSuperlayer];
             } else {
                 result = [navigationController.navigationBar.superview.layer.sublayers filteredArrayUsingPredicate:getSubSnapshotLayerPredicate];
-                [result makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
+                [result makeObjectsPerformSelector:sel_removeFromSuperlayer];
             }
             
         };
@@ -156,14 +149,14 @@ typedef void (*JZNavigationShowViewControllerIMP)(id _Nonnull, SEL _Nonnull, UIN
         !navigationController.jz_navigationTransitionCompletion ?: navigationController.jz_navigationTransitionCompletion(navigationController, true);
         navigationController.jz_navigationTransitionCompletion = NULL;
         navigationController.jz_operation = UINavigationControllerOperationNone;
-        [navigationController jz_previousVisibleViewController];
+        navigationController.jz_previousVisibleViewController = nil;
         
     }];
     
     if (![navigationController.delegate isEqual:navigationController.jz_navigationDelegate]) {
         Class superClass = class_getSuperclass(object_getClass(self));
-        JZNavigationShowViewControllerIMP superInstanceMethod = (void *)class_getMethodImplementation(superClass, _cmd);
-        superInstanceMethod(self, _cmd, navigationController, viewController, animated);
+        void (*superIMP)(id _Nonnull, SEL _Nonnull, UINavigationController *, UIViewController *, BOOL) = (void *)class_getMethodImplementation(superClass, _cmd);
+        superIMP(self, _cmd, navigationController, viewController, animated);
     }
     
 }

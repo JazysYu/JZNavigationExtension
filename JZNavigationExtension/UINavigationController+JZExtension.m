@@ -80,13 +80,16 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         
         [delegate addObserver:self forKeyPath:_JZNavigationDelegatingTrigger options:NSKeyValueObservingOptionNew context:_cmd];
         
-        SEL sel = @selector(navigationController:willShowViewController:animated:);
-        Method method = class_getInstanceMethod([_JZNavigationDelegating class], sel);
-        const char *types = method_getTypeEncoding(method);
+        void (^jz_add_replace_method)(id, SEL, IMP) = ^(id object, SEL sel, IMP imp) {
 
-        class_addMethod(delegate.class, sel, imp_implementationWithBlock(^{}), types);
+            Method method = class_getInstanceMethod([_JZNavigationDelegating class], sel);
+            const char *types = method_getTypeEncoding(method);
+            class_addMethod([object class], sel, imp, types);
+            class_replaceMethod(object_getClass(object), sel, method_getImplementation(method), types);
+            
+        };
         
-        class_replaceMethod(object_getClass(delegate), sel, method_getImplementation(method), types);
+        jz_add_replace_method(delegate, @selector(navigationController:willShowViewController:animated:), imp_implementationWithBlock(^{}));
         
     }
     
@@ -197,7 +200,8 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 - (UIViewController *)jz_previousVisibleViewController {
     id _previousVisibleViewController = [objc_getAssociatedObject(self, _cmd) weakObjectValue];
     if (!_previousVisibleViewController) {
-        self.jz_previousVisibleViewController = nil;
+        _previousVisibleViewController = [self.topViewController.transitionCoordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
+        self.jz_previousVisibleViewController = _previousVisibleViewController;
     }
     return _previousVisibleViewController;
 }
@@ -207,7 +211,20 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (UINavigationControllerOperation)jz_operation {
-    return [objc_getAssociatedObject(self, _cmd) integerValue];
+    
+    UINavigationControllerOperation operation = [objc_getAssociatedObject(self, _cmd) integerValue];
+
+    if (operation == UINavigationControllerOperationNone) {
+        if ([self.viewControllers containsObject:[self.topViewController.transitionCoordinator viewControllerForKey:UITransitionContextFromViewControllerKey]]) {
+            operation = UINavigationControllerOperationPush;
+        } else {
+            operation = UINavigationControllerOperationPop;
+        }
+        self.jz_operation = operation;
+    }
+
+    return operation;
+
 }
 
 - (CGFloat)jz_navigationBarBackgroundAlpha {

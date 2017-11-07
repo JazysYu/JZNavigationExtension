@@ -23,29 +23,20 @@
 @implementation SecondViewController
 
 - (void)viewWillAppear:(BOOL)animated {
+    
     [super viewWillAppear:animated];
 
-    if ([self.navigationController.jz_previousVisibleViewController isKindOfClass:NSClassFromString(@"ViewController")]) {
-        NSLog(@"Came from ViewController Class.");
-    }
+    NSLog(@"Previous visible view controller is %@", self.navigationController.jz_previousVisibleViewController);
 
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        
-//    NSLog(@"%@",self.navigationController.transitionCoordinator);
-//    });
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-//    if (self.navigationController.jz_operation == UINavigationControllerOperationPop) {
-//        NSLog(@"Controller will be poped.");
-//    } else if (self.navigationController.jz_operation == UINavigationControllerOperationPush) {
-//        NSLog(@"Controller will push to another.");
-//    }
+    if (self.navigationController.jz_operation == UINavigationControllerOperationPop) {
+        NSLog(@"Controller will be poped.");
+    } else if (self.navigationController.jz_operation == UINavigationControllerOperationPush) {
+        NSLog(@"Controller will push to another.");
+    }
 }
 
 - (void)viewDidLoad {
@@ -58,16 +49,14 @@
     
     self.jz_navigationBarTintColor = nil;
     
-    self.tableView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
-    
-//    [self.navigationController jz_setInteractivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, BOOL finished) {
-//        if (finished) {
-//            NSLog(@"Interactive pop transition has been finished");
-//        } else {
-//            NSLog(@"Interactive pop transition has been canceled");
-//        }
-//        NSLog(@"jz_setInteractivePopGestureRecognizerCompletion : %@",navigationController.jz_previousVisibleViewController);
-//    }];
+    [self.navigationController jz_setInteractivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, BOOL finished) {
+        if (finished) {
+            NSLog(@"Interactive pop transition has been finished");
+        } else {
+            NSLog(@"Interactive pop transition has been canceled");
+        }
+        NSLog(@"jz_setInteractivePopGestureRecognizerCompletion from %@", navigationController.jz_previousVisibleViewController);
+    }];
     
     if ([[[UIDevice currentDevice] systemVersion] compare:@"9.0" options:NSNumericSearch] != NSOrderedAscending) {
         if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable)

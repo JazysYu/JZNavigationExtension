@@ -141,8 +141,8 @@
 			children = (
 				40D3B0FD1B3C095C009F145F /* SecondViewController.h */,
 				40D3B0FE1B3C095C009F145F /* SecondViewController.m */,
-				400169501C604100005DF34C /* ViewController.m */,
 				4001694F1C604100005DF34C /* ViewController.h */,
+				400169501C604100005DF34C /* ViewController.m */,
 				400169521C60452A005DF34C /* NavigationController.h */,
 				400169531C60452A005DF34C /* NavigationController.m */,
 			);

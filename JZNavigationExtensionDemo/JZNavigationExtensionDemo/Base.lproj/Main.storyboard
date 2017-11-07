@@ -99,7 +99,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="132" sectionHeaderHeight="1" sectionFooterHeight="1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTR-Xt-t2q">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" red="0.10917685925960541" green="0.11745356768369675" blue="0.1263432502746582" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="separatorColor" red="0.41877549886703491" green="0.42260435223579407" blue="0.4266507625579834" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
@@ -135,7 +135,7 @@
                             <constraint firstAttribute="trailing" secondItem="aTR-Xt-t2q" secondAttribute="trailing" id="0fg-fX-gUa"/>
                             <constraint firstAttribute="bottom" secondItem="aTR-Xt-t2q" secondAttribute="bottom" id="Aon-pT-yG7"/>
                             <constraint firstItem="aTR-Xt-t2q" firstAttribute="leading" secondItem="vIU-fN-UIr" secondAttribute="leading" id="OJy-Wf-E1P"/>
-                            <constraint firstItem="aTR-Xt-t2q" firstAttribute="top" secondItem="vIU-fN-UIr" secondAttribute="top" constant="20" id="cbS-P6-Lta"/>
+                            <constraint firstItem="aTR-Xt-t2q" firstAttribute="top" secondItem="OIm-oQ-hUp" secondAttribute="bottom" id="nkB-ll-HfI"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="vyh-KW-wbK"/>
