@@ -43,14 +43,18 @@ JZExtensionBarImplementation
     }
 }
 
+- (UIView *)jz_backgroundView {
+    return [self valueForKeyPath:@"_backgroundView._backgroundEffectView"];
+}
+
 @end
 
 @implementation UIToolbar (JZExtension)
 
 JZExtensionBarImplementation
 
-- (UIView *)jz_shadowView {
-    return [self valueForKey:@"_shadowView"];
+- (UIView *)jz_backgroundView {
+    return [self valueForKey:@"_backgroundView"];
 }
 
 @end

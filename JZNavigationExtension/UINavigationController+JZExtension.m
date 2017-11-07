@@ -143,12 +143,17 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 }
 
 - (void)setJz_toolbarBackgroundAlpha:(CGFloat)jz_toolbarBackgroundAlpha {
-    [[self.toolbar jz_shadowView] setAlpha:jz_toolbarBackgroundAlpha];
     [[self.toolbar jz_backgroundView] setAlpha:jz_toolbarBackgroundAlpha];
+    if (fabs(jz_toolbarBackgroundAlpha - 0) <= 0.001) {
+        [self.toolbar setShadowImage:[UIImage new] forToolbarPosition:UIBarPositionAny];
+    }
 }
 
 - (void)setJz_navigationBarBackgroundAlpha:(CGFloat)jz_navigationBarBackgroundAlpha {
     [[self.navigationBar jz_backgroundView] setAlpha:jz_navigationBarBackgroundAlpha];
+    if (fabs(jz_navigationBarBackgroundAlpha - 0) <= 0.001) {
+        [self.navigationBar setShadowImage:[UIImage new]];
+    }
 }
 
 - (void)setJz_navigationBarSize:(CGSize)jz_navigationBarSize {

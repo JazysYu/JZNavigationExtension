@@ -47,7 +47,6 @@ typedef void(^_jz_navigation_block_t)(UINavigationController *navigationControll
 @end
 
 @interface UIToolbar (JZExtension) <JZExtensionBarProtocol>
-- (UIView *)jz_shadowView;
 @end
 
 #define JZExtensionBarImplementation \
@@ -61,9 +60,6 @@ objc_setAssociatedObject(self, @selector(jz_size), [NSValue valueWithCGSize:size
 } \
 - (CGSize)jz_size { \
 return [objc_getAssociatedObject(self, _cmd) CGSizeValue]; \
-} \
-- (UIView *)jz_backgroundView { \
-return [self valueForKeyPath:@"_backgroundView._backgroundEffectView"]; \
 }
 
 #pragma clang diagnostic pop

@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -99,13 +98,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="132" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="aTR-Xt-t2q">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="132" sectionHeaderHeight="1" sectionFooterHeight="1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTR-Xt-t2q">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <color key="backgroundColor" red="0.10917685925960541" green="0.11745356768369675" blue="0.1263432502746582" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="separatorColor" red="0.41877549886703491" green="0.42260435223579407" blue="0.4266507625579834" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" textLabel="F2z-B8-C8f" style="IBUITableViewCellStyleDefault" id="6PO-L5-wIC" customClass="DemoTableViewCell">
-                                        <rect key="frame" x="0.0" y="22" width="375" height="132"/>
+                                        <rect key="frame" x="0.0" y="1" width="375" height="132"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="6PO-L5-wIC" id="kvo-tm-8hG">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="131.5"/>
@@ -130,13 +129,13 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="0.1091768593" green="0.1174535677" blue="0.12634325029999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="aTR-Xt-t2q" secondAttribute="trailing" id="0fg-fX-gUa"/>
                             <constraint firstAttribute="bottom" secondItem="aTR-Xt-t2q" secondAttribute="bottom" id="Aon-pT-yG7"/>
-                            <constraint firstItem="aTR-Xt-t2q" firstAttribute="top" secondItem="vIU-fN-UIr" secondAttribute="topMargin" id="E3r-Cu-2k9"/>
                             <constraint firstItem="aTR-Xt-t2q" firstAttribute="leading" secondItem="vIU-fN-UIr" secondAttribute="leading" id="OJy-Wf-E1P"/>
+                            <constraint firstItem="aTR-Xt-t2q" firstAttribute="top" secondItem="vIU-fN-UIr" secondAttribute="top" constant="20" id="cbS-P6-Lta"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="vyh-KW-wbK"/>
