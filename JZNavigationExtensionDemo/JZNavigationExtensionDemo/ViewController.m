@@ -19,7 +19,7 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    self.navigationController.delegate = self;
+//    self.navigationController.delegate = self;
 //    self.navigationController.jz_navigationBarTransitionStyle = JZNavigationBarTransitionStyleDoppelganger;
 }
 
@@ -28,12 +28,12 @@
  *
  *  Some logic
  */
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)toViewController animated:(BOOL)animated {
+//- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)toViewController animated:(BOOL)animated {
 //    UIViewController *fromViewController = [navigationController visibleViewController];
 //    if (fromViewController.....) {
 //        navigationController.jz_navigationBarTransitionStyle = JZNavigationBarTransitionStyleDoppelganger;
 //    }
-}
+//}
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     

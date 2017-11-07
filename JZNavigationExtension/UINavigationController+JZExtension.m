@@ -79,16 +79,14 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         NSAssert([delegate isKindOfClass:[NSObject class]], @"Must inherit form NSObject!");
         
         [delegate addObserver:self forKeyPath:_JZNavigationDelegatingTrigger options:NSKeyValueObservingOptionNew context:_cmd];
-                
-        static void (^jz_replaceMethod)(Class, Class, SEL) = ^(Class cls1, Class cls2, SEL sel) {
-            Method method = class_getInstanceMethod(cls1, sel);
-            IMP imp = method_getImplementation(method);
-            const char *types = method_getTypeEncoding(method);
-            class_replaceMethod(cls2, sel, imp, types);
-        };
         
-        Class realClass = object_getClass(delegate);
-        jz_replaceMethod([_JZNavigationDelegating class], realClass, @selector(navigationController:willShowViewController:animated:));
+        SEL sel = @selector(navigationController:willShowViewController:animated:);
+        Method method = class_getInstanceMethod([_JZNavigationDelegating class], sel);
+        const char *types = method_getTypeEncoding(method);
+
+        class_addMethod(delegate.class, sel, imp_implementationWithBlock(^{}), types);
+        
+        class_replaceMethod(object_getClass(delegate), sel, method_getImplementation(method), types);
         
     }
     
