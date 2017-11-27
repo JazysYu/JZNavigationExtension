@@ -13,9 +13,22 @@
 
 @interface _JZNavigationDelegating()
 @property (nonatomic, weak) UINavigationController *navigationController;
+@property (nonatomic, copy) dispatch_block_t actionsPerformInDealloc;
 @end
 
 @implementation _JZNavigationDelegating
+
+- (void)dealloc {
+    !self.actionsPerformInDealloc ?: self.actionsPerformInDealloc();
+}
+
+- (instancetype)initWithActionsPerformInDealloc:(dispatch_block_t)actionsPerformInDealloc {
+    self = [super init];
+    if (self) {
+        self.actionsPerformInDealloc = actionsPerformInDealloc;
+    }
+    return self;
+}
 
 - (instancetype)initWithNavigationController:(UINavigationController *)navigationController {
     self = [super init];

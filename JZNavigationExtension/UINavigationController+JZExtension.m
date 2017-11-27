@@ -67,7 +67,10 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     static NSString *_JZNavigationDelegatingTrigger = @"_JZNavigationDelegatingTrigger";
     
     if (![self.delegate isEqual:self.jz_navigationDelegate]) {
-        [(NSObject *)self.delegate removeObserver:self forKeyPath:_JZNavigationDelegatingTrigger context:_cmd];
+        objc_setAssociatedObject(self.delegate, _cmd, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        @try { [(NSObject *)self.delegate removeObserver:self.delegate forKeyPath:_JZNavigationDelegatingTrigger context:_cmd]; }
+        @catch (NSException *exception) {
+        }
     }
     
     if (!delegate) {
@@ -78,7 +81,14 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         
         NSAssert([delegate isKindOfClass:[NSObject class]], @"Must inherit form NSObject!");
         
-        [delegate addObserver:self forKeyPath:_JZNavigationDelegatingTrigger options:NSKeyValueObservingOptionNew context:_cmd];
+        [delegate addObserver:delegate forKeyPath:_JZNavigationDelegatingTrigger options:NSKeyValueObservingOptionNew context:_cmd];
+        
+        __unsafe_unretained typeof(delegate) unretained_delegate = delegate;
+        objc_setAssociatedObject(delegate, _cmd, [[_JZNavigationDelegating alloc] initWithActionsPerformInDealloc:^{
+            @try { [unretained_delegate removeObserver:unretained_delegate forKeyPath:_JZNavigationDelegatingTrigger context:_cmd]; }
+            @catch (NSException *exception) {
+            }
+        }], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         
         void (^jz_add_replace_method)(id, SEL, IMP) = ^(id object, SEL sel, IMP imp) {
 

@@ -10,6 +10,8 @@
 
 @interface _JZNavigationDelegating : NSObject <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
+- (instancetype)initWithActionsPerformInDealloc:(dispatch_block_t)actionsPerformInDealloc;
+
 - (instancetype)initWithNavigationController:(UINavigationController *)navigationController;
 
 @end
