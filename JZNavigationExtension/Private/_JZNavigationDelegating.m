@@ -146,8 +146,7 @@
             UIViewController *adjustViewController = context.isCancelled ? navigationController.jz_previousVisibleViewController : navigationController.visibleViewController;
             
             if (context.isCancelled) {
-                UIColor *newNavigationBarColor = [adjustViewController jz_navigationBarTintColorWithNavigationController:navigationController];
-                navigationController.jz_navigationBarTintColor = newNavigationBarColor;
+                navigationController.jz_navigationBarTintColor = [adjustViewController jz_navigationBarTintColorWithNavigationController:navigationController];
                 navigationController.jz_navigationBarBackgroundAlpha = [adjustViewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
             } else {
                 [navigationController setNavigationBarHidden:![adjustViewController jz_wantsNavigationBarVisibleWithNavigationController:navigationController] animated:animated];

@@ -24,31 +24,42 @@
 
 @interface UIViewController (JZExtension)
 
+/*
+ *  如果一个控制器从来没有设置过下面的某个属性，就会默认采用导航控制器的相应属性。比如，A"viewController"从来没有设置过"jz_wantsNavigationBarVisible"，那么当"push"到它时，就会用"navigationController.jz_wantsNavigationBarVisible"，如果"navigationController"也从来都没设置过，那么什么都不做（显示就显示隐藏就隐藏）。
+ */
+
 /**
  *  @author JazysYu, 16-01-25 14:01:14
  *
- *  Adjust navigation bar hidden state for view controller in anytime you want. If have not set, this property will not work.
+ *  Adjust navigation bar hidden state for view controller anytime you want. If have not set, this property will not work. Set this property to UINavigationController for global behavior.
  */
 @property (nonatomic, assign) IBInspectable BOOL jz_wantsNavigationBarVisible;
 
 /**
  *  @author JazysYu, 16-01-25 14:01:57
  *
- *  Worked on each view controller's push or pop, set the alpha value if you want to apply specific bar alpha to the view controller. If you have not set this property then the value will be the current navigation bar background alpha dynamically.
+ *  Worked on each view controller's push or pop, set the alpha value if you want to apply specific bar alpha to the view controller. If you have not set this property then the value will be the current navigation bar background alpha dynamically. Set this property to UINavigationController for global behavior.
  */
 @property (nonatomic, assign) IBInspectable CGFloat jz_navigationBarBackgroundAlpha;
 
 /**
  *  @author dongxinb, 16-01-25 14:01:35
  *
- *  Worked on each view controller's push or pop, set the color value if you want to apply specific bar tint color to the view controller. If you have not set this property then the value will be the current navigation bar barTintColor dynamically. Set it to "nil", when you expect a system default color.
+ *  Worked on each view controller's push or pop, set the color value if you want to apply specific bar tint color to the view controller. If you have not set this property then the value will be the current navigation bar barTintColor dynamically. Set it to "nil", when you expect a system default color. Set this property to UINavigationController for global behavior.
  */
 @property (nonatomic, strong) IBInspectable UIColor *jz_navigationBarTintColor;
 
 /**
+ *  @author JazysYu, 17-11-29 12:38:35
+ *
+ *  Set navigationController's "interactivePopGestureRecognizer" enable state for each view controller. If have not set, this property will not work. Set this property to UINavigationController for global behavior.
+ */
+@property (nonatomic, assign) IBInspectable BOOL jz_navigationInteractivePopGestureEnabled;
+
+/**
  *  @author dongxinb, 16-01-25 14:01:36
  *
- *  Hide or show the navigation bar background.
+ *  Hide or show the navigation bar background. It just a warpper of "jz_navigationBarBackgroundAlpha".
  */
 @property (nonatomic, assign, getter=jz_isNavigationBarBackgroundHidden, setter=jz_setNavigationBarBackgroundHidden:) IBInspectable BOOL jz_navigationBarBackgroundHidden;
 

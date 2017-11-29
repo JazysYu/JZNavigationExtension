@@ -214,9 +214,12 @@
         {
             UIImagePickerController *viewController = [[UIImagePickerController alloc] init];
             viewController.modalPresentationStyle= UIModalPresentationOverFullScreen;
-            viewController.sourceType = UIImagePickerControllerSourceTypeCamera;
+            viewController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
             viewController.allowsEditing = YES;
+            [viewController view];
+//            viewController.delegate = self; //Any delegate you want.
             [self presentViewController:viewController animated:YES completion:NULL];
+            
         }
             break;
         default:

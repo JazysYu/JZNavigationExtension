@@ -107,6 +107,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     
 }
 
+#pragma mark - public
 
 - (void)jz_pushViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(_jz_navigation_block_t)completion {
     
@@ -145,21 +146,30 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     return [self popToRootViewControllerAnimated:animated];
 }
 
-#pragma mark - setters
+- (UIViewController *)jz_previousViewControllerForViewController:(UIViewController *)viewController {
+    NSUInteger index = [self.viewControllers indexOfObject:viewController];
+    
+    if (!index || index == NSNotFound) return nil;
+    
+    return self.viewControllers[index - 1];
+}
+
+#pragma mark - properties
 
 - (void)setJz_navigationBarTransitionStyle:(JZNavigationBarTransitionStyle)jz_navigationBarTransitionStyle {
     objc_setAssociatedObject(self, @selector(jz_navigationBarTransitionStyle), @(jz_navigationBarTransitionStyle), OBJC_ASSOCIATION_ASSIGN);
+}
+
+- (JZNavigationBarTransitionStyle)jz_navigationBarTransitionStyle {
+    return [objc_getAssociatedObject(self, _cmd) unsignedIntegerValue];
 }
 
 - (void)setJz_navigationBarTintColor:(UIColor *)jz_navigationBarTintColor {
     self.navigationBar.barTintColor = jz_navigationBarTintColor;
 }
 
-- (void)setJz_toolbarBackgroundAlpha:(CGFloat)jz_toolbarBackgroundAlpha {
-    [[self.toolbar jz_backgroundView] setAlpha:jz_toolbarBackgroundAlpha];
-    if (fabs(jz_toolbarBackgroundAlpha - 0) <= 0.001) {
-        [self.toolbar setShadowImage:[UIImage new] forToolbarPosition:UIBarPositionAny];
-    }
+- (UIColor *)jz_navigationBarTintColor {
+    return self.navigationBar.barTintColor;
 }
 
 - (void)setJz_navigationBarBackgroundAlpha:(CGFloat)jz_navigationBarBackgroundAlpha {
@@ -169,42 +179,72 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     }
 }
 
+- (void)setJz_toolbarBackgroundAlpha:(CGFloat)jz_toolbarBackgroundAlpha {
+    [[self.toolbar jz_backgroundView] setAlpha:jz_toolbarBackgroundAlpha];
+    if (fabs(jz_toolbarBackgroundAlpha - 0) <= 0.001) {
+        [self.toolbar setShadowImage:[UIImage new] forToolbarPosition:UIBarPositionAny];
+    }
+}
+
+- (CGFloat)jz_toolbarBackgroundAlpha {
+    return [[self.toolbar jz_backgroundView] alpha];
+}
+
 - (void)setJz_navigationBarSize:(CGSize)jz_navigationBarSize {
     [self.navigationBar setJz_size:jz_navigationBarSize];
+}
+
+- (CGSize)jz_navigationBarSize {
+    return [self.navigationBar jz_size];
 }
 
 - (void)setJz_toolbarSize:(CGSize)jz_toolbarSize {
     [self.toolbar setJz_size:jz_toolbarSize];
 }
 
+- (CGSize)jz_toolbarSize {
+    return [self.toolbar jz_size];
+}
+
 - (void)setJz_navigationTransitionCompletion:(_jz_navigation_block_t)jz_navigationTransitionCompletion {
     objc_setAssociatedObject(self, @selector(jz_navigationTransitionCompletion), jz_navigationTransitionCompletion, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (_jz_navigation_block_t)jz_navigationTransitionCompletion {
+    return objc_getAssociatedObject(self, _cmd);
 }
 
 - (void)jz_setInteractivePopGestureRecognizerCompletion:(_jz_navigation_block_t)jz_interactivePopGestureRecognizerCompletion {
     objc_setAssociatedObject(self, @selector(jz_interactivePopGestureRecognizerCompletion), jz_interactivePopGestureRecognizerCompletion, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
+- (_jz_navigation_block_t)jz_interactivePopGestureRecognizerCompletion {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
 - (void)setJz_operation:(UINavigationControllerOperation)jz_operation {
     objc_setAssociatedObject(self, @selector(jz_operation), @(jz_operation), OBJC_ASSOCIATION_ASSIGN);
 }
 
+- (UINavigationControllerOperation)jz_operation {
+    
+    UINavigationControllerOperation operation = [objc_getAssociatedObject(self, _cmd) integerValue];
+    
+    if (operation == UINavigationControllerOperationNone) {
+        if ([self.viewControllers containsObject:[self.topViewController.transitionCoordinator viewControllerForKey:UITransitionContextFromViewControllerKey]]) {
+            operation = UINavigationControllerOperationPush;
+        } else {
+            operation = UINavigationControllerOperationPop;
+        }
+        self.jz_operation = operation;
+    }
+    
+    return operation;
+    
+}
+
 - (void)setJz_previousVisibleViewController:(UIViewController * _Nullable)jz_previousVisibleViewController {
     objc_setAssociatedObject(self, @selector(jz_previousVisibleViewController), jz_previousVisibleViewController ? [_JZValue valueWithWeakObject:jz_previousVisibleViewController] : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (void)setJz_fullScreenInteractivePopGestureEnabled:(BOOL)jz_fullScreenInteractivePopGestureEnabled {
-    object_setClass(self.interactivePopGestureRecognizer, jz_fullScreenInteractivePopGestureEnabled ? [UIPanGestureRecognizer class] : [UIScreenEdgePanGestureRecognizer class]);
-}
-
-- (void)setJz_navigationDelegate:(_JZNavigationDelegating *)jz_navigationDelegate {
-    objc_setAssociatedObject(self, @selector(jz_navigationDelegate), jz_navigationDelegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-#pragma mark - getters
-
-- (JZNavigationBarTransitionStyle)jz_navigationBarTransitionStyle {
-    return [objc_getAssociatedObject(self, _cmd) unsignedIntegerValue];
 }
 
 - (UIViewController *)jz_previousVisibleViewController {
@@ -216,61 +256,16 @@ __attribute__((constructor)) static void JZ_Inject(void) {
     return _previousVisibleViewController;
 }
 
-- (UIColor *)jz_navigationBarTintColor {
-    return self.navigationBar.barTintColor;
-}
-
-- (UINavigationControllerOperation)jz_operation {
-    
-    UINavigationControllerOperation operation = [objc_getAssociatedObject(self, _cmd) integerValue];
-
-    if (operation == UINavigationControllerOperationNone) {
-        if ([self.viewControllers containsObject:[self.topViewController.transitionCoordinator viewControllerForKey:UITransitionContextFromViewControllerKey]]) {
-            operation = UINavigationControllerOperationPush;
-        } else {
-            operation = UINavigationControllerOperationPop;
-        }
-        self.jz_operation = operation;
-    }
-
-    return operation;
-
-}
-
-- (CGFloat)jz_navigationBarBackgroundAlpha {
-    return [[self.navigationBar jz_backgroundView] alpha];
-}
-
-- (CGFloat)jz_toolbarBackgroundAlpha {
-    return [[self.toolbar jz_backgroundView] alpha];
+- (void)setJz_fullScreenInteractivePopGestureEnabled:(BOOL)jz_fullScreenInteractivePopGestureEnabled {
+    object_setClass(self.interactivePopGestureRecognizer, jz_fullScreenInteractivePopGestureEnabled ? [UIPanGestureRecognizer class] : [UIScreenEdgePanGestureRecognizer class]);
 }
 
 - (BOOL)jz_fullScreenInteractivePopGestureEnabled {
     return [self.interactivePopGestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]];
 }
 
-- (_jz_navigation_block_t)jz_navigationTransitionCompletion {
-    return objc_getAssociatedObject(self, _cmd);
-}
-
-- (_jz_navigation_block_t)jz_interactivePopGestureRecognizerCompletion {
-    return objc_getAssociatedObject(self, _cmd);
-}
-
-- (CGSize)jz_navigationBarSize {
-    return [self.navigationBar jz_size];
-}
-
-- (CGSize)jz_toolbarSize {
-    return [self.toolbar jz_size];
-}
-
-- (UIViewController *)jz_previousViewControllerForViewController:(UIViewController *)viewController {
-    NSUInteger index = [self.viewControllers indexOfObject:viewController];
-    
-    if (!index || index == NSNotFound) return nil;
-    
-    return self.viewControllers[index - 1];
+- (void)setJz_navigationDelegate:(_JZNavigationDelegating *)jz_navigationDelegate {
+    objc_setAssociatedObject(self, @selector(jz_navigationDelegate), jz_navigationDelegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (_JZNavigationDelegating *)jz_navigationDelegate {
