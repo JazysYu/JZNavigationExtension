@@ -49,6 +49,8 @@
     
     self.jz_navigationBarTintColor = nil;
     
+    self.jz_navigationInteractivePopGestureEnabled = true;
+    
     [self.navigationController jz_setInteractivePopGestureRecognizerCompletion:^(UINavigationController *navigationController, BOOL finished) {
         if (finished) {
             NSLog(@"Interactive pop transition has been finished");
@@ -212,9 +214,16 @@
             break;
         case 9:
         {
+            viewController.jz_navigationInteractivePopGestureEnabled = false;
+            tipImageView.image = [UIImage imageNamed:@"tip_no_pop_gesture"];
+            [self.navigationController pushViewController:viewController animated:true];
+        }
+            break;
+        case 10:
+        {
             UIImagePickerController *viewController = [[UIImagePickerController alloc] init];
             viewController.modalPresentationStyle= UIModalPresentationOverFullScreen;
-            viewController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            viewController.sourceType = UIImagePickerControllerSourceTypeCamera;
             viewController.allowsEditing = YES;
             [viewController view];
 //            viewController.delegate = self; //Any delegate you want.
@@ -252,7 +261,8 @@
                                               @"navigationBarBackgroundHidden",
                                               @"navigationBarBackgroundAlpha:0.3",
                                               @"navigationBarTintColor:",
-                                              @"setViewControllers:Animated:"
+                                              @"setViewControllers:Animated:",
+                                              @"jz_navigationInteractivePopGestureEnabled"
                                               ] mutableCopy];
         if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
             [mutableCellModels addObject:@"show a view controller which is subclass of UINavigationController."];

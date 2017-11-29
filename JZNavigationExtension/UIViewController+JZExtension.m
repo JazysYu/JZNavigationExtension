@@ -26,8 +26,6 @@
 
 @implementation UIViewController (JZExtension)
 
-#pragma mark - Setter
-
 - (void)setJz_wantsNavigationBarVisible:(BOOL)jz_wantsNavigationBarVisible {
     objc_setAssociatedObject(self, @selector(jz_wantsNavigationBarVisible), @(jz_wantsNavigationBarVisible), OBJC_ASSOCIATION_ASSIGN);
     [self.navigationController setNavigationBarHidden:!jz_wantsNavigationBarVisible animated:true];
@@ -38,61 +36,68 @@
 }
 
 - (BOOL)jz_wantsNavigationBarVisibleWithNavigationController:(UINavigationController *)navigationController {
+    
     id jz_wantsNavigationBarVisibleObject = objc_getAssociatedObject(self, @selector(jz_wantsNavigationBarVisible));
     if (jz_wantsNavigationBarVisibleObject) {
         return [jz_wantsNavigationBarVisibleObject boolValue];
     }
-    return !navigationController.navigationBarHidden;
+    
+    jz_wantsNavigationBarVisibleObject = objc_getAssociatedObject(navigationController, @selector(jz_wantsNavigationBarVisible));
+    if (jz_wantsNavigationBarVisibleObject) {
+        return [jz_wantsNavigationBarVisibleObject boolValue];
+    }
+    
+    return !navigationController.isNavigationBarHidden;
+    
 }
 
 - (void)setJz_navigationBarBackgroundAlpha:(CGFloat)jz_navigationBarBackgroundAlpha {
-    [self.navigationController setJz_navigationBarBackgroundAlpha:jz_navigationBarBackgroundAlpha];
     objc_setAssociatedObject(self, @selector(jz_navigationBarBackgroundAlpha), @(jz_navigationBarBackgroundAlpha), OBJC_ASSOCIATION_RETAIN);
+    self.navigationController.jz_navigationBarBackgroundAlphaReal = jz_navigationBarBackgroundAlpha;
 }
 
 - (CGFloat)jz_navigationBarBackgroundAlpha {
-    return self.navigationController ? [self jz_navigationBarBackgroundAlphaWithNavigationController:self.navigationController] : 1.f;
+    return [objc_getAssociatedObject(self, _cmd) jz_CGFloatValue];
 }
 
 - (CGFloat)jz_navigationBarBackgroundAlphaWithNavigationController:(UINavigationController *)navigationController {
-    id _navigationBarBackgroundAlpha = objc_getAssociatedObject(self, @selector(jz_navigationBarBackgroundAlpha));
-    if (_navigationBarBackgroundAlpha) {
-        return [_navigationBarBackgroundAlpha jz_CGFloatValue];
+    
+    id jz_navigationBarBackgroundAlpha = objc_getAssociatedObject(self, @selector(jz_navigationBarBackgroundAlpha));
+    if (jz_navigationBarBackgroundAlpha) {
+        return [jz_navigationBarBackgroundAlpha jz_CGFloatValue];
     }
-    return navigationController.jz_navigationBarBackgroundAlpha;
-}
+    
+    jz_navigationBarBackgroundAlpha = objc_getAssociatedObject(navigationController, @selector(jz_navigationBarBackgroundAlpha));
+    if (jz_navigationBarBackgroundAlpha) {
+        return [jz_navigationBarBackgroundAlpha jz_CGFloatValue];
+    }
 
-- (void)jz_setNavigationBarBackgroundHidden:(BOOL)jz_navigationBarBackgroundHidden animated:(BOOL)animated {
-    [UIView animateWithDuration:animated ? UINavigationControllerHideShowBarDuration : 0.f animations:^{
-        [self jz_setNavigationBarBackgroundHidden:jz_navigationBarBackgroundHidden];
-    }];
-}
-
-- (void)jz_setNavigationBarBackgroundHidden:(BOOL)jz_navigationBarBackgroundHidden {
-    [self setJz_navigationBarBackgroundAlpha:!jz_navigationBarBackgroundHidden];
-}
-
-- (BOOL)jz_isNavigationBarBackgroundHidden {
-    return self.jz_navigationBarBackgroundAlpha - 0.0f <= 0.0001;
+    return navigationController.navigationBar.jz_backgroundView.alpha;
+    
 }
 
 - (void)setJz_navigationBarTintColor:(UIColor *)jz_navigationBarTintColor {
     self.jz_navigationBarTintColorSetterBeenCalled = true;
-    [self.navigationController setJz_navigationBarTintColor:jz_navigationBarTintColor];
     objc_setAssociatedObject(self, @selector(jz_navigationBarTintColor), jz_navigationBarTintColor, OBJC_ASSOCIATION_RETAIN);
+    self.navigationController.navigationBar.barTintColor = jz_navigationBarTintColor;
 }
 
 - (UIColor *)jz_navigationBarTintColor {
-    return [self jz_navigationBarTintColorWithNavigationController:self.navigationController];
+    return objc_getAssociatedObject(self, _cmd);
 }
 
 - (UIColor *)jz_navigationBarTintColorWithNavigationController:(UINavigationController *)navigationController {
-    UIColor *_navigationBarTintColor = objc_getAssociatedObject(self, @selector(jz_navigationBarTintColor));
-    if (!self.jz_hasNavigationBarTintColorSetterBeenCalled) {
-        return _navigationBarTintColor ? _navigationBarTintColor : navigationController.jz_navigationBarTintColor;
-    } else {
-        return _navigationBarTintColor;
+    
+    if (self.jz_hasNavigationBarTintColorSetterBeenCalled) {
+        return self.jz_navigationBarTintColor;
     }
+    
+    if (navigationController.jz_hasNavigationBarTintColorSetterBeenCalled) {
+        return navigationController.jz_navigationBarTintColor;
+    }
+    
+    return navigationController.navigationBar.barTintColor;
+    
 }
 
 - (void)setJz_navigationBarTintColorSetterBeenCalled:(BOOL)jz_navigationBarTintColorSetterBeenCalled {
@@ -101,6 +106,48 @@
 
 - (BOOL)jz_hasNavigationBarTintColorSetterBeenCalled {
     return [objc_getAssociatedObject(self, _cmd) boolValue];
+}
+
+- (void)setJz_navigationInteractivePopGestureEnabled:(BOOL)jz_navigationInteractivePopGestureEnabled {
+    objc_setAssociatedObject(self, @selector(jz_navigationInteractivePopGestureEnabled), @(jz_navigationInteractivePopGestureEnabled), OBJC_ASSOCIATION_ASSIGN);
+}
+
+- (BOOL)jz_navigationInteractivePopGestureEnabled {
+    return [objc_getAssociatedObject(self, _cmd) boolValue];
+}
+
+- (BOOL)jz_navigationInteractivePopGestureEnabledWithNavigationController:(UINavigationController *)navigationController {
+    
+    id jz_navigationInteractivePopGestureEnabled = objc_getAssociatedObject(self, @selector(jz_navigationInteractivePopGestureEnabled));
+    if (jz_navigationInteractivePopGestureEnabled) {
+        return [jz_navigationInteractivePopGestureEnabled boolValue];
+    }
+    
+    jz_navigationInteractivePopGestureEnabled = objc_getAssociatedObject(navigationController, @selector(jz_navigationInteractivePopGestureEnabled));
+    if (jz_navigationInteractivePopGestureEnabled) {
+        return [jz_navigationInteractivePopGestureEnabled boolValue];
+    }
+    
+    return navigationController.interactivePopGestureRecognizer.isEnabled;
+    
+}
+
+- (void)jz_setNavigationBarBackgroundHidden:(BOOL)jz_navigationBarBackgroundHidden animated:(BOOL)animated {
+    if (animated) {
+        [UIView animateWithDuration:UINavigationControllerHideShowBarDuration animations:^{
+            [self jz_setNavigationBarBackgroundHidden:jz_navigationBarBackgroundHidden];
+        }];
+    } else {
+        [self jz_setNavigationBarBackgroundHidden:jz_navigationBarBackgroundHidden];
+    }
+}
+
+- (void)jz_setNavigationBarBackgroundHidden:(BOOL)jz_navigationBarBackgroundHidden {
+    [self setJz_navigationBarBackgroundAlpha:!jz_navigationBarBackgroundHidden];
+}
+
+- (BOOL)jz_isNavigationBarBackgroundHidden {
+    return fabs(self.jz_navigationBarBackgroundAlpha - 0.0f) <= 0.0001;
 }
 
 - (UIViewController *)jz_previousViewController {

@@ -26,6 +26,7 @@
 
 /*
  *  如果一个控制器从来没有设置过下面的某个属性，就会默认采用导航控制器的相应属性。比如，A"viewController"从来没有设置过"jz_wantsNavigationBarVisible"，那么当"push"到它时，就会用"navigationController.jz_wantsNavigationBarVisible"，如果"navigationController"也从来都没设置过，那么什么都不做（显示就显示隐藏就隐藏）。
+ *  https://github.com/JazysYu/JZNavigationExtension/wiki/Welcome-to-the-JZNavigationExtension-wiki!
  */
 
 /**

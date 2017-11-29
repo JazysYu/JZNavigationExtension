@@ -156,54 +156,19 @@ __attribute__((constructor)) static void JZ_Inject(void) {
 
 #pragma mark - properties
 
-- (void)setJz_navigationBarTransitionStyle:(JZNavigationBarTransitionStyle)jz_navigationBarTransitionStyle {
-    objc_setAssociatedObject(self, @selector(jz_navigationBarTransitionStyle), @(jz_navigationBarTransitionStyle), OBJC_ASSOCIATION_ASSIGN);
-}
-
-- (JZNavigationBarTransitionStyle)jz_navigationBarTransitionStyle {
-    return [objc_getAssociatedObject(self, _cmd) unsignedIntegerValue];
-}
-
-- (void)setJz_navigationBarTintColor:(UIColor *)jz_navigationBarTintColor {
-    self.navigationBar.barTintColor = jz_navigationBarTintColor;
-}
-
-- (UIColor *)jz_navigationBarTintColor {
-    return self.navigationBar.barTintColor;
-}
-
-- (void)setJz_navigationBarBackgroundAlpha:(CGFloat)jz_navigationBarBackgroundAlpha {
+- (void)setJz_navigationBarBackgroundAlphaReal:(CGFloat)jz_navigationBarBackgroundAlpha {
     [[self.navigationBar jz_backgroundView] setAlpha:jz_navigationBarBackgroundAlpha];
     if (fabs(jz_navigationBarBackgroundAlpha - 0) <= 0.001) {
         [self.navigationBar setShadowImage:[UIImage new]];
     }
 }
 
-- (void)setJz_toolbarBackgroundAlpha:(CGFloat)jz_toolbarBackgroundAlpha {
-    [[self.toolbar jz_backgroundView] setAlpha:jz_toolbarBackgroundAlpha];
-    if (fabs(jz_toolbarBackgroundAlpha - 0) <= 0.001) {
-        [self.toolbar setShadowImage:[UIImage new] forToolbarPosition:UIBarPositionAny];
-    }
+- (void)setJz_navigationBarTransitionStyle:(JZNavigationBarTransitionStyle)jz_navigationBarTransitionStyle {
+    objc_setAssociatedObject(self, @selector(jz_navigationBarTransitionStyle), @(jz_navigationBarTransitionStyle), OBJC_ASSOCIATION_ASSIGN);
 }
 
-- (CGFloat)jz_toolbarBackgroundAlpha {
-    return [[self.toolbar jz_backgroundView] alpha];
-}
-
-- (void)setJz_navigationBarSize:(CGSize)jz_navigationBarSize {
-    [self.navigationBar setJz_size:jz_navigationBarSize];
-}
-
-- (CGSize)jz_navigationBarSize {
-    return [self.navigationBar jz_size];
-}
-
-- (void)setJz_toolbarSize:(CGSize)jz_toolbarSize {
-    [self.toolbar setJz_size:jz_toolbarSize];
-}
-
-- (CGSize)jz_toolbarSize {
-    return [self.toolbar jz_size];
+- (JZNavigationBarTransitionStyle)jz_navigationBarTransitionStyle {
+    return [objc_getAssociatedObject(self, _cmd) unsignedIntegerValue];
 }
 
 - (void)setJz_navigationTransitionCompletion:(_jz_navigation_block_t)jz_navigationTransitionCompletion {
@@ -275,6 +240,33 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         self.jz_navigationDelegate = jz_navigationDelegate;
     }
     return jz_navigationDelegate;
+}
+
+- (void)setJz_navigationBarSize:(CGSize)jz_navigationBarSize {
+    [self.navigationBar setJz_size:jz_navigationBarSize];
+}
+
+- (CGSize)jz_navigationBarSize {
+    return [self.navigationBar jz_size];
+}
+
+- (void)setJz_toolbarBackgroundAlpha:(CGFloat)jz_toolbarBackgroundAlpha {
+    [[self.toolbar jz_backgroundView] setAlpha:jz_toolbarBackgroundAlpha];
+    if (fabs(jz_toolbarBackgroundAlpha - 0) <= 0.001) {
+        [self.toolbar setShadowImage:[UIImage new] forToolbarPosition:UIBarPositionAny];
+    }
+}
+
+- (CGFloat)jz_toolbarBackgroundAlpha {
+    return [[self.toolbar jz_backgroundView] alpha];
+}
+
+- (void)setJz_toolbarSize:(CGSize)jz_toolbarSize {
+    [self.toolbar setJz_size:jz_toolbarSize];
+}
+
+- (CGSize)jz_toolbarSize {
+    return [self.toolbar jz_size];
 }
 
 @end

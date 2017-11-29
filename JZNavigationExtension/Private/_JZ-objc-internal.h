@@ -17,12 +17,14 @@ typedef void(^_jz_navigation_block_t)(UINavigationController *navigationControll
 @property (nonatomic, copy, setter=jz_setInteractivePopGestureRecognizerCompletion:) _jz_navigation_block_t jz_interactivePopGestureRecognizerCompletion;
 @property (nonatomic, copy) _jz_navigation_block_t jz_navigationTransitionCompletion;
 @property (nonatomic) _JZNavigationDelegating *jz_navigationDelegate;
-- (void)setJz_operation:(UINavigationControllerOperation)jz_operation;
 - (void)setJz_previousVisibleViewController:(UIViewController * _Nullable)jz_previousVisibleViewController;
+- (void)setJz_navigationBarBackgroundAlphaReal:(CGFloat)jz_navigationBarBackgroundAlpha;
+- (void)setJz_operation:(UINavigationControllerOperation)jz_operation;
 @end
 
 @interface UIViewController (_JZExtension)
 @property (nonatomic, assign, getter=jz_hasNavigationBarTintColorSetterBeenCalled) BOOL jz_navigationBarTintColorSetterBeenCalled;
+- (BOOL)jz_navigationInteractivePopGestureEnabledWithNavigationController:(UINavigationController *)navigationController;
 - (CGFloat)jz_navigationBarBackgroundAlphaWithNavigationController:(UINavigationController *)navigationController;
 - (UIColor *)jz_navigationBarTintColorWithNavigationController:(UINavigationController *)navigationController;
 - (BOOL)jz_wantsNavigationBarVisibleWithNavigationController:(UINavigationController *)navigationController;

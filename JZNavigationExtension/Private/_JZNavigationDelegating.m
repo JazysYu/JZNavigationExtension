@@ -49,8 +49,8 @@
         
         [navigationController setNavigationBarHidden:![viewController jz_wantsNavigationBarVisibleWithNavigationController:navigationController] animated:animated];
         animateAlongsideTransition = ^(id<UIViewControllerTransitionCoordinatorContext> context) {
-            navigationController.jz_navigationBarTintColor = [viewController jz_navigationBarTintColorWithNavigationController:navigationController];
-            navigationController.jz_navigationBarBackgroundAlpha = [viewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
+            navigationController.navigationBar.barTintColor = [viewController jz_navigationBarTintColorWithNavigationController:navigationController];
+            navigationController.jz_navigationBarBackgroundAlphaReal = [viewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
         };
 
     } else if (navigationController.jz_navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
@@ -78,8 +78,8 @@
         }
         
         navigationController.navigationBarHidden = ![viewController jz_wantsNavigationBarVisibleWithNavigationController:navigationController];
-        navigationController.jz_navigationBarTintColor = [viewController jz_navigationBarTintColorWithNavigationController:navigationController];
-        navigationController.jz_navigationBarBackgroundAlpha = [viewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
+        navigationController.navigationBar.barTintColor = [viewController jz_navigationBarTintColorWithNavigationController:navigationController];
+        navigationController.jz_navigationBarBackgroundAlphaReal = [viewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
         
         CGFloat navigationBarAlpha = navigationController.navigationBar.alpha;
         
@@ -124,15 +124,14 @@
             
             NSPredicate *getSubSnapshotLayerPredicate = [NSPredicate predicateWithFormat:@"name == %@", _JZNavigationExtensionSnapshotLayerName];
             NSArray <CALayer *> *result = nil;
-            SEL sel_removeFromSuperlayer = @selector(removeFromSuperlayer);
             if (navigationBarTransitionStyle == JZNavigationBarTransitionStyleDoppelganger) {
                 result = [navigationController.jz_previousVisibleViewController.view.layer.sublayers filteredArrayUsingPredicate:getSubSnapshotLayerPredicate];
-                [result makeObjectsPerformSelector:sel_removeFromSuperlayer];
+                [result makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
                 result = [viewController.view.layer.sublayers filteredArrayUsingPredicate:getSubSnapshotLayerPredicate];
-                [result makeObjectsPerformSelector:sel_removeFromSuperlayer];
+                [result makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
             } else {
                 result = [navigationController.navigationBar.superview.layer.sublayers filteredArrayUsingPredicate:getSubSnapshotLayerPredicate];
-                [result makeObjectsPerformSelector:sel_removeFromSuperlayer];
+                [result makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
             }
             
         };
@@ -146,8 +145,8 @@
             UIViewController *adjustViewController = context.isCancelled ? navigationController.jz_previousVisibleViewController : navigationController.visibleViewController;
             
             if (context.isCancelled) {
-                navigationController.jz_navigationBarTintColor = [adjustViewController jz_navigationBarTintColorWithNavigationController:navigationController];
-                navigationController.jz_navigationBarBackgroundAlpha = [adjustViewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
+                navigationController.navigationBar.barTintColor = [adjustViewController jz_navigationBarTintColorWithNavigationController:navigationController];
+                navigationController.jz_navigationBarBackgroundAlphaReal = [adjustViewController jz_navigationBarBackgroundAlphaWithNavigationController:navigationController];
             } else {
                 [navigationController setNavigationBarHidden:![adjustViewController jz_wantsNavigationBarVisibleWithNavigationController:navigationController] animated:animated];
             }
@@ -157,6 +156,8 @@
         }
         
         !completion ?: completion(context);
+        
+        navigationController.interactivePopGestureRecognizer.enabled = [navigationController.visibleViewController jz_navigationInteractivePopGestureEnabledWithNavigationController:navigationController];
         
         !navigationController.jz_navigationTransitionCompletion ?: navigationController.jz_navigationTransitionCompletion(navigationController, true);
         navigationController.jz_navigationTransitionCompletion = NULL;
@@ -181,8 +182,7 @@
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    UINavigationController *navigationController = self.navigationController;
-    if (!navigationController.jz_fullScreenInteractivePopGestureEnabled) {
+    if (!self.navigationController.jz_fullScreenInteractivePopGestureEnabled) {
         return true;
     }
     CGPoint locationInView = [gestureRecognizer locationInView:gestureRecognizer.view];
