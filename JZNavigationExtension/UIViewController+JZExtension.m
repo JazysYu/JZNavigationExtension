@@ -118,6 +118,7 @@
 
 - (void)setJz_navigationInteractivePopGestureEnabled:(BOOL)jz_navigationInteractivePopGestureEnabled {
     objc_setAssociatedObject(self, @selector(jz_navigationInteractivePopGestureEnabled), @(jz_navigationInteractivePopGestureEnabled), OBJC_ASSOCIATION_ASSIGN);
+    self.navigationController.interactivePopGestureRecognizer.enabled = jz_navigationInteractivePopGestureEnabled;
 }
 
 - (BOOL)jz_navigationInteractivePopGestureEnabled {
