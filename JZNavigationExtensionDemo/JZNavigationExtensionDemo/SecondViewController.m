@@ -47,7 +47,7 @@
     
     self.jz_navigationBarBackgroundAlpha = 1.f;
     
-    self.jz_navigationBarTintColor = nil;
+    self.jz_navigationBarTintColor = [UIColor darkGrayColor];
     
     self.jz_navigationInteractivePopGestureEnabled = true;
     
@@ -103,7 +103,7 @@
                                     @"minimumValue" : @(0),
                                     @"maximumValue" : @(1),
                                     @"stepValue"    : @(0.1),
-                                    @"value"        : @(self.navigationController.jz_navigationBarBackgroundAlpha),
+                                    @"value"        : @(self.jz_navigationBarBackgroundAlpha),
                                     @"tintColor"    : UIColorWithRGBA(87, 91, 94, 1)
                                     };
             break;

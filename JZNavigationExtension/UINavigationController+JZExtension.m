@@ -46,7 +46,11 @@ __attribute__((constructor)) static void JZ_Inject(void) {
         
         jz_method_swizzling([UINavigationController class], @selector(setDelegate:), @selector(jz_setDelegate:));
         jz_method_swizzling([UINavigationController class], @selector(viewDidLoad), @selector(jz_viewDidLoad));
-        
+        if (@available(iOS 11, *)) {
+        } else { //Change navigation bar size feature not support iOS11 by now.
+            jz_method_swizzling([UINavigationBar class], @selector(sizeThatFits:), @selector(jz_sizeThatFits:));
+            jz_method_swizzling([UIToolbar class], @selector(sizeThatFits:), @selector(jz_sizeThatFits:));
+        }
     });
 }
 
