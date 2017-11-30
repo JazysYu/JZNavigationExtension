@@ -27,7 +27,7 @@ typedef void(^_jz_navigation_block_t)(UINavigationController *navigationControll
 - (BOOL)jz_navigationInteractivePopGestureEnabledWithNavigationController:(UINavigationController *)navigationController;
 - (CGFloat)jz_navigationBarBackgroundAlphaWithNavigationController:(UINavigationController *)navigationController;
 - (UIColor *)jz_navigationBarTintColorWithNavigationController:(UINavigationController *)navigationController;
-- (BOOL)jz_wantsNavigationBarVisibleWithNavigationController:(UINavigationController *)navigationController;
+- (BOOL)jz_navigationBarHiddenWithNavigationController:(UINavigationController *)navigationController;
 @end
 
 @interface NSNumber (JZExtension)

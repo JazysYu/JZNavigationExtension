@@ -27,27 +27,35 @@
 @implementation UIViewController (JZExtension)
 
 - (void)setJz_wantsNavigationBarVisible:(BOOL)jz_wantsNavigationBarVisible {
-    objc_setAssociatedObject(self, @selector(jz_wantsNavigationBarVisible), @(jz_wantsNavigationBarVisible), OBJC_ASSOCIATION_ASSIGN);
-    [self.navigationController setNavigationBarHidden:!jz_wantsNavigationBarVisible animated:true];
+    self.jz_navigationBarHidden = !jz_wantsNavigationBarVisible;
 }
 
 - (BOOL)jz_wantsNavigationBarVisible {
+    return !self.jz_navigationBarHidden;
+}
+
+- (void)setJz_navigationBarHidden:(BOOL)jz_navigationBarHidden {
+    objc_setAssociatedObject(self, @selector(jz_navigationBarHidden), @(jz_navigationBarHidden), OBJC_ASSOCIATION_ASSIGN);
+    [self.navigationController setNavigationBarHidden:jz_navigationBarHidden animated:true];
+}
+
+- (BOOL)jz_navigationBarHidden {
     return [objc_getAssociatedObject(self, _cmd) boolValue];
 }
 
-- (BOOL)jz_wantsNavigationBarVisibleWithNavigationController:(UINavigationController *)navigationController {
+- (BOOL)jz_navigationBarHiddenWithNavigationController:(UINavigationController *)navigationController {
     
-    id jz_wantsNavigationBarVisibleObject = objc_getAssociatedObject(self, @selector(jz_wantsNavigationBarVisible));
-    if (jz_wantsNavigationBarVisibleObject) {
-        return [jz_wantsNavigationBarVisibleObject boolValue];
+    id jz_navigationBarHidden = objc_getAssociatedObject(self, @selector(jz_navigationBarHidden));
+    if (jz_navigationBarHidden) {
+        return [jz_navigationBarHidden boolValue];
     }
     
-    jz_wantsNavigationBarVisibleObject = objc_getAssociatedObject(navigationController, @selector(jz_wantsNavigationBarVisible));
-    if (jz_wantsNavigationBarVisibleObject) {
-        return [jz_wantsNavigationBarVisibleObject boolValue];
+    jz_navigationBarHidden = objc_getAssociatedObject(navigationController, @selector(jz_navigationBarHidden));
+    if (jz_navigationBarHidden) {
+        return [jz_navigationBarHidden boolValue];
     }
     
-    return !navigationController.isNavigationBarHidden;
+    return navigationController.isNavigationBarHidden;
     
 }
 

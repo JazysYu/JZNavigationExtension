@@ -43,7 +43,7 @@
     
     [super viewDidLoad];
     
-    self.jz_wantsNavigationBarVisible = true;
+    self.jz_navigationBarHidden = false;
     
     self.jz_navigationBarBackgroundAlpha = 1.f;
     
@@ -154,11 +154,11 @@
     vc.view.backgroundColor = self.view.backgroundColor;
     vc.jz_navigationBarTintColor = [UIColor blueColor];
     [self.navigationController pushViewController:vc animated:true];
-    vc.jz_wantsNavigationBarVisible = true;
+    vc.jz_navigationBarHidden = false;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:true];
     UIViewController *viewController = [UIViewController new];
     viewController.view.backgroundColor = UIColorWithRGBA(34, 195, 98, 1.f);
 
@@ -169,14 +169,14 @@
     switch (indexPath.row) {
         case 3:
         {
-            viewController.jz_wantsNavigationBarVisible = NO;
-            [self.navigationController pushViewController:viewController animated:YES];
+            viewController.jz_navigationBarHidden = true;
+            [self.navigationController pushViewController:viewController animated:true];
         }
             break;
         case 4:
         {
             viewController.title = @"Pushing";
-            [self.navigationController jz_pushViewController:viewController animated:YES completion:^(UINavigationController *navigationController, BOOL finished) {
+            [self.navigationController jz_pushViewController:viewController animated:true completion:^(UINavigationController *navigationController, BOOL finished) {
                 viewController.title = @"Pushed";
                 viewController.view.backgroundColor = UIColorWithRGBA(253, 69, 67, 1.f);
             }];
@@ -184,20 +184,20 @@
             break;
         case 5:
         {
-            viewController.jz_navigationBarBackgroundHidden = YES;
-            [self.navigationController pushViewController:viewController animated:YES];
+            viewController.jz_navigationBarBackgroundHidden = true;
+            [self.navigationController pushViewController:viewController animated:true];
         }
             break;
         case 6:
         {
             viewController.jz_navigationBarBackgroundAlpha = 0.3;
-            [self.navigationController pushViewController:viewController animated:YES];
+            [self.navigationController pushViewController:viewController animated:true];
         }
             break;
         case 7:
         {
             viewController.jz_navigationBarTintColor = [UIColor redColor];
-            [self.navigationController pushViewController:viewController animated:YES];
+            [self.navigationController pushViewController:viewController animated:true];
         }
             break;
         case 8:
@@ -206,7 +206,7 @@
             [viewControllers addObject:viewController];
             viewController.title = @"Pushing";
             viewController.jz_navigationBarTintColor = [UIColor purpleColor];
-            [self.navigationController jz_setViewControllers:viewControllers animated:YES completion:^(UINavigationController *navigationController, BOOL finished) {
+            [self.navigationController jz_setViewControllers:viewControllers animated:true completion:^(UINavigationController *navigationController, BOOL finished) {
                 viewController.title = @"Pushed";
                 viewController.view.backgroundColor = UIColorWithRGBA(253, 69, 67, 1.f);
             }];
@@ -224,10 +224,10 @@
             UIImagePickerController *viewController = [[UIImagePickerController alloc] init];
             viewController.modalPresentationStyle= UIModalPresentationOverFullScreen;
             viewController.sourceType = UIImagePickerControllerSourceTypeCamera;
-            viewController.allowsEditing = YES;
+            viewController.allowsEditing = true;
             [viewController view];
 //            viewController.delegate = self; //Any delegate you want.
-            [self presentViewController:viewController animated:YES completion:NULL];
+            [self presentViewController:viewController animated:true completion:NULL];
             
         }
             break;
@@ -254,14 +254,14 @@
     if (!_cellModels) {
         NSMutableArray *mutableCellModels = [@[
                                               @"jz_fullScreenInteractivePopGestureEnabled",
-                                              @"navigationBarBackgroundAlpha",
+                                              @"jz_navigationBarBackgroundAlpha",
                                               @"navigationBarHeight",
-                                              @"wantsNavigationBarVisible:NO",
-                                              @"pushViewController:animated:completion:",
-                                              @"navigationBarBackgroundHidden",
-                                              @"navigationBarBackgroundAlpha:0.3",
-                                              @"navigationBarTintColor:",
-                                              @"setViewControllers:Animated:",
+                                              @"jz_navigationBarHidden:NO",
+                                              @"jz_pushViewController:animated:completion:",
+                                              @"jz_navigationBarBackgroundHidden",
+                                              @"jz_navigationBarBackgroundAlpha:0.3",
+                                              @"jz_navigationBarTintColor:",
+                                              @"jz_setViewControllers:Animated:completion:",
                                               @"jz_navigationInteractivePopGestureEnabled"
                                               ] mutableCopy];
         if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {

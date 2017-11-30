@@ -29,9 +29,14 @@
  */
 
 /**
+*  Setting this property changes the visibility of the navigation bar with animating the changes. If have not set, this property will not work. Set this property to UINavigationController for global behavior.
+*/
+@property (nonatomic, assign) IBInspectable BOOL jz_wantsNavigationBarVisible DEPRECATED_MSG_ATTRIBUTE("Use jz_navigationBarHidden instead");
+
+/**
  *  Setting this property changes the visibility of the navigation bar with animating the changes. If have not set, this property will not work. Set this property to UINavigationController for global behavior.
  */
-@property (nonatomic, assign) IBInspectable BOOL jz_wantsNavigationBarVisible;
+@property (nonatomic, assign) IBInspectable BOOL jz_navigationBarHidden;
 
 /**
  *  The navigationBar backgroundView's alpha value, default is 1. Animatable. If have not set, this property will not work. Set this property to UINavigationController for global behavior.
