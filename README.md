@@ -1,6 +1,6 @@
 # JZNavigationExtension
 
-[![Version](https://img.shields.io/badge/pod-v2.0.2-5193DB.svg)](https://cocoapods.org/pods/JZNavigationExtension)
+[![Version](https://img.shields.io/badge/pod-v2.1-5193DB.svg)](https://cocoapods.org/pods/JZNavigationExtension)
 [![Platform](https://img.shields.io/badge/platform-iOS7+-lightgrey.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-2F2F2F.svg)](https://github.com/JazysYu/JZNavigationExtension/blob/master/LICENSE)
 
@@ -8,9 +8,9 @@ JZNavigationExtension integrates many convenient features for UINavigationContro
 ___
 JZNavigationExtension为UINavigationController集成了许多方便的功能。
 
-# Release notes
+# Version 2
 
-	v2.0 New cleaner File Struct and safer Implementation.
+	New cleaner File Struct and safer Implementation.
 
 # Features
 * [To gives you a fullscreen interactivePopGestureRecognizer](#FPG)
@@ -67,7 +67,7 @@ ___
 <a id="HNBP"></a>To hides navigation bar when the view controller is pushed on to a navigation controller【支持转场隐藏、显示导航栏】:
 ``` objc
 UIViewController *viewController = [UIViewController new];
-viewController.jz_wantsNavigationBarVisible = NO;
+viewController.jz_navigationBarHidden = YES;
 [self.navigationController pushToViewController:viewController animated:YES];
 ```
 ___
