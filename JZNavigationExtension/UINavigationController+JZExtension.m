@@ -41,7 +41,7 @@ __attribute__((constructor)) static void JZ_Inject(void) {
             } else {
                 method_exchangeImplementations(originalMethod, swizzledMethod);
             }
-            
+            NSLog(@"hehehehehehe");
         };
         
         jz_method_swizzling([UINavigationController class], @selector(setDelegate:), @selector(jz_setDelegate:));
