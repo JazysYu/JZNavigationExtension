@@ -142,7 +142,8 @@
         
         if (context.initiallyInteractive) {
             
-            UIViewController *adjustViewController = context.isCancelled ? navigationController.jz_previousVisibleViewController : navigationController.visibleViewController;
+            //            UIViewController *adjustViewController = context.isCancelled ? navigationController.jz_previousVisibleViewController : navigationController.visibleViewController;
+            UIViewController *adjustViewController = navigationController.visibleViewController;
             
             if (context.isCancelled) {
                 navigationController.navigationBar.barTintColor = [adjustViewController jz_navigationBarTintColorWithNavigationController:navigationController];
